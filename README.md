@@ -51,6 +51,21 @@ nexus context
 
 ---
 
+## ⚙️ Configuración Global
+Nexus te permite guardar preferencias que persisten en toda tu computadora:
+
+*   **Ver tu configuración actual:**
+    ```bash
+    nexus config show
+    ```
+*   **Establecer un valor global:**
+    ```bash
+    nexus config set <clave> <valor>
+    ```
+    *Ejemplo: `nexus config set author "Edwin Realpe"`*
+
+---
+
 ## 💬 Cómo hablar en Nexus (Shorthand)
 Una vez que la IA está "inducida", deja de escribir párrafos y usa la sintaxis Nexus directamente en el chat:
 
