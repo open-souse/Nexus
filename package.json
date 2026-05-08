@@ -1,13 +1,12 @@
 {
   "name": "nexus-lang",
-  "version": "0.2.0",
-  "description": "El lenguaje estructurado que hace que las IAs de programación te entiendan mejor — prompts más cortos, respuestas más precisas",
+  "version": "0.3.0",
+  "description": "NEXUS: The minimalist Human-AI Language Protocol",
   "type": "module",
   "main": "dist/index.js",
   "files": [
     "dist",
     "bin",
-    "src/templates",
     "README.md",
     "LICENSE"
   ],

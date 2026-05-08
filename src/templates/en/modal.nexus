@@ -1,6 +1,0 @@
-Container
-  Style position:fixed, overlay:blur
-  Form "confirm"
-    Text heading "Are you sure?"
-    Button "Cancel" variant:ghost
-    Button "Confirm" variant:danger
