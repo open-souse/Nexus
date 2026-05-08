@@ -58,12 +58,10 @@
     "commander": "^12.1.0",
     "conf": "^12.0.0",
     "fs-extra": "^11.2.0",
-    "inquirer": "^12.11.1",
     "ora": "^8.0.1"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
-    "@types/inquirer": "^9.0.9",
     "@types/node": "^20.14.0",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",

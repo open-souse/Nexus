@@ -62,7 +62,7 @@ Nexus te permite guardar preferencias que persisten en toda tu computadora:
     ```bash
     nexus config set <clave> <valor>
     ```
-    *Ejemplo: `nexus config set author "Edwin Realpe"`*
+    *Ejemplo: `nexus config set author "musica de color"`*
 
 ---
 
