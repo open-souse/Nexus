@@ -1,5 +1,9 @@
 # NEXUS: Human-AI Language Protocol
 
+[![CI](https://github.com/edwinreal/Nexus-/actions/workflows/ci.yml/badge.svg)](https://github.com/edwinreal/Nexus-/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/nexuslang.svg)](https://www.npmjs.com/package/nexuslang)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
 **Deja de escribir "prompts". Empieza a escribir intenciones.**
 
 Así como los lenguajes de programación simplificaron la comunicación humano-máquina, NEXUS simplifica la comunicación humano-IA. Una gramática estructurada que la IA interpreta de forma exacta, sin ambigüedad, sin distorsión.
