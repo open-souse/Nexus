@@ -1,3 +1,0 @@
-﻿Button #primary [size:medium, style:soft]
-  Text "Button Label"
-  Event click -> handleClick()

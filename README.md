@@ -1,86 +1,96 @@
-# NEXUS: Human-AI Language Protocol 🚀
+# NEXUS: Human-AI Language Protocol
 
-**Deja de escribir "prompts". Empieza a escribir intenciones.** 
+**Deja de escribir "prompts". Empieza a escribir intenciones.**
 
-NEXUS no es un generador de código; es el **estándar de comunicación de alto nivel** diseñado para la era de la Inteligencia Artificial. Es el puente que elimina el ruido del lenguaje natural y permite una comunicación exacta, rápida y profesional entre humanos y máquinas.
-
----
-
-## 🧠 El Problema: El Lenguaje Natural es el "Binario" de la IA
-Programar una IA usando lenguaje humano es como programar una computadora en 0 y 1: es ruidoso, impreciso y agotador. 
-**NEXUS es la capa de abstracción.** Convierte instrucciones ambiguas en estructuras lógicas que las IAs interpretan de forma nativa sin alucinar.
-
-## ⚡ Multiplicador de Productividad (3x - 10x)
-
-| Tarea | Método Tradicional (Natural) | Con NEXUS Protocol |
-| :--- | :--- | :--- |
-| **Setup de Dashboard** | 15 - 20 min de prompts | 1 - 2 min de Nexus |
-| **Lógica de Formulario** | 10 min explicando validaciones | 30 seg de intención |
-| **Ahorro de Tokens** | 100% (Prompts verbosos) | ~15% (Sintaxis ultra-densa) |
-| **Precisión (1er intento)** | 40% (Iteraciones constantes) | >90% (Entendimiento exacto) |
-
-## ✨ Beneficios Clave
-- **Cero Ambigüedad**: Cada símbolo (`#`, `@`, `->`) tiene un significado semántico único.
-- **Consistencia de DNA**: Define tus reglas una vez en el `nexus.config.json` y la IA las seguirá siempre.
-- **Inducción Universal**: Funciona con Claude, GPT-4, Gemini o cualquier LLM avanzado.
-- **Velocidad de Pensamiento**: Escribe a la velocidad que diseñas, no a la velocidad que redactas.
+Así como los lenguajes de programación simplificaron la comunicación humano-máquina, NEXUS simplifica la comunicación humano-IA. Una gramática estructurada que la IA interpreta de forma exacta, sin ambigüedad, sin distorsión.
 
 ---
 
-## 🚀 Inicio Rápido (En 3 pasos)
+## El Problema
+
+Comunicarle una idea a una IA en lenguaje natural es impreciso. La IA distorsiona, adivina, o pide aclaraciones constantes. El resultado rara vez es el esperado al primer intento.
+
+**NEXUS es la capa de abstracción.** Una gramática concisa que la IA entiende de forma nativa.
+
+---
+
+## Cómo funciona
 
 ### 1. Instalación
-Si eres el dueño del proyecto, instálalo globalmente desde la carpeta raíz:
+
 ```bash
 npm install -g .
 ```
 
-### 2. Configura tu DNA (Una sola vez)
-Ve a tu proyecto de frontend e inicializa Nexus. Esto crea las reglas que la IA debe seguir.
+### 2. Inicializa tu proyecto
+
 ```bash
 nexus init
 ```
-*Edita el archivo `nexus.config.json` para definir tus colores, frameworks y estilo.*
 
-### 3. Inducción a la IA (Al iniciar tu sesión)
-Genera el manual maestro y dáselo a tu IA:
+Crea `nexus.config.json` con el DNA de tu proyecto: framework, colores, tipografía. La IA lo usará como contexto global en cada sesión.
+
+### 3. Induce a la IA
+
 ```bash
 nexus context
 ```
-**Acción:** Copia el texto generado y pégalo en Claude, GPT-4 o Gemini. La IA responderá: `NEXUS_SYSTEM_ONLINE`.
 
----
+Genera el prompt maestro. Cópialo y pégalo al inicio de tu sesión con Claude, GPT-4 o Gemini. La IA responderá: `NEXUS_SYSTEM_ONLINE`.
 
-## 💬 Cómo hablar en Nexus (Shorthand)
-Una vez que la IA está "inducida", deja de escribir párrafos y usa la sintaxis Nexus directamente en el chat:
+### 4. Habla en NEXUS
 
-**Ejemplo de intención:**
 ```nexus
 @React #Tailwind
 Card #glass
-  Text "Nexus es Velocidad" !bold
-  Button "OK" #primary -> /dashboard
+  Text "Hola Mundo" !bold
+  Button "Aceptar" #primary -> /dashboard
 ```
-**Resultado:** La IA te entregará el código perfecto siguiendo tu DNA.
+
+La IA entrega el código exacto siguiendo tu DNA.
 
 ---
 
-## 📖 Gramática Maestra (v2.5)
-- `@` : Directivas de Entorno.
-- `#` : Design Tokens (Estilos).
-- `* N` : Multiplicador de elementos.
-- `?` : Gestión de Estados (loading, error).
-- `->` : Flujo de Navegación.
-- `=>` : Lógica de Side-Effects / API.
-- `<` : Data Binding & Types.
-- `{ }` : Inyección de Contexto Externo.
+## Gramática Maestra (v2.5)
+
+| Operador | Significado |
+|---|---|
+| `@` | Directivas de entorno (`@React`, `@CleanCode`) |
+| `#` | Design Tokens / Estilos |
+| `$` | Variables de intención |
+| `* N` | Multiplicador de elementos |
+| `?` | Estados (`?loading`, `?error`) |
+| `!` | Prioridad / Énfasis |
+| `[ ]` | Atributos técnicos |
+| `->` | Flujo de navegación |
+| `=>` | Side-effects / API |
+| `<` | Data binding / Types |
+| `{ }` | Inyección de contexto externo |
+| `( cond ) -> A : B` | Condicional de intención |
+
+Ver gramática completa en [NEXUS-Grammar.md](./NEXUS-Grammar.md).
 
 ---
 
-## 🤝 Únete a la Revolución
-Nexus es un estándar abierto. Ayúdanos a definir el futuro de la comunicación Humano-IA.
+## Comandos CLI
 
-[CONTRIBUTING.md](./CONTRIBUTING.md) | [LICENSE](./LICENSE)
+| Comando | Descripción |
+|---|---|
+| `nexus init` | Inicializa `nexus.config.json` en tu proyecto |
+| `nexus context` | Genera el inductor de lenguaje para la IA |
+| `nexus config set <key> <value>` | Guarda configuración global |
+| `nexus config show` | Muestra la configuración actual |
 
 ---
-Desarrollado con ❤️ por [Edwin Realpe](https://github.com/edwinreal)
+
+## Visión
+
+NEXUS nació enfocado en frontend, pero la visión es más amplia: convertirse en el estándar de comunicación Humano-IA para cualquier dominio. Un lenguaje abierto, universal y construido por la comunidad.
+
+---
+
+## Contribuir
+
+NEXUS es un estándar abierto. Lee [CONTRIBUTING.md](./CONTRIBUTING.md) para saber cómo participar.
+
+**Licencia MIT** — Desarrollado por [Edwin Realpe](https://github.com/edwinreal)

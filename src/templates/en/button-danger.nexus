@@ -1,4 +1,0 @@
-﻿Button "Delete"
-  variant danger
-  size medium
-  Event click -> handleDelete()

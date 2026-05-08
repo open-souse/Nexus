@@ -1,5 +1,0 @@
-﻿Form "login"
-  field username type:text     required
-  field password type:password required
-  Button "Login" variant:primary
-  Event submit -> handleLogin()

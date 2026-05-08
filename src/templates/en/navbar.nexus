@@ -1,5 +1,0 @@
-﻿Navbar #sticky [theme:light]
-  Logo "BrandName" -> /
-  Link "Features" -> /features
-  Link "Docs" -> /docs
-  Button #primary "Get Started"
