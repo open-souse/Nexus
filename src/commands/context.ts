@@ -4,6 +4,13 @@ import path from 'path'
 import chalk from 'chalk'
 import ora from 'ora'
 
+/**
+ * Comando 'context': Genera el prompt de inducción maestro para la IA.
+ * Este comando lee el DNA del proyecto y lo empaqueta en una instrucción 
+ * estructurada que transforma a la IA en un intérprete nativo de Nexus v2.5.
+ * 
+ * @returns {Command} El comando configurado para generar el inductor de lenguaje.
+ */
 export function contextCommand(): Command {
   return new Command("context")
     .description("Genera el 'Inductor de Lenguaje' para que la IA aprenda Nexus en un solo paso")

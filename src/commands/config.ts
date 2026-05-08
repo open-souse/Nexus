@@ -4,6 +4,13 @@ import chalk from 'chalk'
 
 const config = new Conf({ projectName: 'nexus-lang' })
 
+/**
+ * Comando 'config': Gestiona la configuración global de Nexus mediante persistencia local.
+ * Permite establecer (set) y mostrar (show) valores de configuración que persisten
+ * entre diferentes sesiones y proyectos.
+ * 
+ * @returns {Command} El comando de configuración con subcomandos 'set' y 'show'.
+ */
 export function configCommand(): Command {
   const configCmd = new Command("config")
     .description("Configuración de NEXUS")

@@ -16,6 +16,12 @@ const DEFAULT_CONFIG = {
   }
 }
 
+/**
+ * Comando 'init': Inicializa el ecosistema Nexus en un proyecto local.
+ * Crea un archivo de configuración (DNA) con valores por defecto basados en React y Tailwind.
+ * 
+ * @returns {Command} El objeto Command de Commander para ser registrado en el CLI.
+ */
 export function initCommand(): Command {
   return new Command("init")
     .description("Inicializa NEXUS en tu proyecto")
