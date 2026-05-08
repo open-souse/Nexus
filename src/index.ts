@@ -2,6 +2,7 @@ import { Command } from 'commander'
 import { initCommand } from './commands/init.js'
 import { configCommand } from './commands/config.js'
 import { contextCommand } from './commands/context.js'
+import { validateCommand } from './commands/validate.js'
 import fs from 'fs'
 
 // Leer versión desde package.json
@@ -19,5 +20,6 @@ program
 program.addCommand(initCommand())
 program.addCommand(configCommand())
 program.addCommand(contextCommand())
+program.addCommand(validateCommand())
 
 program.parse()

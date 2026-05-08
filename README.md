@@ -14,31 +14,41 @@ Comunicarle una idea a una IA en lenguaje natural es impreciso. La IA distorsion
 
 ---
 
-## Cómo funciona
-
-### 1. Instalación
+## Instalación
 
 ```bash
+# Desde el repositorio
 npm install -g .
+
+# O cuando esté publicado en npm
+npm install -g nexus-lang
 ```
 
-### 2. Inicializa tu proyecto
+> Requiere Node.js >= 18
+
+---
+
+## Cómo funciona
+
+### 1. Inicializa tu proyecto
 
 ```bash
 nexus init
 ```
 
-Crea `nexus.config.json` con el DNA de tu proyecto: framework, colores, tipografía. La IA lo usará como contexto global en cada sesión.
+NEXUS te hace preguntas sobre tu framework, colores e iconos, y genera un `nexus.config.json` personalizado — el DNA de tu proyecto. La IA lo usará como contexto global en cada sesión.
 
-### 3. Induce a la IA
+### 2. Induce a la IA
 
 ```bash
 nexus context
 ```
 
-Genera el prompt maestro. Cópialo y pégalo al inicio de tu sesión con Claude, GPT-4 o Gemini. La IA responderá: `NEXUS_SYSTEM_ONLINE`.
+Genera el prompt maestro con la gramática completa y ejemplos. Cópialo y pégalo al inicio de tu sesión con Claude, GPT-4 o Gemini. La IA responderá: `NEXUS_SYSTEM_ONLINE`.
 
-### 4. Habla en NEXUS
+### 3. Habla en NEXUS
+
+Una vez inducida la IA, escribe directamente en sintaxis NEXUS:
 
 ```nexus
 @React #Tailwind
@@ -48,6 +58,23 @@ Card #glass
 ```
 
 La IA entrega el código exacto siguiendo tu DNA.
+
+### 4. Valida tus archivos
+
+```bash
+nexus validate ./mi-componente.nexus
+```
+
+Verifica la sintaxis antes de enviársela a la IA.
+
+---
+
+## Ejemplos
+
+Ver carpeta [`examples/`](./examples/) para casos de uso completos:
+
+- [`examples/dashboard.nexus`](./examples/dashboard.nexus) — Panel de administración completo
+- [`examples/landing.nexus`](./examples/landing.nexus) — Página de marketing
 
 ---
 
@@ -76,10 +103,24 @@ Ver gramática completa en [NEXUS-Grammar.md](./NEXUS-Grammar.md).
 
 | Comando | Descripción |
 |---|---|
-| `nexus init` | Inicializa `nexus.config.json` en tu proyecto |
+| `nexus init` | Inicializa `nexus.config.json` en tu proyecto (interactivo) |
 | `nexus context` | Genera el inductor de lenguaje para la IA |
+| `nexus validate <file>` | Valida la sintaxis de un archivo .nexus |
 | `nexus config set <key> <value>` | Guarda configuración global |
 | `nexus config show` | Muestra la configuración actual |
+
+---
+
+## Desarrollo local
+
+```bash
+git clone https://github.com/edwinreal/Nexus-.git
+cd Nexus-
+npm install
+npm run build    # Compila TypeScript a dist/
+npm test         # Corre los tests
+npm install -g . # Instala el CLI globalmente
+```
 
 ---
 
