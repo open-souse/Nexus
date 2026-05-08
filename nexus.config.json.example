@@ -1,0 +1,30 @@
+{
+  "lang": "en",
+  "output": "./src/components",
+  "framework": "react-ts",
+  "tokens": {
+    "primary": "#2563eb",
+    "secondary": "#64748b",
+    "danger": "#ef4444",
+    "success": "#22c55e",
+    "radius": "8px",
+    "font": "'Inter', sans-serif"
+  },
+  "global_styles": {
+    "button": {
+      "padding": "0.6rem 1.2rem",
+      "font-weight": "600"
+    }
+  },
+  "icons": {
+    "library": "lucide-react",
+    "mapping": {
+      "search": "Search",
+      "user": "User",
+      "settings": "Settings"
+    }
+  },
+  "blueprints": {
+    "default_layout": "sidebar-main"
+  }
+}

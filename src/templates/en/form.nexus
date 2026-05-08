@@ -1,0 +1,5 @@
+﻿Form "name"
+  fields: name:text, email:email, msg:textarea
+  layout: vertical  // Opciones: vertical, horizontal, grid
+  spacing: normal   // Opciones: tight, normal, loose
+  Button "Submit" variant:primary

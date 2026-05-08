@@ -1,0 +1,5 @@
+List "items"
+  item "Item 1"
+  item "Item 2"
+  item "Item 3"
+  Style spacing:2

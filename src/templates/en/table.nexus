@@ -1,0 +1,5 @@
+List "data-table"
+  field ID      type:number
+  field Name    type:string
+  field Status  type:tag
+  Style border:1, zebra:true

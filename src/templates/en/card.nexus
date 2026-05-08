@@ -1,0 +1,4 @@
+﻿Card #marketing [padding:generous, style:elevated]
+  H3 "Card Title"
+  P "Description text here"
+  Button #secondary [size:small] "Action"

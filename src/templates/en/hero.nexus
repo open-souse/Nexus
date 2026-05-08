@@ -1,0 +1,4 @@
+﻿Hero #centered [bg:gradient, padding:massive]
+  H1 "Main Value Proposition"
+  P "Subtext that clarifies the benefit"
+  Button #primary [size:large] "Call to Action"

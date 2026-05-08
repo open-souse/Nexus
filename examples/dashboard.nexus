@@ -1,0 +1,32 @@
+// examples/dashboard.nexus
+@Web #AdminTheme
+Blueprint DashboardPage
+  Flow: SidebarNav -> TopHeader -> MainStats -> ActivityTable
+
+Page Dashboard
+  Sidebar #fixed [width:260px, style:glass]
+    Logo "NEXUS Console"
+    Nav
+      NavItem "Overview" Icon #search #active -> /
+      NavItem "Users" Icon #user -> /users
+      NavItem "Settings" Icon #settings -> /settings
+
+  Main [padding:generous]
+    Header [align:between]
+      Text heading "Dashboard Overview"
+      UserMenu "Admin User" ?online
+
+    Grid [cols:4, gap:20]
+      StatCard #elevated * 4 < [
+        "Revenue: $12k", 
+        "Active Users: 1.2k", 
+        "Conversion: 3.4%", 
+        "Pending Tasks: 5"
+      ]
+
+    Section "Recent Activity" [margin-top:40px]
+      Table #striped ?loading:false
+        Row * 5 < ["User login", "Payment received", "Settings changed"]
+
+Logic DashboardLogic
+  On Load -> FetchStats() -> Toast("Data synced")
