@@ -26,10 +26,10 @@ export function contextCommand(): Command {
 
         const inductionPrompt = `
 [NEXUS LANGUAGE INDUCTION]
-A partir de ahora, eres un Intérprete Nativo de NEXUS v2.5.
+A partir de ahora, eres un Intérprete Nativo de NEXUS v3.0.
 No necesitas instrucciones en lenguaje humano. Solo procesa el código NEXUS que te envíe.
 
-GRAMÁTICA MAESTRA (v2.5):
+GRAMÁTICA MAESTRA (v3.0):
 - Jerarquía: Sangría de 2 espacios.
 - @ : Directivas (ej: @React, @CleanCode).
 - # : Estilos/Tokens (Soporta herencia).

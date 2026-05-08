@@ -80,7 +80,7 @@ Card #glass
 
 ---
 
-## 📖 Gramática Maestra (v2.5)
+## 📖 Gramática Maestra (v3.0)
 - `@` : Directivas de Entorno.
 - `#` : Design Tokens (Estilos).
 - `* N` : Multiplicador de elementos.
@@ -98,4 +98,4 @@ Nexus es un estándar abierto. Ayúdanos a definir el futuro de la comunicación
 [CONTRIBUTING.md](./CONTRIBUTING.md) | [LICENSE](./LICENSE)
 
 ---
-Desarrollado con ❤️ por [Edwin Realpe](https://github.com/edwinreal)
+Desarrollado con ❤️ por **2026 Ventures SAS**

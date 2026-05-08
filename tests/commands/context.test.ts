@@ -7,8 +7,8 @@ describe('nexus context', () => {
     const output = execSync('npx tsx src/index.ts context').toString()
     
     expect(output).toContain('[NEXUS LANGUAGE INDUCTION]')
-    expect(output).toContain('Intérprete Nativo de NEXUS v2.5')
-    expect(output).toContain('GRAMÁTICA MAESTRA (v2.5)')
+    expect(output).toContain('Intérprete Nativo de NEXUS v3.0')
+    expect(output).toContain('GRAMÁTICA MAESTRA (v3.0)')
     expect(output).toContain('DNA DEL PROYECTO')
     expect(output).toContain('NEXUS_SYSTEM_ONLINE')
   })
