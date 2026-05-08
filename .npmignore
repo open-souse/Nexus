@@ -1,0 +1,9 @@
+node_modules/
+src/
+tests/
+scripts/
+coverage/
+*.config.json
+.gitignore
+tsconfig.json
+package-lock.json

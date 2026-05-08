@@ -17,11 +17,7 @@ Comunicarle una idea a una IA en lenguaje natural es impreciso. La IA distorsion
 ## Instalación
 
 ```bash
-# Desde el repositorio
-npm install -g .
-
-# O cuando esté publicado en npm
-npm install -g nexus-lang
+npm install -g nexuslang
 ```
 
 > Requiere Node.js >= 18
@@ -78,7 +74,7 @@ Ver carpeta [`examples/`](./examples/) para casos de uso completos:
 
 ---
 
-## Gramática Maestra (v2.5)
+## Gramática Maestra (v2.6)
 
 | Operador | Significado |
 |---|---|
@@ -94,6 +90,10 @@ Ver carpeta [`examples/`](./examples/) para casos de uso completos:
 | `<` | Data binding / Types |
 | `{ }` | Inyección de contexto externo |
 | `( cond ) -> A : B` | Condicional de intención |
+| `@modify [preserve:all]` | Edición segura — solo aplica el cambio indicado |
+| `[new]` + `[inherit:siblings]` | Elemento nuevo que hereda el estilo de sus hermanos |
+| `[position:move-to:N]` | Mueve un elemento sin alterar nada más |
+| `[cascade:children]` | Aplica estilos del padre a todos sus hijos |
 
 Ver gramática completa en [NEXUS-Grammar.md](./NEXUS-Grammar.md).
 

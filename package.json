@@ -1,7 +1,7 @@
 {
-  "name": "nexus-lang",
+  "name": "nexuslang",
   "version": "0.2.0",
-  "description": "El lenguaje estructurado que hace que las IAs de programación te entiendan mejor — prompts más cortos, respuestas más precisas",
+  "description": "NEXUS: Protocolo de lenguaje humano-IA — prompts más cortos, respuestas más precisas, cero ambigüedad",
   "type": "module",
   "main": "dist/index.js",
   "files": [
@@ -24,7 +24,10 @@
   },
   "keywords": [
     "nexus",
-    "nexus-lang",
+    "nexuslang",
+    "nexus-protocol",
+    "human-ai",
+    "ai-language",
     "dsl",
     "ai",
     "llm",
@@ -32,11 +35,9 @@
     "structured-language",
     "claude",
     "copilot",
-    "codex",
     "cursor",
     "react",
     "typescript",
-    "ui",
     "developer-tools",
     "cli"
   ],
