@@ -49,9 +49,8 @@ Cuando recibas un bloque NEXUS, genera el código correspondiente de forma premi
 
         spinner.succeed(chalk.green('¡Inductor de Lenguaje generado!'))
         console.log(chalk.cyan('\nCopia este texto una sola vez al inicio de tu sesión con la IA:\n'))
-        console.log(chalk.gray('--------------------------------------------------'))
         console.log(inductionPrompt)
-        console.log(chalk.gray('--------------------------------------------------\n'))
+        console.log('\n')
 
       } catch (error: any) {
         spinner.fail(chalk.red(`Error: ${error.message}`))
