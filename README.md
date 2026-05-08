@@ -27,33 +27,41 @@ Programar una IA usando lenguaje humano es como programar una computadora en 0 y
 
 ---
 
-## 🛠️ Cómo funciona el Protocolo
+## 🚀 Inicio Rápido (En 3 pasos)
 
-### 1. Define tu DNA
-Inicializa tu proyecto para que la IA conozca tus estándares (React, Tailwind, Colores, etc).
+### 1. Instalación
+Si eres el dueño del proyecto, instálalo globalmente desde la carpeta raíz:
+```bash
+npm install -g .
+```
+
+### 2. Configura tu DNA (Una sola vez)
+Ve a tu proyecto de frontend e inicializa Nexus. Esto crea las reglas que la IA debe seguir.
 ```bash
 nexus init
 ```
+*Edita el archivo `nexus.config.json` para definir tus colores, frameworks y estilo.*
 
-### 2. Enseña el Lenguaje (Inducción)
-Genera el manual de instrucciones maestro y dáselo a tu IA una sola vez por sesión.
+### 3. Inducción a la IA (Al iniciar tu sesión)
+Genera el manual maestro y dáselo a tu IA:
 ```bash
 nexus context
 ```
+**Acción:** Copia el texto generado y pégalo en Claude, GPT-4 o Gemini. La IA responderá: `NEXUS_SYSTEM_ONLINE`.
 
-### 3. Habla en Nexus (Shorthand)
-Olvida los párrafos largos. Comunícate con precisión quirúrgica directamente en el chat:
+---
 
-**Antes (Prompt Verboso):**
-> "Crea una tarjeta con fondo tipo cristal, con una imagen de perfil, el nombre del usuario en negrita, un botón azul que diga seguir y que cuando se haga click envíe una petición a la API de seguimiento..."
+## 💬 Cómo hablar en Nexus (Shorthand)
+Una vez que la IA está "inducida", deja de escribir párrafos y usa la sintaxis Nexus directamente en el chat:
 
-**Ahora (Nexus Shorthand):**
+**Ejemplo de intención:**
 ```nexus
+@React #Tailwind
 Card #glass
-  Avatar < user.img
-  Text user.name !bold
-  Button "Seguir" #primary => API.follow(user.id)
+  Text "Nexus es Velocidad" !bold
+  Button "OK" #primary -> /dashboard
 ```
+**Resultado:** La IA te entregará el código perfecto siguiendo tu DNA.
 
 ---
 
