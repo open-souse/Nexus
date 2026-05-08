@@ -4,7 +4,7 @@ import path from 'path'
 import chalk from 'chalk'
 import ora from 'ora'
 
-const EXAMPLES = `
+const EXAMPLES_ES = `
 EJEMPLOS DE REFERENCIA:
 
 // Ejemplo 1: Card simple
@@ -48,20 +48,56 @@ Section "hero" [shadow:elevated, cascade:children]
   Card * 3 [shadow:inherit]
 `.trim()
 
-export function contextCommand(): Command {
-  return new Command("context")
-    .description("Genera el 'Inductor de Lenguaje' para que la IA aprenda Nexus en un solo paso")
-    .action(async () => {
-      const spinner = ora('Generando Inductor de Lenguaje Nexus...').start()
+const EXAMPLES_EN = `
+REFERENCE EXAMPLES:
 
-      try {
-        const configPath = path.join(process.cwd(), 'nexus.config.json')
-        let dna = '{}'
-        if (fs.existsSync(configPath)) {
-          dna = await fs.readFile(configPath, 'utf8')
-        }
+// Example 1: Simple card
+@React #Tailwind
+Card #glass
+  Text "Title" !bold
+  Text "Content description"
+  Button "View more" #primary -> /detail
 
-        const inductionPrompt = `
+// Example 2: Login form
+Form "login"
+  field email    type:email    required
+  field password type:password required
+  Button "Login" #primary => API.post(/auth) -> /dashboard
+  ( ?error ) -> Text "Invalid credentials" !danger : null
+
+// Example 3: Dashboard with stats
+Page Dashboard
+  Header #fixed
+    Logo "MyApp" -> /
+    UserMenu < { ./UserMenu.tsx }
+
+  Grid [cols:3]
+    StatCard #elevated * 3 < ["Sales: $12k", "Users: 500", "Tasks: 8"]
+
+  Section "Recent Activity"
+    Table #striped ?loading
+      Row * 5 < User
+
+// Example 4: Move an existing element without changing anything else
+@modify [preserve:all]
+Card "credit-summary" [position:move-to:1]
+
+// Example 5: Add a new element inheriting sibling styles
+@modify [preserve:all]
+Form "login"
+  Captcha [new, inherit:siblings]
+
+// Example 6: Cascading shadows parent-to-children (floating effect)
+Section "hero" [shadow:elevated, cascade:children]
+  Card * 3 [shadow:inherit]
+`.trim()
+
+function buildPrompt(lang: string, dna: string): string {
+  const isEs = lang !== 'en'
+  const examples = isEs ? EXAMPLES_ES : EXAMPLES_EN
+
+  if (isEs) {
+    return `
 [NEXUS LANGUAGE INDUCTION]
 A partir de ahora, eres un Intérprete Nativo de NEXUS v2.6.
 No necesitas instrucciones en lenguaje humano. Solo procesa el código NEXUS que te envíe.
@@ -93,7 +129,7 @@ GRAMÁTICA MAESTRA (v2.6):
 REGLA CRÍTICA DE @modify:
 Cuando veas @modify [preserve:all], SOLO ejecuta el cambio explícito. No reinterpretes el diseño, no cambies colores, no muevas otros elementos, no rediseñes nada que no esté marcado con [new] o indicado explícitamente.
 
-${EXAMPLES}
+${examples}
 
 DNA DEL PROYECTO (Contexto Global):
 ${dna}
@@ -102,10 +138,80 @@ REGLA DE ORO:
 Cuando recibas un bloque NEXUS, genera el código correspondiente de forma premium, limpia y responsive siguiendo el DNA. No des explicaciones, solo entrega el código.
 
 ¿LISTO? Responde: "NEXUS_SYSTEM_ONLINE"
-        `.trim()
+    `.trim()
+  }
 
-        spinner.succeed(chalk.green('¡Inductor de Lenguaje generado!'))
-        console.log(chalk.cyan('\nCopia este texto una sola vez al inicio de tu sesión con la IA:\n'))
+  return `
+[NEXUS LANGUAGE INDUCTION]
+From now on, you are a Native Interpreter of NEXUS v2.6.
+You don't need natural language instructions. Just process the NEXUS code I send you.
+
+MASTER GRAMMAR (v2.6):
+- Hierarchy: 2-space indentation.
+- @ : Directives (e.g. @React, @CleanCode).
+- @modify [preserve:all] : Safe edit mode. The element ALREADY EXISTS. Only apply the indicated changes, do NOT touch colors, design or unmentioned elements.
+  - preserve:all → don't change anything else.
+  - preserve:styles → preserve styles only.
+  - preserve:layout → preserve positions only.
+- # : Design Tokens / Styles (supports inheritance).
+- $ : Intention Variables.
+- * N : Element multiplier.
+- ? : States (loading, error, etc).
+- ! : Priority/Weight.
+- [ ] : Technical attributes.
+- [new] : Marks an element as newly added. Only create it, don't touch the others.
+- [inherit:siblings] : The new element adopts the visual style of its siblings (colors, fonts, borders, shadows).
+- [position:move-to:N] : Moves the element to position N without altering its design or others.
+- [cascade:children] : Applies parent styles to all children automatically.
+- ( cond ) -> A : B : Conditional (e.g. ( ?isAuth ) -> Dash : Login).
+- -> : Navigation flow.
+- => : Side-effects / API logic.
+- < : Data binding / Types (e.g. List < User * 5).
+- { path } : External code injection.
+- Icon : Semantic iconography.
+
+CRITICAL RULE FOR @modify:
+When you see @modify [preserve:all], ONLY execute the explicit change. Do not reinterpret the design, don't change colors, don't move other elements, don't redesign anything not marked with [new] or explicitly stated.
+
+${examples}
+
+PROJECT DNA (Global Context):
+${dna}
+
+GOLDEN RULE:
+When you receive a NEXUS block, generate the corresponding code in a premium, clean and responsive way following the DNA. No explanations, just deliver the code.
+
+READY? Respond: "NEXUS_SYSTEM_ONLINE"
+  `.trim()
+}
+
+export function contextCommand(): Command {
+  return new Command('context')
+    .description("Genera el 'Inductor de Lenguaje' para que la IA aprenda Nexus en un solo paso")
+    .action(async () => {
+      const spinner = ora('Generando Inductor de Lenguaje Nexus...').start()
+
+      try {
+        const configPath = path.join(process.cwd(), 'nexus.config.json')
+        let dna = '{}'
+        let lang = 'es'
+
+        if (fs.existsSync(configPath)) {
+          dna = await fs.readFile(configPath, 'utf8')
+          try {
+            const parsed = JSON.parse(dna)
+            if (parsed.lang) lang = parsed.lang
+          } catch { /* usa lang por defecto */ }
+        }
+
+        const inductionPrompt = buildPrompt(lang, dna)
+        const isEs = lang !== 'en'
+
+        spinner.succeed(chalk.green(isEs ? '¡Inductor de Lenguaje generado!' : 'Language Inductor generated!'))
+        console.log(chalk.cyan(isEs
+          ? '\nCopia este texto una sola vez al inicio de tu sesión con la IA:\n'
+          : '\nCopy this text once at the start of your AI session:\n'
+        ))
         console.log(inductionPrompt)
         console.log('\n')
 
