@@ -2,7 +2,7 @@ import { Command } from 'commander'
 import Conf from 'conf'
 import chalk from 'chalk'
 
-const config = new Conf({ projectName: 'nexus-lang' })
+const config = new Conf({ projectName: 'nxlang' })
 
 /**
  * Comando 'config': Gestiona la configuración global de Nexus mediante persistencia local.

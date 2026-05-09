@@ -26,7 +26,7 @@ export function updateCommand(currentVersion: string): Command {
       const spinner = ora('Verificando última versión...').start()
 
       try {
-        const latest = await fetchLatestVersion('nexuslang')
+        const latest = await fetchLatestVersion('nxlang')
         spinner.stop()
 
         if (latest === currentVersion) {
@@ -34,7 +34,7 @@ export function updateCommand(currentVersion: string): Command {
         } else {
           console.log(chalk.yellow(`\nHay una nueva versión disponible: v${latest}`))
           console.log(chalk.gray(`  Versión actual: v${currentVersion}`))
-          console.log(chalk.cyan(`\n  Actualiza con: npm install -g nexuslang\n`))
+          console.log(chalk.cyan(`\n  Actualiza con: npm install -g nxlang\n`))
         }
       } catch {
         spinner.fail(chalk.red('No se pudo verificar la versión. Revisa tu conexión a internet.'))

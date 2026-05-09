@@ -2,7 +2,7 @@ import { describe, it, expect, afterEach } from 'vitest'
 import { execSync } from 'child_process'
 import Conf from 'conf'
 
-const config = new Conf({ projectName: 'nexus-lang' })
+const config = new Conf({ projectName: 'nxlang' })
 
 describe('nexus config', () => {
   afterEach(() => {

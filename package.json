@@ -1,5 +1,5 @@
 {
-  "name": "nexuslang",
+  "name": "nxlang",
   "version": "0.3.0",
   "description": "NEXUS: Protocolo de lenguaje humano-IA — prompts más cortos, respuestas más precisas, cero ambigüedad",
   "type": "module",
@@ -24,7 +24,7 @@
   },
   "keywords": [
     "nexus",
-    "nexuslang",
+    "nxlang",
     "nexus-protocol",
     "human-ai",
     "ai-language",

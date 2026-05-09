@@ -1,7 +1,7 @@
 # NEXUS: Human-AI Language Protocol
 
 [![CI](https://github.com/edwinreal/Nexus-/actions/workflows/ci.yml/badge.svg)](https://github.com/edwinreal/Nexus-/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/nexuslang.svg)](https://www.npmjs.com/package/nexuslang)
+[![npm version](https://img.shields.io/npm/v/nxlang.svg)](https://www.npmjs.com/package/nxlang)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 **Deja de escribir "prompts". Empieza a escribir intenciones.**
@@ -21,7 +21,7 @@ Comunicarle una idea a una IA en lenguaje natural es impreciso. La IA distorsion
 ## Instalación
 
 ```bash
-npm install -g nexuslang
+npm install -g nxlang
 ```
 
 > Requiere Node.js >= 18
