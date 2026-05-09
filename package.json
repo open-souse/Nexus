@@ -1,6 +1,6 @@
 {
   "name": "nxlang",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "NEXUS: Protocolo de lenguaje humano-IA — prompts más cortos, respuestas más precisas, cero ambigüedad",
   "type": "module",
   "main": "dist/index.js",
