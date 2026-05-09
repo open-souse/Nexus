@@ -7,6 +7,7 @@ import { validateCommand } from './commands/validate.js'
 import { examplesCommand } from './commands/examples.js'
 import { updateCommand } from './commands/update.js'
 import { doctorCommand } from './commands/doctor.js'
+import { scaffoldCommand } from './commands/scaffold.js'
 import fs from 'fs'
 
 const pkgPath = new URL('../package.json', import.meta.url)
@@ -27,6 +28,7 @@ program.addCommand(validateCommand())
 program.addCommand(examplesCommand())
 program.addCommand(updateCommand(version))
 program.addCommand(doctorCommand())
+program.addCommand(scaffoldCommand())
 program.addCommand(configCommand())
 
 program.parse()
