@@ -1,0 +1,48 @@
+@React @Tailwind @LucideIcons
+Page UserProfile
+  ~editing: false
+  ~saving: false
+
+  Layout SidebarSettings
+    Sidebar #w-64 #bg-white #border-r
+      NavGroup "Cuenta"
+        NavItem "Perfil"         #active -> /settings/profile
+        NavItem "Seguridad"              -> /settings/security
+        NavItem "Notificaciones"         -> /settings/notifications
+      NavGroup "Plan"
+        NavItem "Suscripción"            -> /settings/plan
+        NavItem "Facturación"            -> /settings/billing
+
+    MainContent #p-8 #max-w-2xl
+      Section "Información personal"
+        Header #flex #justify-between #items-center #mb-6
+          Text heading "Perfil" !bold
+          ( ~editing ) ->
+            Button "Cancelar" #ghost => ~editing: false
+          :
+            Button "Editar perfil" #outline => ~editing: true
+
+        Card #white #shadow-sm #p-6
+          Group #flex #gap-6 #items-start
+            Avatar < $user.avatar [size: 96] [editable: ~editing]
+
+            Stack #flex-1 #gap-4
+              ( ~editing ) ->
+                Form "profile-edit"
+                  Field name    value:$user.name  [label: "Nombre completo"]
+                  Field email   value:$user.email [label: "Correo"] type:email
+                  Field bio     value:$user.bio   [label: "Bio"] type:textarea [rows: 3]
+                  Button "Guardar cambios" #primary ?saving
+                    => API.patch(/users/me) -> ~editing: false
+              :
+                Stack #gap-1
+                  Text $user.name  !bold #text-xl
+                  Text $user.email #text-gray-500
+                  Text $user.bio   #text-gray-600 #mt-2
+
+      Section "Zona de peligro" #mt-10
+        Card #border-red-200 #p-6
+          Text "Eliminar cuenta" !bold #text-red-600
+          Text "Esta acción es irreversible." #text-gray-500 #text-sm #mb-4
+          Button "Eliminar mi cuenta" #danger [confirm: true]
+            => API.delete(/users/me) -> /goodbye
