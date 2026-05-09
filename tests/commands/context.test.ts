@@ -2,24 +2,24 @@ import { describe, it, expect } from 'vitest'
 import { execSync } from 'child_process'
 
 describe('nexus context', () => {
-  it('genera el inductor de lenguaje NEXUS v3.2', () => {
+  it('generates the NEXUS v3.2 language inductor', () => {
     const output = execSync('npx tsx src/index.ts context').toString()
 
     expect(output).toContain('[NEXUS LANGUAGE INDUCTION]')
-    expect(output).toContain('Intérprete Nativo de NEXUS v3.2')
-    expect(output).toContain('GRAMÁTICA MAESTRA (v3.2)')
-    expect(output).toContain('DNA DEL PROYECTO')
+    expect(output).toContain('Native Interpreter of NEXUS v3.2')
+    expect(output).toContain('MASTER GRAMMAR (v3.2)')
+    expect(output).toContain('PROJECT DNA')
     expect(output).toContain('NEXUS_SYSTEM_ONLINE')
   })
 
-  it('incluye ejemplos de referencia en el prompt', () => {
+  it('includes reference examples in the prompt', () => {
     const output = execSync('npx tsx src/index.ts context').toString()
 
-    expect(output).toContain('EJEMPLOS DE REFERENCIA')
+    expect(output).toContain('REFERENCE EXAMPLES')
     expect(output).toContain('Card #glass')
   })
 
-  it('incluye los operadores de edición segura', () => {
+  it('includes safe-edit operators', () => {
     const output = execSync('npx tsx src/index.ts context').toString()
 
     expect(output).toContain('@modify')
@@ -29,34 +29,33 @@ describe('nexus context', () => {
     expect(output).toContain('position:move-to:N')
   })
 
-  it('incluye todos los operadores principales de la gramática', () => {
+  it('includes all main grammar operators', () => {
     const output = execSync('npx tsx src/index.ts context').toString()
 
-    expect(output).toContain('->') // navegación
+    expect(output).toContain('->') // navigation
     expect(output).toContain('=>') // side-effects
     expect(output).toContain('< ') // data binding
-    expect(output).toContain('* N') // multiplicador
-    expect(output).toContain('? ') // estados
-    expect(output).toContain('! ') // prioridad
-    expect(output).toContain('[ ]') // atributos
-    expect(output).toContain('[locked]') // componente protegido
-    expect(output).toContain('[new]') // elemento nuevo
+    expect(output).toContain('* N') // multiplier
+    expect(output).toContain('? ') // states
+    expect(output).toContain('! ') // priority
+    expect(output).toContain('[ ]') // attributes
+    expect(output).toContain('[locked]') // protected component
+    expect(output).toContain('[new]') // new element
   })
 
-  it('incluye los nuevos operadores de frontend v3.2', () => {
+  it('includes new v3.2 frontend operators', () => {
     const output = execSync('npx tsx src/index.ts context').toString()
 
-    expect(output).toContain('[animate:') // animaciones
-    expect(output).toContain('[hover:') // interacción
-    expect(output).toContain('[a11y:') // accesibilidad
-    expect(output).toContain('Store') // estado global
+    expect(output).toContain('[animate:') // animations
+    expect(output).toContain('[hover:') // interaction
+    expect(output).toContain('[a11y:') // accessibility
+    expect(output).toContain('Store') // global state
   })
 
-
-  it('incluye el DNA del proyecto en el prompt', () => {
+  it('includes project DNA in the prompt', () => {
     const output = execSync('npx tsx src/index.ts context').toString()
 
-    expect(output).toContain('DNA DEL PROYECTO')
+    expect(output).toContain('PROJECT DNA')
     expect(output).toContain('NEXUS_SYSTEM_ONLINE')
   })
 })

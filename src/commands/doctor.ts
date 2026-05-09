@@ -95,9 +95,9 @@ export function doctorCommand(): Command {
         pass(`output: ${config.output}`)
       }
 
-      // 7. Verificar lang
+      // 7. Verify lang
       if (!config.lang) {
-        warn('lang no definido — se usará "en" por defecto')
+        warn('lang not defined — defaulting to "en"')
       } else {
         pass(`lang: ${config.lang}`)
       }

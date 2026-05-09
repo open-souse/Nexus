@@ -74,11 +74,11 @@ describe('nexus doctor', () => {
     expect(output).toContain('no es estándar')
   })
 
-  it('muestra advertencia si lang no está definido', () => {
+  it('shows warning if lang is not defined', () => {
     const { lang: _l, ...withoutLang } = VALID_CONFIG
     writeConfig(withoutLang)
     const { output } = runDoctor()
-    expect(output).toContain('lang no definido')
+    expect(output).toContain('lang not defined')
   })
 
   it('verifica cada token requerido por separado', () => {

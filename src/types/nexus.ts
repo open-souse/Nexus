@@ -13,7 +13,7 @@ export interface NexusTokens {
 }
 
 export interface NexusConfig {
-  lang: 'es' | 'en';
+  lang: 'en';
   modules?: string[];
   framework: string;
   styling: string;
