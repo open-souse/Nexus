@@ -3,6 +3,7 @@ import fs from 'fs-extra'
 import path from 'path'
 import chalk from 'chalk'
 import ora from 'ora'
+import type { NexusConfig } from '../types/nexus.js'
 
 const MODULE_EXAMPLES: Record<string, Record<string, string>> = {
   frontend: {
@@ -49,7 +50,7 @@ Endpoint /api/users
   }
 }
 
-function buildPrompt(config: any): string {
+function buildPrompt(config: Partial<NexusConfig>): string {
   const lang = config.lang || 'es'
   const isEs = lang !== 'en'
   const activeModules = config.modules || ['frontend']
@@ -171,7 +172,7 @@ export function contextCommand(): Command {
 
       try {
         const configPath = path.join(process.cwd(), 'nexus.config.json')
-        let config: any = { lang: 'es', modules: ['frontend'] }
+        let config: Partial<NexusConfig> = { lang: 'es', modules: ['frontend'] }
 
         if (fs.existsSync(configPath)) {
           const content = await fs.readFile(configPath, 'utf8')
@@ -191,8 +192,9 @@ export function contextCommand(): Command {
         console.log(inductionPrompt)
         console.log('\n')
 
-      } catch (error: any) {
-        spinner.fail(chalk.red(`Error: ${error.message}`))
+      } catch (error: unknown) {
+        const msg = error instanceof Error ? error.message : String(error)
+        spinner.fail(chalk.red(`Error: ${msg}`))
       }
     })
 }
