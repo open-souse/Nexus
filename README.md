@@ -85,42 +85,26 @@ Verifica la sintaxis antes de enviársela a la IA.
 
 ---
 
-## 📖 Gramática Maestra (v3.0)
+## 📖 Gramática Maestra (v3.1)
 
-- `@` : Directivas de Entorno / Comportamiento.
-- `#` : Design Tokens (Estilos).
-- `$` : Variables de Intención / App State.
-- `* N` : Multiplicador de elementos.
-- `?` : Gestión de Estados (loading, error, auth).
-- `!` : Prioridad / Peso visual.
-- `->` : Flujo de Navegación / Routing.
-- `=>` : Lógica de Side-Effects / API / Handlers.
-- `<` : Data Binding & Types.
-- `{ }` : Inyección de Contexto Externo.
-- `Page / Layout / Section` : Orquestadores de estructura.
-
----
-
-## Gramática Maestra (v2.6)
-
-| Operador | Significado |
-|---|---|
-| `@` | Directivas de entorno (`@React`, `@CleanCode`) |
-| `#` | Design Tokens / Estilos |
-| `$` | Variables de intención |
-| `* N` | Multiplicador de elementos |
-| `?` | Estados (`?loading`, `?error`) |
-| `!` | Prioridad / Énfasis |
-| `[ ]` | Atributos técnicos |
-| `->` | Flujo de navegación |
-| `=>` | Side-effects / API |
-| `<` | Data binding / Types |
-| `{ }` | Inyección de contexto externo |
-| `( cond ) -> A : B` | Condicional de intención |
-| `@modify [preserve:all]` | Edición segura — solo aplica el cambio indicado |
-| `[new]` + `[inherit:siblings]` | Elemento nuevo que hereda el estilo de sus hermanos |
-| `[position:move-to:N]` | Mueve un elemento sin alterar nada más |
-| `[cascade:children]` | Aplica estilos del padre a todos sus hijos |
+| Operador | Significado | Ejemplo |
+|---|---|---|
+| `@` | Directivas de entorno | `@React`, `@CleanCode` |
+| `#` | Design Tokens / Estilos | `Button #primary #glass` |
+| `$` | Variables Globales / DNA | `$brand: "Nexus"` |
+| `~` | Estado Local / Reactividad | `~isOpen: false`, `~count: 0` |
+| `|` | Adaptabilidad (Responsive) | `Grid [cols:1 \| cols:3]` |
+| `* N` | Multiplicador de elementos | `Card * 3` |
+| `?` | Estados UI | `?loading`, `?error` |
+| `!` | Prioridad / Énfasis | `Text !bold !danger` |
+| `[locked]` | **Componente Protegido** | `Navbar [locked]` |
+| `[ ]` | Atributos técnicos | `Grid [cols:3]` |
+| `->` | Flujo de navegación | `-> /dashboard` |
+| `=>` | Side-effects / API | `=> login()` |
+| `<` | Data binding / Types | `Table < User` |
+| `{ }` | Inyección de contexto | `{ ./UserCard.tsx }` |
+| `( cond ) -> A : B` | Condicional de intención | `( ?auth ) -> Home : Login` |
+| `@modify [preserve:all]` | **Intervención Mínima** | La IA solo entrega el fragmento modificado |
 
 Ver gramática completa en [NEXUS-Grammar.md](./NEXUS-Grammar.md).
 
@@ -130,9 +114,11 @@ Ver gramática completa en [NEXUS-Grammar.md](./NEXUS-Grammar.md).
 
 | Comando | Descripción |
 |---|---|
-| `nexus init` | Inicializa `nexus.config.json` en tu proyecto (interactivo) |
-| `nexus context` | Genera el inductor de lenguaje para la IA |
+| `nexus init` | Inicializa `nexus.config.json` (Soporta módulos: Frontend, Medical, etc.) |
+| `nexus context` | Genera el inductor de lenguaje modular para la IA |
 | `nexus validate <file>` | Valida la sintaxis de un archivo .nexus |
+| `nexus examples list` | Lista ejemplos de blueprints disponibles |
+| `nexus doctor` | Diagnostica el estado de tu configuración |
 | `nexus config set <key> <value>` | Guarda configuración global |
 | `nexus config show` | Muestra la configuración actual |
 

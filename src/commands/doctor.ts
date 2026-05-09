@@ -78,6 +78,13 @@ export function doctorCommand(): Command {
             pass(`tokens.${token}: ${config.tokens[token]}`)
           }
         }
+        
+        // Verificar escalas nuevas
+        if (!config.tokens.scales) {
+          warn('escalas de diseño (scales) no definidas — se recomienda para mejor precisión')
+        } else {
+          pass('escalas de diseño (radius, spacing, shadows) configuradas')
+        }
       }
 
       // 6. Verificar output

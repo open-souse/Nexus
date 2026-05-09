@@ -1,24 +1,32 @@
-/**
- * Estructura del DNA de un proyecto Nexus.
- * Define los estándares que la IA debe seguir al generar código.
- */
 export interface NexusConfig {
-  /** Nombre del proyecto */
-  name?: string;
-  /** Framework de frontend (ej: React, Next.js, Vue) */
+  /** Idioma preferido para la comunicación */
+  lang: 'es' | 'en';
+  /** Módulos activos en el proyecto (ej: frontend, backend, medical) */
+  modules: string[];
+  /** Framework principal (ej: react-ts, next-js) */
   framework: string;
-  /** Librería de estilos (ej: Tailwind, CSS Modules, Styled Components) */
+  /** Sistema de estilos (ej: tailwind, sass) */
   styling: string;
-  /** Paleta de colores principal del proyecto */
-  colors: {
+  /** Directorio de salida para el código generado */
+  output: string;
+  /** Design Tokens (DNA Visual) */
+  tokens: {
     primary: string;
     secondary: string;
-    accent: string;
-    background: string;
-    text: string;
+    danger: string;
+    success: string;
+    font: string;
+    // Escalas de diseño para mayor precisión
+    scales: {
+      radius: 'none' | 'sm' | 'md' | 'lg' | 'full';
+      spacing: 'compact' | 'normal' | 'relaxed';
+      shadows: 'none' | 'soft' | 'strong';
+    }
   };
-  /** Reglas adicionales de diseño (ej: "Utilizar bordes redondeados de 12px") */
-  designRules?: string[];
-  /** Estándares de código (ej: "Usar TypeScript", "Clean Architecture") */
-  codeStandards?: string[];
+  /** Librería de iconos */
+  icons: {
+    library: string;
+  };
+  /** Reglas de arquitectura o estándares de código */
+  standards?: string[];
 }

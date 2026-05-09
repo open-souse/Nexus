@@ -41,16 +41,29 @@ async function runInit(lang: 'es' | 'en') {
       default: lang
     },
     {
+      type: 'checkbox',
+      name: 'modules',
+      message: lang === 'es' ? '¿Qué módulos deseas activar?' : 'Which modules do you want to activate?',
+      choices: [
+        { name: 'Frontend (React/Vue/Next)', value: 'frontend', checked: true },
+        { name: 'Backend (API/DB)', value: 'backend' },
+        { name: 'Diseño (System Tokens)', value: 'design' },
+        { name: 'Medicina (Protocolos)', value: 'medical' }
+      ]
+    },
+    {
       type: 'list',
       name: 'framework',
       message: t.framework,
-      choices: ['react-ts', 'react-js', 'vue-ts', 'vue-js', 'svelte', 'next-ts', 'next-js']
+      choices: ['react-ts', 'react-js', 'vue-ts', 'vue-js', 'svelte', 'next-ts', 'next-js'],
+      when: (a) => a.modules.includes('frontend')
     },
     {
       type: 'list',
       name: 'styling',
       message: t.styling,
-      choices: ['tailwind', 'css-modules', 'styled-components', 'sass', 'none']
+      choices: ['tailwind', 'css-modules', 'styled-components', 'sass', 'none'],
+      when: (a) => a.modules.includes('frontend')
     },
     {
       type: 'input',
@@ -74,7 +87,8 @@ async function runInit(lang: 'es' | 'en') {
       type: 'list',
       name: 'icons',
       message: t.icons,
-      choices: ['lucide-react', 'heroicons', 'react-icons', 'none']
+      choices: ['lucide-react', 'heroicons', 'react-icons', 'none'],
+      when: (a) => a.modules.includes('frontend')
     },
     {
       type: 'input',
@@ -86,8 +100,9 @@ async function runInit(lang: 'es' | 'en') {
 
   const config = {
     lang: answers.lang,
-    framework: answers.framework,
-    styling: answers.styling,
+    modules: answers.modules,
+    framework: answers.framework || 'none',
+    styling: answers.styling || 'none',
     output: answers.output,
     tokens: {
       primary: answers.primary,
@@ -98,8 +113,9 @@ async function runInit(lang: 'es' | 'en') {
       font: "'Inter', sans-serif"
     },
     icons: {
-      library: answers.icons
-    }
+      library: answers.icons || 'none'
+    },
+    standards: ["Clean Code", "Modular Architecture"]
   }
 
   fs.writeFileSync('./nexus.config.json', JSON.stringify(config, null, 2))

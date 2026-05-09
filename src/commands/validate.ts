@@ -33,6 +33,15 @@ function validateNexus(content: string): ValidationError[] {
 
     const trimmed = line.trim()
 
+    // Verificar orquestadores válidos
+    const orchestrators = ['Page', 'Layout', 'Section', 'Protocol', 'Endpoint', 'Type', 'Form', 'Grid', 'Table', 'Card']
+    const firstWord = trimmed.split(' ')[0]
+    
+    // Si empieza por una palabra que parece un componente, verificar si es conocida o directiva
+    if (/^[A-Z]/.test(firstWord) && !orchestrators.includes(firstWord)) {
+      // Es un componente personalizado, se permite pero lanzamos advertencia si es muy extraño
+    }
+
     // Verificar directivas @ bien formadas
     if (trimmed.startsWith('@') && !VALID_DIRECTIVES.test(trimmed.split(' ')[0])) {
       errors.push({

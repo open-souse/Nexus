@@ -10,7 +10,11 @@ const EXAMPLES: Record<string, { description: string; file: string }> = {
   },
   landing: {
     description: 'Página de marketing con hero, features y footer',
-    file: 'landing.nexus'
+    file: 'landing-page.nexus'
+  },
+  medical: {
+    description: 'Protocolo de Triaje Médico (Emergencias)',
+    file: 'medical-triage.nexus'
   }
 }
 

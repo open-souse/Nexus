@@ -1,4 +1,4 @@
-# NEXUS: The AI-Native Language Protocol (v3.0)
+# NEXUS: The AI-Native Language Protocol (v3.1)
 
 NEXUS es el lenguaje de alto nivel diseñado para la comunicación exacta y fluida entre Humanos e IAs. Elimina la ambigüedad del lenguaje natural y permite orquestar aplicaciones completas.
 
@@ -10,25 +10,18 @@ Basado en indentación (2 espacios).
 
 - `@` **Directivas de Comportamiento**: Establece el modo de pensamiento de la IA, el entorno técnico o layouts predefinidos.
   - *Ejemplo:* `@React @CleanCode @Layout:Sidebar`
-- `@modify` **Modo Edición Segura**: Indica que el elemento YA EXISTE. La IA solo aplica los cambios indicados y preserva todo lo demás.
-  - *Ejemplo:* `@modify [preserve:all]` → la IA no toca colores, diseño ni elementos no mencionados.
-  - Opciones: `preserve:all` (todo), `preserve:styles` (solo estilos), `preserve:layout` (solo posiciones).
+- `@modify` **Modo Edición Segura (Intervención Mínima)**: Indica que el elemento YA EXISTE. La IA tiene prohibido reescribir partes no afectadas.
+  - *Ejemplo:* `@modify [preserve:all]` → la IA solo entrega el fragmento modificado.
 - `#` **Design Tokens / Estilos**: Vincula el componente con el sistema de diseño (DNA). Soporta herencia.
-  - *Ejemplo:* `Button #primary #glass`
-- `$` **Variables de Intención / Estado**: Define constantes, parámetros globales o estados de la aplicación.
-  - *Ejemplo:* `$brand: "Nexus"`, `$isLoggedIn: true`
+- `$` **Variables Globales / DNA**: Define constantes o parámetros del sistema.
+- `~` **Estado Local / Reactividad**: Define variables que cambian durante la sesión (useState/Signals).
+- `|` **Adaptabilidad (Responsive)**: Define variaciones según el tamaño de pantalla.
 - `* N` **Multiplicador**: Indica repetición de estructuras con variación de datos automática.
-  - *Ejemplo:* `Card * 3`
 - `?` **Estados de UI**: Define variantes visuales o lógicas basadas en el estado.
-  - *Ejemplo:* `Button ?loading`, `Container ?auth`
 - `!` **Prioridad / Énfasis**: Indica peso visual o importancia crítica.
-  - *Ejemplo:* `Text !bold !danger`
-- `[new]` **Elemento Nuevo**: Marca un elemento como recién añadido dentro de un `@modify`. La IA solo crea este elemento, sin tocar los demás.
-- `[inherit:siblings]` **Herencia de Hermanos**: El elemento nuevo adopta el estilo visual de sus hermanos existentes.
-- `[position:move-to:N]` **Mover Posición**: Reubica el elemento en la posición N sin alterar su diseño.
-- `[cascade:children]` **Cascada de Estilos**: Aplica el estilo del padre a todos sus hijos automáticamente.
+- `[new]` **Elemento Nuevo**: Marca un elemento como recién añadido.
+- `[locked]` **Componente Protegido**: Prohíbe a la IA alterar o regenerar este componente.
 - `[` `]` **Atributos Técnicos**: Pasa parámetros de configuración (props).
-  - *Ejemplo:* `Grid [cols:3]`
 - `( cond ) -> A : B` **Condicional de Intención**: Define ramas de visualización lógica.
 - `->` **Flujo de Navegación / Routing**: Indica un cambio de ubicación o de ruta.
 - `=>` **Lógica de Side-Effects / Handlers**: Acciones asíncronas o procesamiento de datos.
