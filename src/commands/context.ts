@@ -47,6 +47,42 @@ Endpoint /api/users
   Auth [mode:jwt, role:admin]
   Method GET -> Service.findUsers()
   Response 200 < User * N`
+  },
+  testing: {
+    es: `
+// Ejemplo Testing: Test de componente
+Test UserTable [framework:vitest, type:unit]
+  renders: correctly, empty-data, loading-state
+  handles: sort-by-column, pagination, row-click
+  asserts: row-count=10, format-numbers-comma
+  mocks: useUsers, fetch
+
+// Ejemplo Testing: Suite agrupada
+Suite "Auth Flow" [framework:vitest]
+  Test LoginForm
+    renders: default, error-state, loading
+    handles: submit, invalid-email
+    mocks: authService
+  Test AuthGuard
+    handles: redirect-unauthenticated
+    asserts: redirectTo=/login`,
+    en: `
+// Testing Example: Component test
+Test UserTable [framework:vitest, type:unit]
+  renders: correctly, empty-data, loading-state
+  handles: sort-by-column, pagination, row-click
+  asserts: row-count=10, format-numbers-comma
+  mocks: useUsers, fetch
+
+// Testing Example: Grouped suite
+Suite "Auth Flow" [framework:vitest]
+  Test LoginForm
+    renders: default, error-state, loading
+    handles: submit, invalid-email
+    mocks: authService
+  Test AuthGuard
+    handles: redirect-unauthenticated
+    asserts: redirectTo=/login`
   }
 }
 
@@ -64,6 +100,10 @@ function buildPrompt(config: Partial<NexusConfig>): string {
     }
     if (mod === 'medical' && !orchestrators.includes('Protocol')) orchestrators.push('Protocol')
     if (mod === 'backend' && !orchestrators.includes('Endpoint')) orchestrators.push('Endpoint')
+    if (mod === 'testing' && !orchestrators.includes('Test')) {
+      orchestrators.push('Test')
+      orchestrators.push('Suite')
+    }
   })
 
   const orchList = orchestrators.join(' / ')
@@ -95,7 +135,14 @@ GRAMÁTICA MAESTRA (v3.2):
 - < : Data Binding / Types.
 - { path } : Inyección de código externo.
 - ${orchList} : Orquestadores.
-- Store NombreStore { ~estado Action Selector } : Estado global (Zustand/Redux/Pinia).`.trim()
+- Store NombreStore { ~estado Action Selector } : Estado global (Zustand/Redux/Pinia).${activeModules.includes('testing') ? `
+- Test NombreComponente [framework:vitest|jest|cypress, type:unit|integration|e2e] : Define un bloque de test.
+- Suite "Nombre" { } : Agrupa varios Test relacionados.
+- renders: estado1, estado2 : Casos de renderizado a cubrir.
+- handles: evento1, evento2 : Interacciones/eventos a testear.
+- asserts: condicion1, condicion2 : Aserciones específicas (ej: count=10, redirectTo=/login).
+- mocks: dep1, dep2 : Dependencias a mockear.
+- snapshot: true : Genera test de snapshot.` : ''}`.trim()
 
   const grammar_en = `
 MASTER GRAMMAR (v3.2):
@@ -124,7 +171,14 @@ MASTER GRAMMAR (v3.2):
 - < : Data binding / Types.
 - { path } : External code injection.
 - ${orchList} : Orchestrators.
-- Store StoreName { ~state Action Selector } : Global state store (Zustand/Redux/Pinia).`.trim()
+- Store StoreName { ~state Action Selector } : Global state store (Zustand/Redux/Pinia).${activeModules.includes('testing') ? `
+- Test ComponentName [framework:vitest|jest|cypress, type:unit|integration|e2e] : Define a test block.
+- Suite "Name" { } : Group multiple related Tests.
+- renders: state1, state2 : Render cases to cover.
+- handles: event1, event2 : Interactions/events to test.
+- asserts: condition1, condition2 : Specific assertions (e.g. count=10, redirectTo=/login).
+- mocks: dep1, dep2 : Dependencies to mock.
+- snapshot: true : Generate snapshot test.` : ''}`.trim()
 
   if (isEs) {
     return `

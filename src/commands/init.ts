@@ -47,6 +47,7 @@ async function runInit(lang: 'es' | 'en') {
       choices: [
         { name: 'Frontend (React/Vue/Next)', value: 'frontend', checked: true },
         { name: 'Backend (API/DB)', value: 'backend' },
+        { name: 'Testing (Vitest/Jest/Cypress)', value: 'testing' },
         { name: 'Diseño (System Tokens)', value: 'design' },
         { name: 'Medicina (Protocolos)', value: 'medical' }
       ]
