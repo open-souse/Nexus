@@ -111,12 +111,6 @@ function validateNexus(content: string): ValidationError[] {
       })
     }
 
-    // Store: debe tener nombre y abrir bloque con { en la misma línea o en la siguiente
-    if (/^Store\s+\S/.test(trimmed) && !trimmed.includes('{') && !trimmed.endsWith('{')) {
-      // Solo advertimos si la línea termina sin { — podría ser en la siguiente línea
-      // No es un error bloqueante, solo guía al usuario
-    }
-
     // [animate: ...] — el valor no puede estar vacío
     const animateMatch = trimmed.match(/\[animate:\s*([^\],]*)\]/)
     if (animateMatch && !animateMatch[1].trim()) {

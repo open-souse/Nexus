@@ -52,6 +52,7 @@ describe('nexus context', () => {
     expect(output).toContain('Store') // estado global
   })
 
+
   it('incluye el DNA del proyecto en el prompt', () => {
     const output = execSync('npx tsx src/index.ts context').toString()
 
