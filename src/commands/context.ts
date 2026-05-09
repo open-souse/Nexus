@@ -215,8 +215,9 @@ export function contextCommand(): Command {
         console.log(inductionPrompt)
         console.log('\n')
 
-      } catch (error: any) {
-        spinner.fail(chalk.red(`Error: ${error.message}`))
+      } catch (error: unknown) {
+        const msg = error instanceof Error ? error.message : String(error)
+        spinner.fail(chalk.red(`Error: ${msg}`))
       }
     })
 }

@@ -2,6 +2,7 @@ import { Command } from 'commander'
 import fs from 'fs-extra'
 import path from 'path'
 import chalk from 'chalk'
+import type { NexusConfig } from '../types/nexus.js'
 
 const REQUIRED_TOKENS = ['primary', 'secondary', 'danger']
 const VALID_FRAMEWORKS = ['react-ts', 'react-js', 'vue-ts', 'vue-js', 'svelte', 'next-ts', 'next-js']
@@ -37,9 +38,9 @@ export function doctorCommand(): Command {
       pass('nexus.config.json encontrado')
 
       // 2. Verificar que es JSON válido
-      let config: any
+      let config: NexusConfig
       try {
-        config = fs.readJsonSync(configPath)
+        config = fs.readJsonSync(configPath) as NexusConfig
         pass('nexus.config.json es JSON válido')
       } catch {
         fail('nexus.config.json tiene errores de sintaxis JSON')
