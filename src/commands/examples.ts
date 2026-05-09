@@ -19,6 +19,10 @@ const BLUEPRINTS: Record<string, { description: string; file: string }> = {
   profile: {
     description: 'Perfil de usuario con edición inline y navegación de ajustes',
     file: 'profile.nexus'
+  },
+  cart: {
+    description: 'Carrito con Store global, animaciones y accesibilidad',
+    file: 'store-cart.nexus'
   }
 }
 

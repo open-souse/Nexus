@@ -111,6 +111,30 @@ function validateNexus(content: string): ValidationError[] {
       })
     }
 
+    // Store: debe tener nombre y abrir bloque con { en la misma línea o en la siguiente
+    if (/^Store\s+\S/.test(trimmed) && !trimmed.includes('{') && !trimmed.endsWith('{')) {
+      // Solo advertimos si la línea termina sin { — podría ser en la siguiente línea
+      // No es un error bloqueante, solo guía al usuario
+    }
+
+    // [animate: ...] — el valor no puede estar vacío
+    const animateMatch = trimmed.match(/\[animate:\s*([^\],]*)\]/)
+    if (animateMatch && !animateMatch[1].trim()) {
+      errors.push({
+        line: lineNumber,
+        message: '"[animate:]" sin valor. Ejemplo: [animate: fade-in, duration: 200ms]'
+      })
+    }
+
+    // [a11y: ...] — el valor no puede estar vacío
+    const a11yMatch = trimmed.match(/\[a11y:\s*([^\]]*)\]/)
+    if (a11yMatch && !a11yMatch[1].trim()) {
+      errors.push({
+        line: lineNumber,
+        message: '"[a11y:]" sin atributos. Ejemplo: [a11y: aria-label="Cerrar"]'
+      })
+    }
+
     // { } — balance acumulado a través de todo el archivo
     // Soporta bloques multi-línea: Type User { \n ... \n }
     for (const ch of trimmed) {

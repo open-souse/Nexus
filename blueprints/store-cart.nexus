@@ -1,0 +1,57 @@
+@React @Tailwind @LucideIcons
+
+// Store de carrito — estado global accesible desde cualquier componente
+Store CartStore {
+  ~items: []
+  ~isOpen: false
+  Action addItem < Product => ~items: [...~items, $item]
+  Action removeItem [id: string] => ~items: ~items.filter(id)
+  Action clearCart => ~items: []
+  Action toggleDrawer => ~isOpen: !~isOpen
+  Selector isEmpty: ~items.length === 0
+  Selector itemCount: ~items.length
+  Selector total: ~items.reduce(price, 0)
+}
+
+// Botón en el header que abre el carrito
+Button [a11y: aria-label="Abrir carrito"] [hover: scale-105]
+  Icon "ShoppingCart"
+  Badge < CartStore.itemCount ?zero:hidden
+
+// Drawer lateral del carrito
+Drawer #right ~open:CartStore.isOpen
+  [animate: slide-left, duration: 250ms]
+  [a11y: role="dialog", aria-label="Carrito de compras", aria-modal="true"]
+
+  Header #flex #justify-between #p-4
+    Text "Tu carrito" !bold
+    Button "×" [a11y: aria-label="Cerrar carrito"] => CartStore.toggleDrawer()
+
+  ( CartStore.isEmpty ) ->
+    Section #flex #flex-col #items-center #py-16
+      Icon "ShoppingBag" #text-gray-300 [size: 64]
+      Text "Tu carrito está vacío" #text-gray-500 #mt-4
+      Button "Ver productos" #primary #mt-6 -> /productos
+  :
+    Stack
+      List [animate: stagger, children: fade-in, delay: 30ms]
+        [a11y: aria-label="Productos en el carrito"]
+        Item * N < CartStore.items
+          [hover: bg-gray-50]
+          Image < item.image [a11y: alt=$item.name]
+          Stack
+            Text $item.name !bold
+            Text $item.price #text-primary
+          Button "×" #ghost [a11y: aria-label="Eliminar $item.name"]
+            => CartStore.removeItem($item.id)
+
+      Footer #border-t #p-4
+        Group #flex #justify-between #mb-4
+          Text "Total" !bold
+          Text < CartStore.total !bold #text-primary
+        Button "Finalizar compra" #primary #w-full
+          [animate: pulse, trigger: hover]
+          [a11y: aria-label="Proceder al checkout"]
+          => API.post(/orders) -> /checkout
+        Button "Vaciar carrito" #ghost #w-full #mt-2
+          => CartStore.clearCart()
