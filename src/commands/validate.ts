@@ -14,6 +14,13 @@ function validateNexus(content: string): ValidationError[] {
   const errors: ValidationError[] = []
   const lines = content.split('\n')
 
+  // Contadores de estado global para llaves y corchetes
+  // (soportan bloques multi-línea como Type User { ... })
+  let braceDepth = 0
+  let bracketDepth = 0
+  let braceOpenLine = 0
+  let bracketOpenLine = 0
+
   lines.forEach((raw, index) => {
     const lineNumber = index + 1
     const line = raw.trimEnd()
@@ -104,26 +111,43 @@ function validateNexus(content: string): ValidationError[] {
       })
     }
 
-    // { } inyección de contexto: las llaves deben estar balanceadas por línea
-    const openBraces = (trimmed.match(/\{/g) || []).length
-    const closeBraces = (trimmed.match(/\}/g) || []).length
-    if (openBraces !== closeBraces) {
-      errors.push({
-        line: lineNumber,
-        message: `Llaves sin cerrar. Cada "{" debe cerrarse con "}".`
-      })
+    // { } — balance acumulado a través de todo el archivo
+    // Soporta bloques multi-línea: Type User { \n ... \n }
+    for (const ch of trimmed) {
+      if (ch === '{') {
+        if (braceDepth === 0) braceOpenLine = lineNumber
+        braceDepth++
+      } else if (ch === '}') {
+        braceDepth--
+        if (braceDepth < 0) {
+          errors.push({ line: lineNumber, message: '"}" sin "{" correspondiente.' })
+          braceDepth = 0
+        }
+      }
     }
 
-    // [ ] atributos: los corchetes deben estar balanceados por línea
-    const openBrackets = (trimmed.match(/\[/g) || []).length
-    const closeBrackets = (trimmed.match(/\]/g) || []).length
-    if (openBrackets !== closeBrackets) {
-      errors.push({
-        line: lineNumber,
-        message: `Corchetes sin cerrar. Cada "[" debe cerrarse con "]".`
-      })
+    // [ ] — balance acumulado a través de todo el archivo
+    for (const ch of trimmed) {
+      if (ch === '[') {
+        if (bracketDepth === 0) bracketOpenLine = lineNumber
+        bracketDepth++
+      } else if (ch === ']') {
+        bracketDepth--
+        if (bracketDepth < 0) {
+          errors.push({ line: lineNumber, message: '"]" sin "[" correspondiente.' })
+          bracketDepth = 0
+        }
+      }
     }
   })
+
+  // Verificar que al final del archivo los balances sean cero
+  if (braceDepth > 0) {
+    errors.push({ line: braceOpenLine, message: `"{" sin cerrar (${braceDepth} sin cerrar al final del archivo).` })
+  }
+  if (bracketDepth > 0) {
+    errors.push({ line: bracketOpenLine, message: `"[" sin cerrar (${bracketDepth} sin cerrar al final del archivo).` })
+  }
 
   return errors
 }

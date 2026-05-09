@@ -5,10 +5,16 @@ export interface NexusTokens {
   success: string;
   radius: string;
   font: string;
+  scales?: {
+    radius: 'none' | 'sm' | 'md' | 'lg' | 'full';
+    spacing: 'compact' | 'normal' | 'relaxed';
+    shadows: 'none' | 'soft' | 'strong';
+  };
 }
 
 export interface NexusConfig {
   lang: 'es' | 'en';
+  modules?: string[];
   framework: string;
   styling: string;
   output: string;

@@ -5,22 +5,23 @@ Page Dashboard
 
   // Estructura de Layout Compleja
   Layout SidebarMain
-    Sidebar #dark
+    Sidebar #dark [ ~collapsed: false ] | [ hidden: ?collapsed ]
+      Button "Toggle" => ~collapsed: !~collapsed
       NavGroup "MAIN"
         NavItem "Overview" #active -> /dash
         NavItem "Analytics" -> /dash/stats
         NavItem "Settings" -> /dash/settings
     
-    MainContent #bg-slate-50
+    MainContent #bg-slate-50 | #w-full
       Header #white #shadow-sm
         Breadcrumbs "Home > Dashboard"
         UserMenu < { ./components/UserMenu.tsx }
       
       // Contenido Dinámico con Condicionales
-      Container #p-8
+      Container #p-4 | #p-8
         ( ?loading ) -> SkeletonDashboard : GridStats
         
-        GridStats [cols:4] #gap-6
+        GridStats [cols:1 | cols:4] #gap-6
           StatCard #elevated * 4 < [
             "Users: 1,240 | +12%",
             "Revenue: $12.5k | +5%",

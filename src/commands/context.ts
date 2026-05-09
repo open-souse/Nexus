@@ -3,139 +3,140 @@ import fs from 'fs-extra'
 import path from 'path'
 import chalk from 'chalk'
 import ora from 'ora'
+import type { NexusConfig } from '../types/nexus.js'
 
-const EXAMPLES_ES = `
-EJEMPLOS DE REFERENCIA:
-
-// Ejemplo 1: Card simple
-@React #Tailwind
+const MODULE_EXAMPLES: Record<string, Record<string, string>> = {
+  frontend: {
+    es: `
+// Ejemplo Frontend: Card con lógica
 Card #glass
   Text "Título" !bold
-  Text "Descripción del contenido"
-  Button "Ver más" #primary -> /detalle
-
-// Ejemplo 2: Formulario de login
-Form "login"
-  field email    type:email    required
-  field password type:password required
-  Button "Ingresar" #primary => API.post(/auth) -> /dashboard
-  ( ?error ) -> Text "Credenciales inválidas" !danger : null
-
-// Ejemplo 3: Dashboard con stats
-Page Dashboard
-  Header #fixed
-    Logo "MiApp" -> /
-    UserMenu < { ./UserMenu.tsx }
-
-  Grid [cols:3]
-    StatCard #elevated * 3 < ["Ventas: $12k", "Usuarios: 500", "Tareas: 8"]
-
-  Section "Actividad Reciente"
-    Table #striped ?loading
-      Row * 5 < User
-
-// Ejemplo 4: Mover un elemento existente sin reinterpretar nada
-@modify [preserve:all]
-Card "resumen-credito" [position:move-to:1]
-
-// Ejemplo 5: Agregar elemento nuevo heredando estilo de hermanos
-@modify [preserve:all]
-Form "login"
-  Captcha [new, inherit:siblings]
-
-// Ejemplo 6: Sombras en cascada padre-hijo (efecto flotante)
-Section "hero" [shadow:elevated, cascade:children]
-  Card * 3 [shadow:inherit]
-`.trim()
-
-const EXAMPLES_EN = `
-REFERENCE EXAMPLES:
-
-// Example 1: Simple card
-@React #Tailwind
+  Button "Ver más" #primary -> /detalle`,
+    en: `
+// Frontend Example: Card with logic
 Card #glass
   Text "Title" !bold
-  Text "Content description"
-  Button "View more" #primary -> /detail
+  Button "View more" #primary -> /detail`
+  },
+  medical: {
+    es: `
+// Ejemplo Medicina: Protocolo de Triaje
+Protocol Triaje
+  Check "Signos Vitales"
+    Field frecuencia_cardiaca type:number
+    Field saturación type:percent !critical
+  Action "Asignar Nivel" => calcularTriaje() -> /registro-paciente`,
+    en: `
+// Medical Example: Triage Protocol
+Protocol Triage
+  Check "Vital Signs"
+    Field heart_rate type:number
+    Field saturation type:percent !critical
+  Action "Assign Level" => calculateTriage() -> /patient-registration`
+  },
+  backend: {
+    es: `
+// Ejemplo Backend: Endpoint de API
+Endpoint /api/users
+  Auth [mode:jwt, role:admin]
+  Method GET -> Service.findUsers()
+  Response 200 < User * N`,
+    en: `
+// Backend Example: API Endpoint
+Endpoint /api/users
+  Auth [mode:jwt, role:admin]
+  Method GET -> Service.findUsers()
+  Response 200 < User * N`
+  }
+}
 
-// Example 2: Login form
-Form "login"
-  field email    type:email    required
-  field password type:password required
-  Button "Login" #primary => API.post(/auth) -> /dashboard
-  ( ?error ) -> Text "Invalid credentials" !danger : null
-
-// Example 3: Dashboard with stats
-Page Dashboard
-  Header #fixed
-    Logo "MyApp" -> /
-    UserMenu < { ./UserMenu.tsx }
-
-  Grid [cols:3]
-    StatCard #elevated * 3 < ["Sales: $12k", "Users: 500", "Tasks: 8"]
-
-  Section "Recent Activity"
-    Table #striped ?loading
-      Row * 5 < User
-
-// Example 4: Move an existing element without changing anything else
-@modify [preserve:all]
-Card "credit-summary" [position:move-to:1]
-
-// Example 5: Add a new element inheriting sibling styles
-@modify [preserve:all]
-Form "login"
-  Captcha [new, inherit:siblings]
-
-// Example 6: Cascading shadows parent-to-children (floating effect)
-Section "hero" [shadow:elevated, cascade:children]
-  Card * 3 [shadow:inherit]
-`.trim()
-
-function buildPrompt(lang: string, dna: string): string {
+function buildPrompt(config: Partial<NexusConfig>): string {
+  const lang = config.lang || 'es'
   const isEs = lang !== 'en'
-  const examples = isEs ? EXAMPLES_ES : EXAMPLES_EN
+  const activeModules = config.modules || ['frontend']
+  
+  let dynamicExamples = isEs ? 'EJEMPLOS DE REFERENCIA:\n' : 'REFERENCE EXAMPLES:\n'
+  let orchestrators = ['Page', 'Layout', 'Section']
 
-  if (isEs) {
-    return `
-[NEXUS LANGUAGE INDUCTION]
-A partir de ahora, eres un Intérprete Nativo de NEXUS v3.0.
-No necesitas instrucciones en lenguaje humano. Solo procesa el código NEXUS que te envíe.
+  activeModules.forEach((mod: string) => {
+    if (MODULE_EXAMPLES[mod]) {
+      dynamicExamples += MODULE_EXAMPLES[mod][isEs ? 'es' : 'en'] + '\n'
+    }
+    // Añadir orquestadores específicos por módulo si existen
+    if (mod === 'medical' && !orchestrators.includes('Protocol')) orchestrators.push('Protocol')
+    if (mod === 'backend' && !orchestrators.includes('Endpoint')) orchestrators.push('Endpoint')
+  })
 
-GRAMÁTICA MAESTRA (v3.0):
+  const orchList = orchestrators.join(' / ')
+
+  const grammar_es = `
+GRAMÁTICA MAESTRA (v3.1):
 - Jerarquía: Sangría de 2 espacios.
 - @ : Directivas (ej: @React, @CleanCode, @Layout).
-- @modify [preserve:all] : Modo edición segura. El elemento YA EXISTE. Solo aplica los cambios indicados, NO toques colores, diseño ni elementos no mencionados.
-  - preserve:all → no cambies absolutamente nada más.
-  - preserve:styles → preserva solo los estilos.
-  - preserve:layout → preserva solo las posiciones.
+- @modify [preserve:all] : Modo edición segura. Solo entrega el fragmento modificado.
 - # : Estilos/Tokens (Soporta herencia).
-- $ : Variables de Intención / App State.
+- $ : Variables Globales / DNA.
+- ~ : Estado Local / Reactividad.
+- | : Adaptabilidad / Responsive.
 - * N : Multiplicador de elementos.
 - ? : Estados (loading, error, auth).
 - ! : Prioridad/Peso visual.
 - [ ] : Atributos técnicos / Props.
-- [new] : Marca un elemento como recién añadido. Solo créalo, no toques los demás.
-- [inherit:siblings] : El elemento nuevo adopta el estilo visual de sus hermanos (colores, fuentes, bordes, sombras).
-- [position:move-to:N] : Mueve el elemento a la posición N sin alterar su diseño ni el de los demás.
-- [cascade:children] : Aplica el estilo del padre a todos sus hijos automáticamente.
-- ( cond ) -> A : B : Condicional (ej: ( ?isAuth ) -> Dash : Login).
+- [new] : Marca un elemento como recién añadido.
+- [locked] : El elemento está PROTEGIDO. Prohibido modificarlo o regenerarlo.
+- [inherit:siblings] : Adopta el estilo de sus hermanos.
+- [position:move-to:N] : Mueve el elemento a la posición N.
+- [cascade:children] : Aplica el estilo del padre a los hijos.
+- ( cond ) -> A : B : Condicional.
 - -> : Flujo de Navegación / Routing.
 - => : Lógica de Side-Effects / API / Handlers.
-- < : Data Binding / Types (ej: List < User * 5).
+- < : Data Binding / Types.
 - { path } : Inyección de código externo.
-- Page / Layout / Section : Orquestadores de estructura.
+- ${orchList} : Orquestadores.`.trim()
+
+  const grammar_en = `
+MASTER GRAMMAR (v3.1):
+- Hierarchy: 2-space indentation.
+- @ : Directives (e.g. @React, @CleanCode).
+- @modify [preserve:all] : Safe edit mode. Only return the modified fragment.
+- # : Design Tokens / Styles (supports inheritance).
+- $ : Global Variables / DNA.
+- ~ : Local State / Reactivity.
+- | : Adaptability / Responsive.
+- * N : Element multiplier.
+- ? : States (loading, error, auth).
+- ! : Priority/Visual weight.
+- [ ] : Technical attributes / Props.
+- [new] : Marks an element as newly added.
+- [locked] : Element is PROTECTED. Forbidden to modify or regenerate it.
+- [inherit:siblings] : Adopts sibling styles.
+- [position:move-to:N] : Moves element to position N.
+- [cascade:children] : Applies parent styles to children.
+- ( cond ) -> A : B : Conditional.
+- -> : Navigation flow / Routing.
+- => : Side-effects / API logic / Handlers.
+- < : Data binding / Types.
+- { path } : External code injection.
+- ${orchList} : Orchestrators.`.trim()
+
+  if (isEs) {
+    return `
+[NEXUS LANGUAGE INDUCTION]
+A partir de ahora, eres un Intérprete Nativo de NEXUS v3.1.
+No necesitas instrucciones en lenguaje humano. Solo procesa el código NEXUS que te envíe.
+
+${grammar_es}
 
 REGLA CRÍTICA DE @modify:
-Cuando veas @modify [preserve:all], SOLO ejecuta el cambio explícito. No reinterpretes el diseño, no cambies colores, no muevas otros elementos, no rediseñes nada que no esté marcado con [new] o indicado explícitamente.
+Cuando veas @modify [preserve:all], SOLO ejecuta el cambio explícito. No reinterpretes el diseño, no cambies colores, no muevas otros elementos.
 
-${examples}
+${dynamicExamples}
 
 DNA DEL PROYECTO (Contexto Global):
-${dna}
+${JSON.stringify(config, null, 2)}
 
 REGLA DE ORO:
-Cuando recibas un bloque NEXUS, genera el código correspondiente de forma premium, limpia y responsive siguiendo el DNA. Si es un componente, usa export default. Si es una Page, usa la estructura de carpetas estándar. No des explicaciones, solo entrega el código.
+Genera código premium, limpio y responsive siguiendo el DNA. No des explicaciones, solo entrega el código.
 
 ¿LISTO? Responde: "NEXUS_SYSTEM_ONLINE"
     `.trim()
@@ -143,43 +144,21 @@ Cuando recibas un bloque NEXUS, genera el código correspondiente de forma premi
 
   return `
 [NEXUS LANGUAGE INDUCTION]
-From now on, you are a Native Interpreter of NEXUS v3.0.
+From now on, you are a Native Interpreter of NEXUS v3.1.
 You don't need natural language instructions. Just process the NEXUS code I send you.
 
-MASTER GRAMMAR (v3.0):
-- Hierarchy: 2-space indentation.
-- @ : Directives (e.g. @React, @CleanCode, @Layout).
-- @modify [preserve:all] : Safe edit mode. The element ALREADY EXISTS. Only apply the indicated changes, do NOT touch colors, design or unmentioned elements.
-  - preserve:all → don't change anything else.
-  - preserve:styles → preserve styles only.
-  - preserve:layout → preserve positions only.
-- # : Design Tokens / Styles (supports inheritance).
-- $ : Intention Variables / App State.
-- * N : Element multiplier.
-- ? : States (loading, error, auth).
-- ! : Priority/Visual weight.
-- [ ] : Technical attributes / Props.
-- [new] : Marks an element as newly added. Only create it, don't touch the others.
-- [inherit:siblings] : The new element adopts the visual style of its siblings (colors, fonts, borders, shadows).
-- [position:move-to:N] : Moves the element to position N without altering its design or others.
-- [cascade:children] : Applies parent styles to all children automatically.
-- ( cond ) -> A : B : Conditional (e.g. ( ?isAuth ) -> Dash : Login).
-- -> : Navigation flow / Routing.
-- => : Side-effects / API logic / Handlers.
-- < : Data binding / Types (e.g. List < User * 5).
-- { path } : External code injection.
-- Page / Layout / Section : Structure orchestrators.
+${grammar_en}
 
 CRITICAL RULE FOR @modify:
-When you see @modify [preserve:all], ONLY execute the explicit change. Do not reinterpret the design, don't change colors, don't move other elements, don't redesign anything not marked with [new] or explicitly stated.
+When you see @modify [preserve:all], ONLY execute the explicit change. Do not reinterpret the design, don't change colors, don't move other elements.
 
-${examples}
+${dynamicExamples}
 
 PROJECT DNA (Global Context):
-${dna}
+${JSON.stringify(config, null, 2)}
 
 GOLDEN RULE:
-When you receive a NEXUS block, generate the corresponding code in a premium, clean and responsive way following the DNA. If it's a component, use export default. If it's a Page, use standard folder structure. No explanations, just deliver the code.
+Generate premium, clean and responsive code following the DNA. No explanations, just deliver the code.
 
 READY? Respond: "NEXUS_SYSTEM_ONLINE"
   `.trim()
@@ -193,19 +172,17 @@ export function contextCommand(): Command {
 
       try {
         const configPath = path.join(process.cwd(), 'nexus.config.json')
-        let dna = '{}'
-        let lang = 'es'
+        let config: Partial<NexusConfig> = { lang: 'es', modules: ['frontend'] }
 
         if (fs.existsSync(configPath)) {
-          dna = await fs.readFile(configPath, 'utf8')
+          const content = await fs.readFile(configPath, 'utf8')
           try {
-            const parsed = JSON.parse(dna)
-            if (parsed.lang) lang = parsed.lang
-          } catch { /* usa lang por defecto */ }
+            config = JSON.parse(content)
+          } catch { /* usa por defecto */ }
         }
 
-        const inductionPrompt = buildPrompt(lang, dna)
-        const isEs = lang !== 'en'
+        const inductionPrompt = buildPrompt(config)
+        const isEs = config.lang !== 'en'
 
         spinner.succeed(chalk.green(isEs ? '¡Inductor de Lenguaje generado!' : 'Language Inductor generated!'))
         console.log(chalk.cyan(isEs

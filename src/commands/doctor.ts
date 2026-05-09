@@ -2,9 +2,9 @@ import { Command } from 'commander'
 import fs from 'fs-extra'
 import path from 'path'
 import chalk from 'chalk'
-import type { NexusConfig } from '../types/nexus.js'
+import type { NexusConfig, NexusTokens } from '../types/nexus.js'
 
-const REQUIRED_TOKENS = ['primary', 'secondary', 'danger']
+const REQUIRED_TOKENS = ['primary', 'secondary', 'danger'] as const satisfies ReadonlyArray<keyof NexusTokens>
 const VALID_FRAMEWORKS = ['react-ts', 'react-js', 'vue-ts', 'vue-js', 'svelte', 'next-ts', 'next-js']
 const VALID_STYLING = ['tailwind', 'css-modules', 'styled-components', 'sass', 'none']
 
@@ -78,6 +78,13 @@ export function doctorCommand(): Command {
           } else {
             pass(`tokens.${token}: ${config.tokens[token]}`)
           }
+        }
+        
+        // Verificar escalas nuevas
+        if (!config.tokens.scales) {
+          warn('escalas de diseño (scales) no definidas — se recomienda para mejor precisión')
+        } else {
+          pass('escalas de diseño (radius, spacing, shadows) configuradas')
         }
       }
 

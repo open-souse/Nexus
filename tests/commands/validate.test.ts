@@ -146,16 +146,21 @@ describe('nexus validate — errores de operadores', () => {
     expect(output).toContain('"<" sin tipo definido')
   })
 
-  it('detecta { sin cerrar }', () => {
+  it('detecta { sin cerrar } (al final del archivo)', () => {
     const { ok, output } = run('UserMenu < { ./Menu.tsx')
     expect(ok).toBe(false)
-    expect(output).toContain('Llaves sin cerrar')
+    expect(output).toContain('sin cerrar')
   })
 
-  it('detecta [ sin cerrar ]', () => {
+  it('detecta [ sin cerrar ] (al final del archivo)', () => {
     const { ok, output } = run('Grid [cols:3')
     expect(ok).toBe(false)
-    expect(output).toContain('Corchetes sin cerrar')
+    expect(output).toContain('sin cerrar')
+  })
+
+  it('acepta bloques multi-línea con llaves', () => {
+    const { ok } = run('Type User {\n  name: string\n  role: string\n}')
+    expect(ok).toBe(true)
   })
 
   it('detecta token # inválido', () => {
