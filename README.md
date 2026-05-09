@@ -125,9 +125,6 @@ Verifica la sintaxis antes de enviársela a la IA.
 Ver gramática completa en [NEXUS-Grammar.md](./NEXUS-Grammar.md).
 
 ---
-<<<<<<< HEAD
-Desarrollado con ❤️ por **2026 Ventures SAS**
-=======
 
 ## Comandos CLI
 
