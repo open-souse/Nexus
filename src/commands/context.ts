@@ -56,13 +56,12 @@ function buildPrompt(config: Partial<NexusConfig>): string {
   const activeModules = config.modules || ['frontend']
   
   let dynamicExamples = isEs ? 'EJEMPLOS DE REFERENCIA:\n' : 'REFERENCE EXAMPLES:\n'
-  let orchestrators = ['Page', 'Layout', 'Section']
+  const orchestrators = ['Page', 'Layout', 'Section', 'Store', 'Type']
 
   activeModules.forEach((mod: string) => {
     if (MODULE_EXAMPLES[mod]) {
       dynamicExamples += MODULE_EXAMPLES[mod][isEs ? 'es' : 'en'] + '\n'
     }
-    // Añadir orquestadores específicos por módulo si existen
     if (mod === 'medical' && !orchestrators.includes('Protocol')) orchestrators.push('Protocol')
     if (mod === 'backend' && !orchestrators.includes('Endpoint')) orchestrators.push('Endpoint')
   })
@@ -70,13 +69,13 @@ function buildPrompt(config: Partial<NexusConfig>): string {
   const orchList = orchestrators.join(' / ')
 
   const grammar_es = `
-GRAMÁTICA MAESTRA (v3.1):
+GRAMÁTICA MAESTRA (v3.2):
 - Jerarquía: Sangría de 2 espacios.
 - @ : Directivas (ej: @React, @CleanCode, @Layout).
 - @modify [preserve:all] : Modo edición segura. Solo entrega el fragmento modificado.
 - # : Estilos/Tokens (Soporta herencia).
 - $ : Variables Globales / DNA.
-- ~ : Estado Local / Reactividad.
+- ~ : Estado Local / Reactividad (useState/Signals).
 - | : Adaptabilidad / Responsive.
 - * N : Multiplicador de elementos.
 - ? : Estados (loading, error, auth).
@@ -87,21 +86,25 @@ GRAMÁTICA MAESTRA (v3.1):
 - [inherit:siblings] : Adopta el estilo de sus hermanos.
 - [position:move-to:N] : Mueve el elemento a la posición N.
 - [cascade:children] : Aplica el estilo del padre a los hijos.
+- [animate: tipo, duration: Xms] : Animación de entrada/salida (ej: fade-in, slide-up, stagger).
+- [hover: ...] : Estilos o comportamiento en hover/focus (ej: [hover: scale-105]).
+- [a11y: ...] : Atributos de accesibilidad ARIA (ej: [a11y: aria-label="Cerrar", role="dialog"]).
 - ( cond ) -> A : B : Condicional.
 - -> : Flujo de Navegación / Routing.
 - => : Lógica de Side-Effects / API / Handlers.
 - < : Data Binding / Types.
 - { path } : Inyección de código externo.
-- ${orchList} : Orquestadores.`.trim()
+- ${orchList} : Orquestadores.
+- Store NombreStore { ~estado Action Selector } : Estado global (Zustand/Redux/Pinia).`.trim()
 
   const grammar_en = `
-MASTER GRAMMAR (v3.1):
+MASTER GRAMMAR (v3.2):
 - Hierarchy: 2-space indentation.
 - @ : Directives (e.g. @React, @CleanCode).
 - @modify [preserve:all] : Safe edit mode. Only return the modified fragment.
 - # : Design Tokens / Styles (supports inheritance).
 - $ : Global Variables / DNA.
-- ~ : Local State / Reactivity.
+- ~ : Local State / Reactivity (useState/Signals).
 - | : Adaptability / Responsive.
 - * N : Element multiplier.
 - ? : States (loading, error, auth).
@@ -112,17 +115,21 @@ MASTER GRAMMAR (v3.1):
 - [inherit:siblings] : Adopts sibling styles.
 - [position:move-to:N] : Moves element to position N.
 - [cascade:children] : Applies parent styles to children.
+- [animate: type, duration: Xms] : Entry/exit animation (e.g. fade-in, slide-up, stagger).
+- [hover: ...] : Hover/focus styles or behavior (e.g. [hover: scale-105]).
+- [a11y: ...] : ARIA accessibility attributes (e.g. [a11y: aria-label="Close", role="dialog"]).
 - ( cond ) -> A : B : Conditional.
 - -> : Navigation flow / Routing.
 - => : Side-effects / API logic / Handlers.
 - < : Data binding / Types.
 - { path } : External code injection.
-- ${orchList} : Orchestrators.`.trim()
+- ${orchList} : Orchestrators.
+- Store StoreName { ~state Action Selector } : Global state store (Zustand/Redux/Pinia).`.trim()
 
   if (isEs) {
     return `
 [NEXUS LANGUAGE INDUCTION]
-A partir de ahora, eres un Intérprete Nativo de NEXUS v3.1.
+A partir de ahora, eres un Intérprete Nativo de NEXUS v3.2.
 No necesitas instrucciones en lenguaje humano. Solo procesa el código NEXUS que te envíe.
 
 ${grammar_es}
@@ -144,7 +151,7 @@ Genera código premium, limpio y responsive siguiendo el DNA. No des explicacion
 
   return `
 [NEXUS LANGUAGE INDUCTION]
-From now on, you are a Native Interpreter of NEXUS v3.1.
+From now on, you are a Native Interpreter of NEXUS v3.2.
 You don't need natural language instructions. Just process the NEXUS code I send you.
 
 ${grammar_en}

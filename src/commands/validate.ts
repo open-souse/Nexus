@@ -111,6 +111,24 @@ function validateNexus(content: string): ValidationError[] {
       })
     }
 
+    // [animate: ...] — el valor no puede estar vacío
+    const animateMatch = trimmed.match(/\[animate:\s*([^\],]*)\]/)
+    if (animateMatch && !animateMatch[1].trim()) {
+      errors.push({
+        line: lineNumber,
+        message: '"[animate:]" sin valor. Ejemplo: [animate: fade-in, duration: 200ms]'
+      })
+    }
+
+    // [a11y: ...] — el valor no puede estar vacío
+    const a11yMatch = trimmed.match(/\[a11y:\s*([^\]]*)\]/)
+    if (a11yMatch && !a11yMatch[1].trim()) {
+      errors.push({
+        line: lineNumber,
+        message: '"[a11y:]" sin atributos. Ejemplo: [a11y: aria-label="Cerrar"]'
+      })
+    }
+
     // { } — balance acumulado a través de todo el archivo
     // Soporta bloques multi-línea: Type User { \n ... \n }
     for (const ch of trimmed) {

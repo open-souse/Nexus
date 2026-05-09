@@ -170,6 +170,51 @@ describe('nexus validate — errores de operadores', () => {
   })
 })
 
+describe('nexus validate — operadores v3.2 (animate, a11y, Store)', () => {
+  it('acepta [animate: fade-in] válido', () => {
+    const { ok } = run('Modal [animate: fade-in, duration: 200ms]')
+    expect(ok).toBe(true)
+  })
+
+  it('detecta [animate:] sin valor', () => {
+    const { ok, output } = run('Modal [animate:]')
+    expect(ok).toBe(false)
+    expect(output).toContain('[animate:]')
+  })
+
+  it('acepta [a11y: aria-label="Cerrar"] válido', () => {
+    const { ok } = run('Button "×" [a11y: aria-label="Cerrar modal"]')
+    expect(ok).toBe(true)
+  })
+
+  it('detecta [a11y:] sin atributos', () => {
+    const { ok, output } = run('Button "×" [a11y:]')
+    expect(ok).toBe(false)
+    expect(output).toContain('[a11y:]')
+  })
+
+  it('acepta [hover: scale-105] válido', () => {
+    const { ok } = run('Card [hover: scale-105]')
+    expect(ok).toBe(true)
+  })
+
+  it('acepta Store con bloque multi-línea', () => {
+    const { ok } = run('Store CartStore {\n  ~items: []\n  Action add => ~items: []\n}')
+    expect(ok).toBe(true)
+  })
+
+  it('acepta Store con Action y Selector', () => {
+    const { ok } = run(
+      'Store UserStore {\n' +
+      '  ~user: null\n' +
+      '  Action login => ~user: $response\n' +
+      '  Selector isAuth: ~user !== null\n' +
+      '}'
+    )
+    expect(ok).toBe(true)
+  })
+})
+
 describe('nexus validate — múltiples errores', () => {
   it('reporta todos los errores, no solo el primero', () => {
     const { ok, output } = run('Card *\n   Button "x" ->')

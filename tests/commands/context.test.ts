@@ -2,12 +2,12 @@ import { describe, it, expect } from 'vitest'
 import { execSync } from 'child_process'
 
 describe('nexus context', () => {
-  it('genera el inductor de lenguaje NEXUS v3.1', () => {
+  it('genera el inductor de lenguaje NEXUS v3.2', () => {
     const output = execSync('npx tsx src/index.ts context').toString()
 
     expect(output).toContain('[NEXUS LANGUAGE INDUCTION]')
-    expect(output).toContain('Intérprete Nativo de NEXUS v3.1')
-    expect(output).toContain('GRAMÁTICA MAESTRA (v3.1)')
+    expect(output).toContain('Intérprete Nativo de NEXUS v3.2')
+    expect(output).toContain('GRAMÁTICA MAESTRA (v3.2)')
     expect(output).toContain('DNA DEL PROYECTO')
     expect(output).toContain('NEXUS_SYSTEM_ONLINE')
   })
@@ -42,6 +42,16 @@ describe('nexus context', () => {
     expect(output).toContain('[locked]') // componente protegido
     expect(output).toContain('[new]') // elemento nuevo
   })
+
+  it('incluye los nuevos operadores de frontend v3.2', () => {
+    const output = execSync('npx tsx src/index.ts context').toString()
+
+    expect(output).toContain('[animate:') // animaciones
+    expect(output).toContain('[hover:') // interacción
+    expect(output).toContain('[a11y:') // accesibilidad
+    expect(output).toContain('Store') // estado global
+  })
+
 
   it('incluye el DNA del proyecto en el prompt', () => {
     const output = execSync('npx tsx src/index.ts context').toString()
