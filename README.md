@@ -162,4 +162,3 @@ NEXUS nació enfocado en frontend, pero la visión es más amplia: convertirse e
 NEXUS es un estándar abierto. Lee [CONTRIBUTING.md](./CONTRIBUTING.md) para saber cómo participar.
 
 **Licencia MIT** — Desarrollado por [Edwin Realpe](https://github.com/edwinreal)
->>>>>>> origin/claude/analyze-nexus-project-O3nnK
