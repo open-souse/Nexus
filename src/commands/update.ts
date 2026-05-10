@@ -12,7 +12,7 @@ function fetchLatestVersion(packageName: string): Promise<string> {
         try {
           resolve(JSON.parse(data).version)
         } catch {
-          reject(new Error('No se pudo leer la versión desde npm'))
+          reject(new Error('Could not read version from npm'))
         }
       })
     }).on('error', reject)
@@ -21,23 +21,23 @@ function fetchLatestVersion(packageName: string): Promise<string> {
 
 export function updateCommand(currentVersion: string): Command {
   return new Command('update')
-    .description('Verifica si hay una nueva versión de NEXUS disponible')
+    .description('Check if a new version of NEXUS is available')
     .action(async () => {
-      const spinner = ora('Verificando última versión...').start()
+      const spinner = ora('Checking latest version...').start()
 
       try {
         const latest = await fetchLatestVersion('nxlang')
         spinner.stop()
 
         if (latest === currentVersion) {
-          console.log(chalk.green(`✓ Ya tienes la versión más reciente: v${currentVersion}`))
+          console.log(chalk.green(`✓ You are on the latest version: v${currentVersion}`))
         } else {
-          console.log(chalk.yellow(`\nHay una nueva versión disponible: v${latest}`))
-          console.log(chalk.gray(`  Versión actual: v${currentVersion}`))
-          console.log(chalk.cyan(`\n  Actualiza con: npm install -g nxlang\n`))
+          console.log(chalk.yellow(`\nNew version available: v${latest}`))
+          console.log(chalk.gray(`  Current version: v${currentVersion}`))
+          console.log(chalk.cyan(`\n  Update with: npm install -g nxlang\n`))
         }
       } catch {
-        spinner.fail(chalk.red('No se pudo verificar la versión. Revisa tu conexión a internet.'))
+        spinner.fail(chalk.red('Could not check version. Check your internet connection.'))
       }
     })
 }
