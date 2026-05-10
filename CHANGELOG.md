@@ -5,6 +5,26 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.3.3] - 2026-05-10
+
+### Added
+- **`nexus lockdown`**: Generates a strict NEXUS-only mode prompt. Any natural language input returns `[NEXUS_ERROR: HUMAN_INPUT_DETECTED]`. Includes session watermark, desync protocol, and exit keywords (`//nexus unlock`, `//nexus status`, `//nexus reset`).
+- **`nexus learn`**: Launches the Nexus Sensei interactive tutorial with a 5-level curriculum: basics → interactivity → structure → advanced patterns → filesystem mastery.
+- **`?? "question"` operator**: New query operator allowing natural language questions mid-session without leaving NEXUS mode. Documented in grammar and all induction prompts.
+- **Tests**: 17 new tests for `lockdown` and `learn` commands. Total suite: 95 tests across 11 files.
+
+### Changed
+- All CLI strings translated to English: `validate.ts`, `doctor.ts`, `examples.ts`, `update.ts`, `config.ts`, `init.ts`.
+- `NEXUS-Grammar.md` updated to v3.3 with `??` operator and corrected section headings.
+- `README.md` fully rewritten in English with updated command table and grammar reference.
+- Default language for `nexus init` changed from `es` to `en`.
+
+### Fixed
+- `.eslintrc.json` added — `npm run lint` was broken due to missing ESLint config.
+- `package.json` description updated to English.
+
+---
+
 ## [0.3.2] - 2026-05-09
 
 ### Fixed

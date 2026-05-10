@@ -99,7 +99,7 @@ Type User {
 }
 ```
 
-## 8. Ejemplo de Orquestación Completa (v3.2)
+## 8. Ejemplo de Orquestación Completa (v3.3)
 ```nexus
 @React @Tailwind @Layout:Dashboard
 Page Stats
