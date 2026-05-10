@@ -25,6 +25,9 @@ export interface NexusConfig {
   styling: string;
   output: string;
   backend?: NexusBackendConfig;
+  testing?: {
+    scope: 'frontend' | 'backend' | 'full-stack';
+  };
   tokens: NexusTokens;
   icons: {
     library: string;

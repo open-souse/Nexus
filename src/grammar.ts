@@ -31,9 +31,9 @@ export const NEXUS_ORCHESTRATORS = [
 ] as const
 
 export const NEXUS_KEYWORDS = [
-  'Action', 'Selector', 'Method', 'Auth', 'Response',
+  'Action', 'Selector', 'Method', 'Auth', 'Response', 'Schema', 'Guard', 'Interceptor', 'Payload',
   'Entity', 'Relation', 'Repository', 'renders', 'handles', 'asserts', 'mocks',
-  'components', 'hooks', 'types'
+  'expects', 'status', 'body', 'db', 'Frontend', 'Backend', 'components', 'hooks', 'types'
 ] as const
 
 export const NEXUS_OPERATORS: NexusOperator[] = [

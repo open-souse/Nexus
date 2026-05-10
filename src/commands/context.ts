@@ -13,34 +13,40 @@ Card #glass
   Button "View more" #primary -> /detail`,
 
   backend: `
-// Backend: User API
+@NestJS @Prisma @PostgreSQL
+
 Model User
-  Entity id type:uuid
+  Entity id type:uuid !pk
   Entity email type:string !unique
   Relation posts -> Post * N
 
 Controller UserController [route:/api/users]
-  Middleware AuthGuard
-  Endpoint GET / -> UserService.findAll()
-  Endpoint POST / => UserService.create()`,
+  Guard AuthGuard [mode:jwt]
+  @RateLimit[100/min]
+  Endpoint POST /register < Payload:UserSchema => UserService.create()
+  Endpoint GET /profile @Auth => UserService.getProfile()`,
 
   testing: `
-// Testing: Component test
-Test UserTable [framework:vitest, type:unit]
-  renders: correctly, empty-data, loading-state
-  handles: sort-by-column, pagination, row-click
-  asserts: row-count=10, format-numbers-comma
-  mocks: useUsers, fetch
+// Testing Frontend: Component test
+Test UserTable [type:unit] Frontend
+  renders: correctly, loading-state
+  handles: sort-by-column, row-click
+  asserts: row-count=10
+  mocks: useUsers
+
+// Testing Backend: API Endpoint test
+Test UserController [type:integration] Backend
+  handles: POST /users
+  expects: status:201, body:user-schema
+  db: user-created-in-db, auth-token-issued
 
 // Testing: Grouped suite
 Suite "Auth Flow" [framework:vitest]
-  Test LoginForm
-    renders: default, error-state, loading
-    handles: submit, invalid-email
-    mocks: authService
-  Test AuthGuard
-    handles: redirect-unauthenticated
-    asserts: redirectTo=/login`,
+  Test LoginForm [type:unit] Frontend
+    renders: default, error-state
+  Test AuthService [type:unit] Backend
+    handles: login, register
+    asserts: jwt-is-valid`,
 
   create: `
 // Create: Single component
@@ -114,11 +120,13 @@ NEXUS SYNTAX REFERENCE (v4.0):
 - ${orchList} : Structure orchestrators.
 - Store Name { ~state Action Selector } : Global state (Zustand/Redux/Pinia).
 - Create Name [type:component|page|hook|feature, path:route] : Create files on disk.${activeModules.includes('testing') ? `
-- Test Name [framework:vitest|jest|cypress, type:unit|integration|e2e] : Generate and write test file to disk.
+- Test Name [type] : Define a test case. Use keywords Frontend or Backend to scope context.
 - Suite "Name" { } : Group related tests.
-- renders: state1, state2 : Render cases to cover.
+- renders: state1, state2 : Render cases to cover (Frontend).
 - handles: event1, event2 : Interactions to test.
+- expects: status:200, body:schema : Backend expectations.
 - asserts: condition : Specific assertions.
+- db: change1, change2 : Database side-effects to verify (Backend).
 - mocks: dep1, dep2 : Dependencies to mock.` : ''}`.trim()
 
   return `

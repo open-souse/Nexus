@@ -112,6 +112,17 @@ async function runInit(lang: 'es' | 'en') {
       when: (a) => a.modules.includes('frontend')
     },
     {
+      type: 'list',
+      name: 'testingScope',
+      message: lang === 'es' ? '¿Cuál es el alcance principal de tus tests?' : 'What is the main scope of your tests?',
+      choices: [
+        { name: lang === 'es' ? 'Frontend (UI/Components)' : 'Frontend (UI/Components)', value: 'frontend' },
+        { name: lang === 'es' ? 'Backend (API/Logic)' : 'Backend (API/Logic)', value: 'backend' },
+        { name: lang === 'es' ? 'Full-Stack (Ambos)' : 'Full-Stack (Both)', value: 'full-stack' }
+      ],
+      when: (a) => a.modules.includes('testing')
+    },
+    {
       type: 'input',
       name: 'output',
       message: t.output,
@@ -129,6 +140,9 @@ async function runInit(lang: 'es' | 'en') {
       framework: answers.backendFramework || 'none',
       database: answers.database || 'none',
       orm: answers.orm || 'none'
+    } : undefined,
+    testing: answers.modules.includes('testing') ? {
+      scope: answers.testingScope || 'full-stack'
     } : undefined,
     tokens: {
       primary: answers.primary,

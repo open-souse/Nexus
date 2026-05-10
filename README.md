@@ -51,6 +51,9 @@ const config = createDefaultConfig({
     framework: 'nestjs',
     database: 'postgresql',
     orm: 'prisma'
+  },
+  testing: {
+    scope: 'full-stack'
   }
 });
 
