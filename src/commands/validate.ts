@@ -5,12 +5,12 @@ import chalk from 'chalk'
 const VALID_DIRECTIVE = /^@[A-Za-z]/
 const VALID_TOKEN = /^#[a-zA-Z]/
 
-interface ValidationError {
+export interface ValidationError {
   line: number
   message: string
 }
 
-function validateNexus(content: string): ValidationError[] {
+export function validateNexus(content: string): ValidationError[] {
   const errors: ValidationError[] = []
   const lines = content.split('\n')
 

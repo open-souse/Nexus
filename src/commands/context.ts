@@ -62,7 +62,7 @@ Create dashboard [type:page, path:src/app]
 Create useCart [type:hook, path:src/hooks]`
 }
 
-function buildPrompt(config: Partial<NexusConfig>): string {
+export function buildPrompt(config: Partial<NexusConfig>): string {
   const activeModules = config.modules || ['frontend']
   const orchestrators = ['Page', 'Layout', 'Section', 'Store', 'Type', 'Create']
 

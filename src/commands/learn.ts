@@ -5,7 +5,7 @@ import chalk from 'chalk'
 import ora from 'ora'
 import type { NexusConfig } from '../types/nexus.js'
 
-function buildLearnPrompt(config: Partial<NexusConfig>): string {
+export function buildLearnPrompt(config: Partial<NexusConfig>): string {
   const framework = config.framework || 'next-ts'
   const styling = config.styling || 'tailwind'
 
