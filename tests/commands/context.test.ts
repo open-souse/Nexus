@@ -40,7 +40,7 @@ describe('nexus context', () => {
     runContext()
     const content = readClaudeMd()
     expect(content).toContain('NEXUS NOTATION')
-    expect(content).toContain('v3.3')
+    expect(content).toContain('v4.0')
   })
 
   it('includes the syntax reference header', () => {

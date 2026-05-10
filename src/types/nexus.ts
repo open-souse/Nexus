@@ -12,12 +12,19 @@ export interface NexusTokens {
   };
 }
 
+export interface NexusBackendConfig {
+  framework: string;
+  database: string;
+  orm: string;
+}
+
 export interface NexusConfig {
   lang: 'es' | 'en';
   modules?: string[];
   framework: string;
   styling: string;
   output: string;
+  backend?: NexusBackendConfig;
   tokens: NexusTokens;
   icons: {
     library: string;

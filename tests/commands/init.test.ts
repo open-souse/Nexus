@@ -18,12 +18,18 @@ describe('nexus init', () => {
     expect(content.framework).toBe('vue-ts')
   })
 
-  it('generated config has the correct structure', () => {
+  it('generated config has the correct structure (v4.0 Full-Stack)', () => {
     const config = {
       lang: 'en',
+      modules: ['frontend', 'backend'],
       framework: 'react-ts',
       styling: 'tailwind',
       output: './src/components',
+      backend: {
+        framework: 'nestjs',
+        database: 'postgresql',
+        orm: 'prisma'
+      },
       tokens: {
         primary: '#2563eb',
         secondary: '#64748b',
@@ -37,6 +43,8 @@ describe('nexus init', () => {
     writeFileSync(configPath, JSON.stringify(config, null, 2))
     const loaded = fs.readJsonSync(configPath)
     expect(loaded.lang).toBe('en')
+    expect(loaded.modules).toContain('backend')
+    expect(loaded.backend.framework).toBe('nestjs')
     expect(loaded.tokens.primary).toBe('#2563eb')
     expect(loaded.icons.library).toBe('lucide-react')
   })

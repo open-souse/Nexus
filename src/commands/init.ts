@@ -48,8 +48,7 @@ async function runInit(lang: 'es' | 'en') {
         { name: 'Frontend (React/Vue/Next)', value: 'frontend', checked: true },
         { name: 'Backend (API/DB)', value: 'backend' },
         { name: 'Testing (Vitest/Jest/Cypress)', value: 'testing' },
-        { name: lang === 'es' ? 'Diseño (System Tokens)' : 'Design (System Tokens)', value: 'design' },
-        { name: lang === 'es' ? 'Medicina (Protocolos)' : 'Medical (Protocols)', value: 'medical' }
+        { name: lang === 'es' ? 'Diseño (System Tokens)' : 'Design (System Tokens)', value: 'design' }
       ]
     },
     {
@@ -65,6 +64,27 @@ async function runInit(lang: 'es' | 'en') {
       message: t.styling,
       choices: ['tailwind', 'css-modules', 'styled-components', 'sass', 'none'],
       when: (a) => a.modules.includes('frontend')
+    },
+    {
+      type: 'list',
+      name: 'backendFramework',
+      message: lang === 'es' ? '¿Qué framework de backend usas?' : 'Which backend framework do you use?',
+      choices: ['express', 'nestjs', 'fastify', 'hono', 'none'],
+      when: (a) => a.modules.includes('backend')
+    },
+    {
+      type: 'list',
+      name: 'database',
+      message: lang === 'es' ? '¿Qué base de datos usas?' : 'Which database do you use?',
+      choices: ['postgresql', 'mongodb', 'mysql', 'sqlite', 'none'],
+      when: (a) => a.modules.includes('backend')
+    },
+    {
+      type: 'list',
+      name: 'orm',
+      message: lang === 'es' ? '¿Qué ORM/ODM usas?' : 'Which ORM/ODM do you use?',
+      choices: ['prisma', 'typeorm', 'drizzle', 'mongoose', 'none'],
+      when: (a) => a.modules.includes('backend')
     },
     {
       type: 'input',
@@ -105,6 +125,11 @@ async function runInit(lang: 'es' | 'en') {
     framework: answers.framework || 'none',
     styling: answers.styling || 'none',
     output: answers.output,
+    backend: answers.modules.includes('backend') ? {
+      framework: answers.backendFramework || 'none',
+      database: answers.database || 'none',
+      orm: answers.orm || 'none'
+    } : undefined,
     tokens: {
       primary: answers.primary,
       secondary: answers.secondary,

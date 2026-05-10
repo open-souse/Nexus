@@ -26,12 +26,13 @@ export interface NexusBlueprint {
 
 export const NEXUS_ORCHESTRATORS = [
   'Page', 'Layout', 'Section', 'Store', 'Type', 'Create',
-  'Test', 'Suite', 'Protocol', 'Endpoint'
+  'Test', 'Suite', 'Model', 'Controller', 'Middleware', 'Service', 'Endpoint',
+  'Worker', 'Queue', 'CronJob'
 ] as const
 
 export const NEXUS_KEYWORDS = [
   'Action', 'Selector', 'Method', 'Auth', 'Response',
-  'Check', 'Field', 'renders', 'handles', 'asserts', 'mocks',
+  'Entity', 'Relation', 'Repository', 'renders', 'handles', 'asserts', 'mocks',
   'components', 'hooks', 'types'
 ] as const
 
@@ -59,6 +60,9 @@ export const NEXUS_OPERATORS: NexusOperator[] = [
   { symbol: '[inherit:siblings]', name: 'Inherit', description: 'Inherit style from siblings', example: 'Button [new, inherit:siblings]' },
   { symbol: '[cascade:children]', name: 'Cascade', description: 'Apply parent styles to children', example: 'Section [cascade:children]' },
   { symbol: '[position:move-to:N]', name: 'Move', description: 'Move element to position N', example: '[position:move-to:1]' },
+  { symbol: '!pk', name: 'Primary Key', description: 'Database primary key constraint', example: 'Entity id type:uuid !pk' },
+  { symbol: '@Auth', name: 'Authentication', description: 'Require authentication for endpoint', example: '@Auth[mode:jwt]' },
+  { symbol: '@RateLimit', name: 'Rate Limiting', description: 'Limit requests', example: '@RateLimit[100/min]' },
 ]
 
 export const NEXUS_MODULES: NexusModule[] = [
@@ -71,20 +75,14 @@ export const NEXUS_MODULES: NexusModule[] = [
   {
     id: 'backend',
     name: 'Backend',
-    description: 'API endpoints, services, and database logic',
-    orchestrators: ['Endpoint']
+    description: 'API endpoints, services, database models and controllers',
+    orchestrators: ['Model', 'Controller', 'Middleware', 'Service', 'Endpoint', 'Worker', 'Queue', 'CronJob']
   },
   {
     id: 'testing',
     name: 'Testing',
     description: 'Vitest, Jest, and Cypress test suites',
     orchestrators: ['Test', 'Suite']
-  },
-  {
-    id: 'medical',
-    name: 'Medical',
-    description: 'Clinical protocols and triage flows',
-    orchestrators: ['Protocol']
   },
   {
     id: 'design',

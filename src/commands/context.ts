@@ -12,20 +12,17 @@ Card #glass
   Text "Title" !bold
   Button "View more" #primary -> /detail`,
 
-  medical: `
-// Medical: Triage Protocol
-Protocol Triage
-  Check "Vital Signs"
-    Field heart_rate type:number
-    Field saturation type:percent !critical
-  Action "Assign Level" => calculateTriage() -> /patient-registration`,
-
   backend: `
-// Backend: API Endpoint
-Endpoint /api/users
-  Auth [mode:jwt, role:admin]
-  Method GET -> Service.findUsers()
-  Response 200 < User * N`,
+// Backend: User API
+Model User
+  Entity id type:uuid
+  Entity email type:string !unique
+  Relation posts -> Post * N
+
+Controller UserController [route:/api/users]
+  Middleware AuthGuard
+  Endpoint GET / -> UserService.findAll()
+  Endpoint POST / => UserService.create()`,
 
   testing: `
 // Testing: Component test
@@ -72,8 +69,11 @@ export function buildPrompt(config: Partial<NexusConfig>): string {
     if (MODULE_EXAMPLES[mod]) {
       dynamicExamples += MODULE_EXAMPLES[mod] + '\n'
     }
-    if (mod === 'medical' && !orchestrators.includes('Protocol')) orchestrators.push('Protocol')
-    if (mod === 'backend' && !orchestrators.includes('Endpoint')) orchestrators.push('Endpoint')
+    if (mod === 'backend') {
+      ['Model', 'Controller', 'Middleware', 'Service', 'Endpoint'].forEach(o => {
+        if (!orchestrators.includes(o)) orchestrators.push(o)
+      })
+    }
     if (mod === 'testing' && !orchestrators.includes('Test')) {
       orchestrators.push('Test')
       orchestrators.push('Suite')
@@ -85,7 +85,7 @@ export function buildPrompt(config: Partial<NexusConfig>): string {
   const orchList = orchestrators.join(' / ')
 
   const grammar = `
-NEXUS SYNTAX REFERENCE (v3.3):
+NEXUS SYNTAX REFERENCE (v4.0):
 - Indentation: 2 spaces per level.
 - @ : Directives (e.g. @React, @CleanCode).
 - @modify [preserve:all] : Safe edit — only apply the explicit change, nothing else.
@@ -122,7 +122,7 @@ NEXUS SYNTAX REFERENCE (v3.3):
 - mocks: dep1, dep2 : Dependencies to mock.` : ''}`.trim()
 
   return `
-NEXUS NOTATION — v3.3
+NEXUS NOTATION — v4.0
 
 I write my development requests using NEXUS, a shorthand notation for UI, logic, and project structure.
 This is the syntax reference. When I send you NEXUS, generate the implementation.
