@@ -12,7 +12,7 @@
     "LICENSE"
   ],
   "bin": {
-    "nexus": "./bin/nexus.js"
+    "nexus": "bin/nexus.js"
   },
   "scripts": {
     "build": "tsc",
@@ -46,7 +46,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/edwinreal/Nexus-.git"
+    "url": "git+https://github.com/edwinreal/Nexus-.git"
   },
   "homepage": "https://github.com/edwinreal/Nexus-#readme",
   "bugs": {
