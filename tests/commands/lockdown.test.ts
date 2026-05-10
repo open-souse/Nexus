@@ -2,42 +2,44 @@ import { describe, it, expect } from 'vitest'
 import { execSync } from 'child_process'
 
 describe('nexus lockdown', () => {
-  it('generates the NEXUS Lockdown prompt', () => {
+  it('generates the NEXUS Precision Mode prompt', () => {
     const output = execSync('npx tsx src/index.ts lockdown').toString()
-    expect(output).toContain('[NEXUS LOCKDOWN MODE')
-    expect(output).toContain('NEXUS v3.3 execution engine')
+    expect(output).toContain('NEXUS PRECISION MODE')
+    expect(output).toContain('v3.3')
   })
 
-  it('includes the human input error response', () => {
+  it('instructs code-only responses for NEXUS input', () => {
     const output = execSync('npx tsx src/index.ts lockdown').toString()
-    expect(output).toContain('[NEXUS_ERROR: HUMAN_INPUT_DETECTED]')
+    expect(output).toContain('generate code directly')
+  })
+
+  it('includes ?? query operator instructions', () => {
+    const output = execSync('npx tsx src/index.ts lockdown').toString()
+    expect(output).toContain('??')
+    expect(output).toContain('answer briefly')
   })
 
   it('includes the session watermark rule', () => {
     const output = execSync('npx tsx src/index.ts lockdown').toString()
-    expect(output).toContain('NX_3.3_SECURE')
+    expect(output).toContain('NX:3.3')
   })
 
-  it('includes the desync protocol', () => {
+  it('includes context loss fallback', () => {
     const output = execSync('npx tsx src/index.ts lockdown').toString()
-    expect(output).toContain('[STATUS: NEXUS_DESYNC_DETECTED]')
+    expect(output).toContain("lost context")
   })
 
-  it('includes all exit keywords', () => {
+  it('includes all session commands', () => {
     const output = execSync('npx tsx src/index.ts lockdown').toString()
     expect(output).toContain('//nexus unlock')
     expect(output).toContain('//nexus status')
     expect(output).toContain('//nexus reset')
   })
 
-  it('includes the NEXUS_LOCKED status response', () => {
+  it('includes @modify preserve rule', () => {
     const output = execSync('npx tsx src/index.ts lockdown').toString()
-    expect(output).toContain('[STATUS: NEXUS_LOCKED | v3.3 | ACTIVE]')
-  })
-
-  it('includes the filesystem execution rule', () => {
-    const output = execSync('npx tsx src/index.ts lockdown').toString()
-    expect(output).toContain('FILESYSTEM EXECUTION RULE')
+    expect(output).toContain('@modify')
+    expect(output).toContain('preserve:all')
   })
 
   it('includes project DNA section', () => {
