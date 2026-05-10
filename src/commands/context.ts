@@ -105,6 +105,7 @@ MASTER GRAMMAR (v3.3):
 - [animate: type, duration: Xms] : Entry/exit animation (e.g. fade-in, slide-up, stagger).
 - [hover: ...] : Hover/focus styles or behavior (e.g. [hover: scale-105]).
 - [a11y: ...] : ARIA accessibility attributes (e.g. [a11y: aria-label="Close", role="dialog"]).
+- ?? "question" : Query operator — ask a natural language question mid-session without leaving NEXUS mode. AI answers then returns to strict mode.
 - ( cond ) -> A : B : Conditional.
 - -> : Navigation flow / Routing.
 - => : Side-effects / API logic / Handlers.

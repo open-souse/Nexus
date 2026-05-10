@@ -8,6 +8,8 @@ import { examplesCommand } from './commands/examples.js'
 import { updateCommand } from './commands/update.js'
 import { doctorCommand } from './commands/doctor.js'
 import { scaffoldCommand } from './commands/scaffold.js'
+import { lockdownCommand } from './commands/lockdown.js'
+import { learnCommand } from './commands/learn.js'
 import fs from 'fs'
 
 const pkgPath = new URL('../package.json', import.meta.url)
@@ -18,10 +20,9 @@ const program = new Command()
 
 program
   .name('nexus')
-  .description('NEXUS: Protocolo de lenguaje humano-IA')
+  .description('NEXUS: Human-AI language protocol')
   .version(version)
 
-// Solo registramos los comandos esenciales del protocolo
 program.addCommand(initCommand())
 program.addCommand(contextCommand())
 program.addCommand(validateCommand())
@@ -30,5 +31,7 @@ program.addCommand(updateCommand(version))
 program.addCommand(doctorCommand())
 program.addCommand(scaffoldCommand())
 program.addCommand(configCommand())
+program.addCommand(lockdownCommand())
+program.addCommand(learnCommand())
 
 program.parse()

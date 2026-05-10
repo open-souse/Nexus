@@ -14,8 +14,8 @@ function validateNexus(content: string): ValidationError[] {
   const errors: ValidationError[] = []
   const lines = content.split('\n')
 
-  // Contadores de estado global para llaves y corchetes
-  // (soportan bloques multi-línea como Type User { ... })
+  // Global depth counters for braces and brackets
+  // (support multi-line blocks like Type User { ... })
   let braceDepth = 0
   let bracketDepth = 0
   let braceOpenLine = 0
@@ -27,110 +27,110 @@ function validateNexus(content: string): ValidationError[] {
 
     if (line.trim() === '' || line.trim().startsWith('//')) return
 
-    // Indentación: múltiplos de 2 espacios
+    // Indentation: must be multiples of 2 spaces
     const leadingSpaces = line.length - line.trimStart().length
     if (leadingSpaces % 2 !== 0) {
       errors.push({
         line: lineNumber,
-        message: `Indentación inválida (${leadingSpaces} espacios). Usa múltiplos de 2.`
+        message: `Invalid indentation (${leadingSpaces} spaces). Use multiples of 2.`
       })
     }
 
     const trimmed = line.trim()
 
-    // @ directivas: deben ser @[A-Za-z] (ej: @React, @modify)
+    // @ directives: must match @[A-Za-z] (e.g. @React, @modify)
     if (trimmed.startsWith('@')) {
       const directive = trimmed.split(/[\s[]/)[0]
       if (!VALID_DIRECTIVE.test(directive)) {
         errors.push({
           line: lineNumber,
-          message: `Directiva inválida: "${directive}". Formato esperado: @NombreFramework`
+          message: `Invalid directive: "${directive}". Expected format: @FrameworkName`
         })
       }
     }
 
-    // # tokens: deben ser #[a-zA-Z] (ej: #primary, #glass)
+    // # tokens: must match #[a-zA-Z] (e.g. #primary, #glass)
     const tokenMatches = trimmed.match(/#\S*/g) || []
     for (const token of tokenMatches) {
       if (!VALID_TOKEN.test(token)) {
         errors.push({
           line: lineNumber,
-          message: `Token inválido: "${token}". Formato esperado: #nombre`
+          message: `Invalid token: "${token}". Expected format: #name`
         })
       }
     }
 
-    // -> sin destino
+    // -> without destination
     if (/->$/.test(trimmed)) {
-      errors.push({ line: lineNumber, message: '"->" sin destino definido.' })
+      errors.push({ line: lineNumber, message: '"->" without a defined destination.' })
     }
 
-    // => sin acción
+    // => without action
     if (/=>$/.test(trimmed)) {
-      errors.push({ line: lineNumber, message: '"=>" sin acción definida.' })
+      errors.push({ line: lineNumber, message: '"=>" without a defined action.' })
     }
 
-    // $ variables: cuando la línea empieza con $, debe tener : y valor (ej: $brand: "Nexus")
+    // $ variables: must have : and value (e.g. $brand: "Nexus")
     if (trimmed.startsWith('$') && !/^\$[a-zA-Z_]\w*\s*:/.test(trimmed)) {
       errors.push({
         line: lineNumber,
-        message: `Variable inválida: "${trimmed.split(/[\s:]/)[0]}". Formato esperado: $nombre: valor`
+        message: `Invalid variable: "${trimmed.split(/[\s:]/)[0]}". Expected format: $name: value`
       })
     }
 
-    // ~ estado local: cuando la línea empieza con ~, debe tener : (ej: ~isOpen: false)
+    // ~ local state: must have : (e.g. ~isOpen: false)
     if (trimmed.startsWith('~') && !/^~[a-zA-Z_]\w*\s*:/.test(trimmed)) {
       errors.push({
         line: lineNumber,
-        message: `Estado inválido: "${trimmed.split(/[\s:]/)[0]}". Formato esperado: ~nombre: valor`
+        message: `Invalid state: "${trimmed.split(/[\s:]/)[0]}". Expected format: ~name: value`
       })
     }
 
-    // * multiplicador: debe ir seguido de un entero positivo (ej: Card * 3)
+    // * multiplier: must be followed by a positive integer (e.g. Card * 3)
     const multiplierMatch = trimmed.match(/(?:^|\s)\*\s*(\S*)/)
     if (multiplierMatch) {
       const num = multiplierMatch[1]
       if (!num) {
         errors.push({
           line: lineNumber,
-          message: '"*" sin número. Formato esperado: * N (entero positivo)'
+          message: '"*" without a number. Expected format: * N (positive integer)'
         })
       } else if (!/^\d+$/.test(num)) {
         errors.push({
           line: lineNumber,
-          message: `Multiplicador inválido: "* ${num}". Formato esperado: * N (entero positivo)`
+          message: `Invalid multiplier: "* ${num}". Expected format: * N (positive integer)`
         })
       }
     }
 
-    // < data binding: no puede estar solo al final de línea (ej: Table < User es válido; Table < no)
+    // < data binding: cannot appear alone at end of line (e.g. Table < User is valid; Table < is not)
     if (/\s<$/.test(trimmed) || trimmed === '<') {
       errors.push({
         line: lineNumber,
-        message: '"<" sin tipo definido. Formato esperado: < NombreTipo'
+        message: '"<" without a defined type. Expected format: < TypeName'
       })
     }
 
-    // [animate: ...] — el valor no puede estar vacío
+    // [animate: ...] — value cannot be empty
     const animateMatch = trimmed.match(/\[animate:\s*([^\],]*)\]/)
     if (animateMatch && !animateMatch[1].trim()) {
       errors.push({
         line: lineNumber,
-        message: '"[animate:]" sin valor. Ejemplo: [animate: fade-in, duration: 200ms]'
+        message: '"[animate:]" missing value. Example: [animate: fade-in, duration: 200ms]'
       })
     }
 
-    // [a11y: ...] — el valor no puede estar vacío
+    // [a11y: ...] — value cannot be empty
     const a11yMatch = trimmed.match(/\[a11y:\s*([^\]]*)\]/)
     if (a11yMatch && !a11yMatch[1].trim()) {
       errors.push({
         line: lineNumber,
-        message: '"[a11y:]" sin atributos. Ejemplo: [a11y: aria-label="Cerrar"]'
+        message: '"[a11y:]" missing attributes. Example: [a11y: aria-label="Close"]'
       })
     }
 
-    // { } — balance acumulado a través de todo el archivo
-    // Soporta bloques multi-línea: Type User { \n ... \n }
+    // { } — cumulative balance across the entire file
+    // Supports multi-line blocks: Type User { \n ... \n }
     for (const ch of trimmed) {
       if (ch === '{') {
         if (braceDepth === 0) braceOpenLine = lineNumber
@@ -138,13 +138,13 @@ function validateNexus(content: string): ValidationError[] {
       } else if (ch === '}') {
         braceDepth--
         if (braceDepth < 0) {
-          errors.push({ line: lineNumber, message: '"}" sin "{" correspondiente.' })
+          errors.push({ line: lineNumber, message: '"}" without matching "{".' })
           braceDepth = 0
         }
       }
     }
 
-    // [ ] — balance acumulado a través de todo el archivo
+    // [ ] — cumulative balance across the entire file
     for (const ch of trimmed) {
       if (ch === '[') {
         if (bracketDepth === 0) bracketOpenLine = lineNumber
@@ -152,19 +152,19 @@ function validateNexus(content: string): ValidationError[] {
       } else if (ch === ']') {
         bracketDepth--
         if (bracketDepth < 0) {
-          errors.push({ line: lineNumber, message: '"]" sin "[" correspondiente.' })
+          errors.push({ line: lineNumber, message: '"]" without matching "[".' })
           bracketDepth = 0
         }
       }
     }
   })
 
-  // Verificar que al final del archivo los balances sean cero
+  // Check that all balances are zero at end of file
   if (braceDepth > 0) {
-    errors.push({ line: braceOpenLine, message: `"{" sin cerrar (${braceDepth} sin cerrar al final del archivo).` })
+    errors.push({ line: braceOpenLine, message: `"{" unclosed (${braceDepth} unclosed at end of file).` })
   }
   if (bracketDepth > 0) {
-    errors.push({ line: bracketOpenLine, message: `"[" sin cerrar (${bracketDepth} sin cerrar al final del archivo).` })
+    errors.push({ line: bracketOpenLine, message: `"[" unclosed (${bracketDepth} unclosed at end of file).` })
   }
 
   return errors
@@ -172,27 +172,27 @@ function validateNexus(content: string): ValidationError[] {
 
 export function validateCommand(): Command {
   return new Command('validate')
-    .description('Valida la sintaxis de un archivo .nexus')
-    .argument('<file>', 'Archivo .nexus a validar')
+    .description('Validate the syntax of a .nexus file')
+    .argument('<file>', '.nexus file to validate')
     .action((file: string) => {
       if (!fs.existsSync(file)) {
-        console.log(chalk.red(`Archivo no encontrado: ${file}`))
+        console.log(chalk.red(`File not found: ${file}`))
         process.exit(1)
       }
 
       if (!file.endsWith('.nexus')) {
-        console.log(chalk.yellow('Advertencia: el archivo no tiene extensión .nexus'))
+        console.log(chalk.yellow('Warning: file does not have a .nexus extension'))
       }
 
       const content = fs.readFileSync(file, 'utf8')
       const errors = validateNexus(content)
 
       if (errors.length === 0) {
-        console.log(chalk.green(`✓ ${file} — sintaxis válida`))
+        console.log(chalk.green(`✓ ${file} — valid syntax`))
       } else {
-        console.log(chalk.red(`✗ ${file} — ${errors.length} error(es) encontrado(s):\n`))
+        console.log(chalk.red(`✗ ${file} — ${errors.length} error(s) found:\n`))
         for (const error of errors) {
-          console.log(chalk.red(`  Línea ${error.line}: `) + error.message)
+          console.log(chalk.red(`  Line ${error.line}: `) + error.message)
         }
         process.exit(1)
       }

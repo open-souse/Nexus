@@ -1,4 +1,4 @@
-# NEXUS: The AI-Native Language Protocol (v3.2)
+# NEXUS: The AI-Native Language Protocol (v3.3)
 
 NEXUS es el lenguaje de alto nivel diseñado para la comunicación exacta y fluida entre Humanos e IAs. Elimina la ambigüedad del lenguaje natural y permite orquestar aplicaciones completas.
 
@@ -30,6 +30,8 @@ Basado en indentación (2 espacios).
 - `[a11y: ...]` **Accesibilidad**: Define atributos ARIA y semántica accesible.
   - *Ejemplo:* `Button "×" [a11y: aria-label="Cerrar modal"]`
   - *Ejemplo:* `Nav [a11y: role="navigation", aria-label="Principal"]`
+- `?? "question"` **Query Operator**: Ask the AI a natural language question mid-session without leaving NEXUS mode. The AI answers, then returns to strict NEXUS mode automatically.
+  - *Example:* `?? "Should I use Zustand or Context API for this store?"`
 - `( cond ) -> A : B` **Condicional de Intención**: Define ramas de visualización lógica.
 - `->` **Flujo de Navegación / Routing**: Indica un cambio de ubicación o de ruta.
 - `=>` **Lógica de Side-Effects / Handlers**: Acciones asíncronas o procesamiento de datos.

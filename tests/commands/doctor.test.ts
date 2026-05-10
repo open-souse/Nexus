@@ -5,7 +5,7 @@ import { existsSync, unlinkSync, writeFileSync } from 'fs'
 const CONFIG_PATH = './nexus.config.json'
 
 const VALID_CONFIG = {
-  lang: 'es',
+  lang: 'en',
   framework: 'react-ts',
   styling: 'tailwind',
   output: './src/components',
@@ -39,65 +39,65 @@ describe('nexus doctor', () => {
     if (existsSync(CONFIG_PATH)) unlinkSync(CONFIG_PATH)
   })
 
-  it('pasa con una configuración válida completa', () => {
+  it('passes with a complete valid config', () => {
     writeConfig(VALID_CONFIG)
     const { ok, output } = runDoctor()
     expect(ok).toBe(true)
-    expect(output).toContain('Todo está en orden')
+    expect(output).toContain('Everything looks good')
   })
 
-  it('falla si no existe nexus.config.json', () => {
+  it('fails if nexus.config.json does not exist', () => {
     const { ok, output } = runDoctor()
     expect(ok).toBe(false)
-    expect(output).toContain('nexus.config.json no encontrado')
+    expect(output).toContain('nexus.config.json not found')
   })
 
-  it('falla si falta el campo framework', () => {
+  it('fails if framework field is missing', () => {
     const { framework: _f, ...withoutFramework } = VALID_CONFIG
     writeConfig(withoutFramework)
     const { ok, output } = runDoctor()
     expect(ok).toBe(false)
-    expect(output).toContain('framework no definido')
+    expect(output).toContain('framework not defined')
   })
 
-  it('falla si faltan tokens requeridos', () => {
+  it('fails if required tokens are missing', () => {
     const config = { ...VALID_CONFIG, tokens: { success: '#22c55e', radius: '8px', font: 'Inter' } }
     writeConfig(config)
     const { ok, output } = runDoctor()
     expect(ok).toBe(false)
-    expect(output).toContain('tokens.primary no definido')
+    expect(output).toContain('tokens.primary not defined')
   })
 
-  it('muestra advertencia si framework no es estándar', () => {
+  it('shows warning if framework is non-standard', () => {
     writeConfig({ ...VALID_CONFIG, framework: 'angular' })
     const { output } = runDoctor()
-    expect(output).toContain('no es estándar')
+    expect(output).toContain('not standard')
   })
 
-  it('muestra advertencia si lang no está definido', () => {
+  it('shows warning if lang is not defined', () => {
     const { lang: _l, ...withoutLang } = VALID_CONFIG
     writeConfig(withoutLang)
     const { output } = runDoctor()
-    expect(output).toContain('lang no definido')
+    expect(output).toContain('lang not defined')
   })
 
-  it('verifica cada token requerido por separado', () => {
+  it('checks each required token separately', () => {
     writeConfig({
       ...VALID_CONFIG,
       tokens: { ...VALID_CONFIG.tokens, danger: undefined }
     })
     const { ok, output } = runDoctor()
     expect(ok).toBe(false)
-    expect(output).toContain('tokens.danger no definido')
+    expect(output).toContain('tokens.danger not defined')
   })
 
-  it('reporta la versión del framework cuando es válido', () => {
+  it('reports the framework when valid', () => {
     writeConfig(VALID_CONFIG)
     const { output } = runDoctor()
     expect(output).toContain('framework: react-ts')
   })
 
-  it('reporta el output configurado', () => {
+  it('reports the configured output path', () => {
     writeConfig(VALID_CONFIG)
     const { output } = runDoctor()
     expect(output).toContain('output: ./src/components')
