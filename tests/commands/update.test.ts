@@ -10,7 +10,7 @@ describe('nexus update', () => {
       }).toString()
       // Either up to date or new version available
       expect(
-        output.includes('most recent') ||
+        output.includes('latest version') ||
         output.includes('new version') ||
         output.includes('connection') ||
         output.includes('internet')

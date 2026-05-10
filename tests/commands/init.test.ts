@@ -9,16 +9,16 @@ describe('nexus init', () => {
     if (existsSync(configPath)) unlinkSync(configPath)
   })
 
-  it('no sobreescribe nexus.config.json si ya existe', () => {
+  it('does not overwrite nexus.config.json if it already exists', () => {
     const original = { lang: 'en', framework: 'vue-ts' }
     writeFileSync(configPath, JSON.stringify(original))
 
-    // Simula que el archivo ya existe — init no debe sobreescribirlo
+    // File already exists — init should not overwrite it
     const content = fs.readJsonSync(configPath)
     expect(content.framework).toBe('vue-ts')
   })
 
-  it('el config generado tiene la estructura correcta', () => {
+  it('generated config has the correct structure', () => {
     const config = {
       lang: 'en',
       framework: 'react-ts',

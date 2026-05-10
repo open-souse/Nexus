@@ -9,12 +9,12 @@ describe('nexus config', () => {
     config.clear()
   })
 
-  it('guarda un valor con config set', () => {
+  it('saves a value with config set', () => {
     execSync('npx tsx src/index.ts config set testKey testValue')
     expect(config.get('testKey')).toBe('testValue')
   })
 
-  it('muestra la configuración con config show', () => {
+  it('displays the configuration with config show', () => {
     config.set('sampleKey', 'sampleValue')
     const output = execSync('npx tsx src/index.ts config show').toString()
     expect(output).toContain('sampleKey')
