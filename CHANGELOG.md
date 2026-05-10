@@ -5,6 +5,24 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.4.0] - 2026-05-10
+
+### Added
+- **Library exports** (`dist/lib.js`): `nxlang` is now importable as a Node.js library for use in NEXUS Studio and other integrations.
+- **`buildSystemPrompt(config, provider)`**: Builds a provider-aware system prompt for Claude, GPT-4, or Gemini API calls. Adapts the NEXUS grammar reference to each provider's expected format.
+- **`createDefaultConfig(partial?)`**: Factory function that returns a valid `NexusConfig` with sensible defaults. Accepts a partial override.
+- **`NEXUS_OPERATORS`**: Structured grammar data (array of `NexusOperator`) for Monaco Editor syntax highlighting, autocomplete, and validation in NEXUS Studio.
+- **`NEXUS_MODULES`**: Exportable module registry with orchestrator lists per module.
+- **`NEXUS_BLUEPRINTS`**: Starter blueprint registry with id, name, description, and file reference.
+- **`NEXUS_ORCHESTRATORS`** / **`NEXUS_KEYWORDS`**: Typed const arrays for parser/highlighter use.
+- **TypeScript types**: `NexusOperator`, `NexusModule`, `NexusBlueprint`, `NexusProvider` all exported with full `.d.ts` declarations.
+
+### Changed
+- **`nexus context`**: Now writes `CLAUDE.md` to the project root (Claude Code reads it automatically at startup) and registers `/nexus` as a slash command in `.claude/commands/nexus.md` for mid-session context refresh. No more copy/paste.
+- **`package.json` `exports`**: `"."` now points to `dist/lib.js` for library consumers while the CLI `bin/nexus.js` continues to work unchanged.
+
+---
+
 ## [0.3.3] - 2026-05-10
 
 ### Added

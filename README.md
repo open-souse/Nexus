@@ -38,13 +38,13 @@ nexus init
 
 NEXUS asks about your framework, colors, and icons, then generates a personalized `nexus.config.json` — the DNA of your project. The AI uses it as global context in every session.
 
-### 2. Induce the AI
+### 2. Load the grammar into your AI tool
 
 ```bash
 nexus context
 ```
 
-Generates the master prompt with the complete grammar and examples. Copy and paste it at the start of your session with Claude Code, Cursor, or Copilot. The AI responds: `NEXUS_SYSTEM_ONLINE`.
+Writes `CLAUDE.md` to your project root with the full NEXUS grammar and your project DNA. Claude Code reads this file automatically at session start — no copy/paste needed. Use `/nexus` inside Claude Code to refresh context mid-session.
 
 ### 3. Validate your files
 
@@ -128,6 +128,44 @@ NEXUS is designed for coding tools with filesystem access:
 - **GitHub Copilot** ✓
 
 > Plain chat (Claude.ai, ChatGPT web) can interpret NEXUS but cannot write files to disk.
+
+---
+
+## Use as a Library (NEXUS Studio / API integrations)
+
+`nxlang` exports its core engine so NEXUS Studio and other tools can use it programmatically:
+
+```bash
+npm install nxlang
+```
+
+```typescript
+import {
+  buildContextPrompt,    // full NEXUS grammar prompt from a config
+  buildSystemPrompt,     // provider-aware system prompt (claude | gpt | gemini)
+  validateNexus,         // validate .nexus file content
+  createDefaultConfig,   // factory for a valid NexusConfig with sensible defaults
+  NEXUS_OPERATORS,       // structured grammar data for Monaco syntax highlighting
+  NEXUS_MODULES,         // available modules with orchestrator lists
+  NEXUS_BLUEPRINTS,      // starter blueprint registry
+  NEXUS_VERSION,         // current grammar version string
+} from 'nxlang'
+
+// Build a system prompt for the Claude API
+const config = createDefaultConfig({ framework: 'next-ts', styling: 'tailwind' })
+const systemPrompt = buildSystemPrompt(config, 'claude')
+
+// Build for GPT or Gemini
+const gptPrompt = buildSystemPrompt(config, 'gpt')
+
+// Validate a .nexus file before sending to AI
+const errors = validateNexus(nexusFileContent)
+if (errors.length === 0) {
+  // safe to send
+}
+```
+
+TypeScript types are included via `dist/lib.d.ts`.
 
 ---
 

@@ -153,14 +153,27 @@ ${JSON.stringify(config, null, 2)}
   `.trim()
 }
 
+const SLASH_COMMAND_CONTENT = `# NEXUS Context Refresh
+
+Regenerate and reload the NEXUS notation reference for this session.
+
+\`\`\`bash
+npx nxlang context
+\`\`\`
+
+After running, the NEXUS grammar and project DNA are reloaded from \`nexus.config.json\`.
+Use this command whenever the AI seems to have forgotten NEXUS syntax.
+`
+
 export function contextCommand(): Command {
   return new Command('context')
-    .description('Generate the NEXUS notation reference for your AI session')
+    .description('Generate CLAUDE.md with the NEXUS notation reference for Claude Code')
     .action(async () => {
       const spinner = ora('Generating NEXUS notation reference...').start()
 
       try {
-        const configPath = path.join(process.cwd(), 'nexus.config.json')
+        const cwd = process.cwd()
+        const configPath = path.join(cwd, 'nexus.config.json')
         let config: Partial<NexusConfig> = { lang: 'en', modules: ['frontend'] }
 
         if (fs.existsSync(configPath)) {
@@ -170,12 +183,21 @@ export function contextCommand(): Command {
           } catch { /* use default */ }
         }
 
-        const inductionPrompt = buildPrompt(config)
+        const prompt = buildPrompt(config)
+        const claudeMd = `# NEXUS Notation Reference\n\n${prompt}\n`
 
-        spinner.succeed(chalk.green('NEXUS notation reference generated!'))
-        console.log(chalk.cyan('\nPaste this once at the start of your AI session:\n'))
-        console.log(inductionPrompt)
-        console.log('\n')
+        // Write CLAUDE.md — Claude Code reads this automatically at startup
+        const claudeMdPath = path.join(cwd, 'CLAUDE.md')
+        await fs.writeFile(claudeMdPath, claudeMd, 'utf8')
+
+        // Register /nexus slash command for mid-session refresh
+        const slashDir = path.join(cwd, '.claude', 'commands')
+        await fs.ensureDir(slashDir)
+        await fs.writeFile(path.join(slashDir, 'nexus.md'), SLASH_COMMAND_CONTENT, 'utf8')
+
+        spinner.succeed(chalk.green('NEXUS notation reference written to CLAUDE.md'))
+        console.log(chalk.cyan('\nClaude Code will load it automatically on next session start.'))
+        console.log(chalk.cyan('Use /nexus inside Claude Code to refresh context mid-session.\n'))
 
       } catch (error: unknown) {
         const msg = error instanceof Error ? error.message : String(error)
