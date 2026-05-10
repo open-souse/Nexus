@@ -1,56 +1,112 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, afterEach } from 'vitest'
 import { execSync } from 'child_process'
+import fs from 'fs-extra'
+import path from 'path'
+import os from 'os'
+
+const ROOT = path.resolve('.')
+
+let tmpDir: string
+
+function setup() {
+  tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'nexus-context-'))
+  fs.writeFileSync(path.join(tmpDir, 'nexus.config.json'), JSON.stringify({
+    lang: 'en',
+    modules: ['frontend'],
+    framework: 'next-ts',
+    styling: 'tailwind',
+    output: './src/components',
+    tokens: { primary: '#2563eb', secondary: '#64748b', danger: '#ef4444', success: '#22c55e', radius: '8px', font: "'Inter'" },
+    icons: { library: 'lucide-react' },
+    standards: ['Clean Code']
+  }, null, 2))
+}
+
+function runContext() {
+  return execSync(`npx tsx ${ROOT}/src/index.ts context`, { cwd: tmpDir }).toString()
+}
+
+function readClaudeMd() {
+  return fs.readFileSync(path.join(tmpDir, 'CLAUDE.md'), 'utf8')
+}
+
+afterEach(() => {
+  if (tmpDir) fs.removeSync(tmpDir)
+})
 
 describe('nexus context', () => {
-  it('generates the NEXUS notation reference', () => {
-    const output = execSync('npx tsx src/index.ts context').toString()
-    expect(output).toContain('NEXUS NOTATION')
-    expect(output).toContain('v3.3')
+  it('generates CLAUDE.md with the NEXUS notation reference', () => {
+    setup()
+    runContext()
+    const content = readClaudeMd()
+    expect(content).toContain('NEXUS NOTATION')
+    expect(content).toContain('v3.3')
   })
 
   it('includes the syntax reference header', () => {
-    const output = execSync('npx tsx src/index.ts context').toString()
-    expect(output).toContain('NEXUS SYNTAX REFERENCE')
-    expect(output).toContain('PROJECT DNA')
+    setup()
+    runContext()
+    const content = readClaudeMd()
+    expect(content).toContain('NEXUS SYNTAX REFERENCE')
+    expect(content).toContain('PROJECT DNA')
   })
 
   it('includes reference examples', () => {
-    const output = execSync('npx tsx src/index.ts context').toString()
-    expect(output).toContain('EXAMPLES')
-    expect(output).toContain('Card #glass')
+    setup()
+    runContext()
+    const content = readClaudeMd()
+    expect(content).toContain('EXAMPLES')
+    expect(content).toContain('Card #glass')
   })
 
   it('includes safe-edit operator rules', () => {
-    const output = execSync('npx tsx src/index.ts context').toString()
-    expect(output).toContain('@modify')
-    expect(output).toContain('preserve:all')
-    expect(output).toContain('inherit:siblings')
-    expect(output).toContain('cascade:children')
-    expect(output).toContain('position:move-to:N')
+    setup()
+    runContext()
+    const content = readClaudeMd()
+    expect(content).toContain('@modify')
+    expect(content).toContain('preserve:all')
+    expect(content).toContain('inherit:siblings')
+    expect(content).toContain('cascade:children')
+    expect(content).toContain('position:move-to:N')
   })
 
   it('includes all main grammar operators', () => {
-    const output = execSync('npx tsx src/index.ts context').toString()
-    expect(output).toContain('->')
-    expect(output).toContain('=>')
-    expect(output).toContain('* N')
-    expect(output).toContain('[locked]')
-    expect(output).toContain('[new]')
+    setup()
+    runContext()
+    const content = readClaudeMd()
+    expect(content).toContain('->')
+    expect(content).toContain('=>')
+    expect(content).toContain('* N')
+    expect(content).toContain('[locked]')
+    expect(content).toContain('[new]')
   })
 
   it('includes v3.3 frontend operators', () => {
-    const output = execSync('npx tsx src/index.ts context').toString()
-    expect(output).toContain('[animate:')
-    expect(output).toContain('[hover:')
-    expect(output).toContain('[a11y:')
-    expect(output).toContain('Store')
+    setup()
+    runContext()
+    const content = readClaudeMd()
+    expect(content).toContain('[animate:')
+    expect(content).toContain('[hover:')
+    expect(content).toContain('[a11y:')
+    expect(content).toContain('Store')
   })
 
   it('includes Create orchestrator and filesystem rule', () => {
-    const output = execSync('npx tsx src/index.ts context').toString()
-    expect(output).toContain('Create')
-    expect(output).toContain('type:component')
-    expect(output).toContain('type:feature')
-    expect(output).toContain('filesystem')
+    setup()
+    runContext()
+    const content = readClaudeMd()
+    expect(content).toContain('Create')
+    expect(content).toContain('type:component')
+    expect(content).toContain('type:feature')
+    expect(content).toContain('filesystem')
+  })
+
+  it('registers the /nexus slash command', () => {
+    setup()
+    runContext()
+    const slashCmd = path.join(tmpDir, '.claude', 'commands', 'nexus.md')
+    expect(fs.existsSync(slashCmd)).toBe(true)
+    const content = fs.readFileSync(slashCmd, 'utf8')
+    expect(content).toContain('NEXUS')
   })
 })

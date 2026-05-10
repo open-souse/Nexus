@@ -23,7 +23,8 @@ function setup(modules: string[]) {
 }
 
 function runContext() {
-  return execSync(`npx tsx ${ROOT}/src/index.ts context`, { cwd: tmpDir }).toString()
+  execSync(`npx tsx ${ROOT}/src/index.ts context`, { cwd: tmpDir })
+  return fs.readFileSync(path.join(tmpDir, 'CLAUDE.md'), 'utf8')
 }
 
 afterEach(() => {
