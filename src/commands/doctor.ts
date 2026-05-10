@@ -22,92 +22,91 @@ function warn(msg: string) {
 
 export function doctorCommand(): Command {
   return new Command('doctor')
-    .description('Verifica que la configuración de NEXUS esté correcta')
+    .description('Check that the NEXUS configuration is correct')
     .action(() => {
-      console.log(chalk.cyan('\nDiagnóstico de NEXUS\n'))
+      console.log(chalk.cyan('\nNEXUS Diagnostics\n'))
 
       let errors = 0
       const configPath = path.join(process.cwd(), 'nexus.config.json')
 
-      // 1. Verificar que existe nexus.config.json
+      // 1. Check nexus.config.json exists
       if (!fs.existsSync(configPath)) {
-        fail('nexus.config.json no encontrado — ejecuta nexus init')
-        console.log(chalk.red('\n  1 error crítico. Ejecuta nexus init para comenzar.\n'))
+        fail('nexus.config.json not found — run nexus init')
+        console.log(chalk.red('\n  1 critical error. Run nexus init to get started.\n'))
         process.exit(1)
       }
-      pass('nexus.config.json encontrado')
+      pass('nexus.config.json found')
 
-      // 2. Verificar que es JSON válido
+      // 2. Check valid JSON
       let config: NexusConfig
       try {
         config = fs.readJsonSync(configPath) as NexusConfig
-        pass('nexus.config.json es JSON válido')
+        pass('nexus.config.json is valid JSON')
       } catch {
-        fail('nexus.config.json tiene errores de sintaxis JSON')
+        fail('nexus.config.json has JSON syntax errors')
         process.exit(1)
       }
 
-      // 3. Verificar framework
+      // 3. Check framework
       if (!config.framework) {
-        fail('framework no definido')
+        fail('framework not defined')
         errors++
       } else if (!VALID_FRAMEWORKS.includes(config.framework)) {
-        warn(`framework "${config.framework}" no es estándar — valores válidos: ${VALID_FRAMEWORKS.join(', ')}`)
+        warn(`framework "${config.framework}" is not standard — valid values: ${VALID_FRAMEWORKS.join(', ')}`)
       } else {
         pass(`framework: ${config.framework}`)
       }
 
-      // 4. Verificar styling
+      // 4. Check styling
       if (!config.styling) {
-        warn('styling no definido — se recomienda especificarlo')
+        warn('styling not defined — recommended to specify it')
       } else if (!VALID_STYLING.includes(config.styling)) {
-        warn(`styling "${config.styling}" no reconocido`)
+        warn(`styling "${config.styling}" not recognized`)
       } else {
         pass(`styling: ${config.styling}`)
       }
 
-      // 5. Verificar tokens
+      // 5. Check tokens
       if (!config.tokens) {
-        fail('tokens no definidos')
+        fail('tokens not defined')
         errors++
       } else {
         for (const token of REQUIRED_TOKENS) {
           if (!config.tokens[token]) {
-            fail(`tokens.${token} no definido`)
+            fail(`tokens.${token} not defined`)
             errors++
           } else {
             pass(`tokens.${token}: ${config.tokens[token]}`)
           }
         }
-        
-        // Verificar escalas nuevas
+
+        // Check design scales
         if (!config.tokens.scales) {
-          warn('escalas de diseño (scales) no definidas — se recomienda para mejor precisión')
+          warn('design scales (scales) not defined — recommended for better precision')
         } else {
-          pass('escalas de diseño (radius, spacing, shadows) configuradas')
+          pass('design scales (radius, spacing, shadows) configured')
         }
       }
 
-      // 6. Verificar output
+      // 6. Check output
       if (!config.output) {
-        warn('output no definido — se usará ./src/components por defecto')
+        warn('output not defined — defaults to ./src/components')
       } else {
         pass(`output: ${config.output}`)
       }
 
-      // 7. Verificar lang
+      // 7. Check lang
       if (!config.lang) {
-        warn('lang no definido — se usará "en" por defecto')
+        warn('lang not defined — defaults to "en"')
       } else {
         pass(`lang: ${config.lang}`)
       }
 
-      // Resultado final
       console.log()
       if (errors === 0) {
-        console.log(chalk.green('  Todo está en orden. Ejecuta nexus context para inducir tu IA.\n'))
+        console.log(chalk.green('  Everything looks good. Run nexus context to induce your AI.\n'))
       } else {
-        console.log(chalk.red(`  ${errors} error(es) encontrado(s). Edita nexus.config.json para corregirlos.\n`))
+        console.log(chalk.red(`  ${errors} error(s) found. Edit nexus.config.json to fix them.\n`))
         process.exit(1)
       }
     })
