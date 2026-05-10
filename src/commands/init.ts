@@ -48,8 +48,8 @@ async function runInit(lang: 'es' | 'en') {
         { name: 'Frontend (React/Vue/Next)', value: 'frontend', checked: true },
         { name: 'Backend (API/DB)', value: 'backend' },
         { name: 'Testing (Vitest/Jest/Cypress)', value: 'testing' },
-        { name: 'Diseño (System Tokens)', value: 'design' },
-        { name: 'Medicina (Protocolos)', value: 'medical' }
+        { name: lang === 'es' ? 'Diseño (System Tokens)' : 'Design (System Tokens)', value: 'design' },
+        { name: lang === 'es' ? 'Medicina (Protocolos)' : 'Medical (Protocols)', value: 'medical' }
       ]
     },
     {
@@ -125,30 +125,24 @@ async function runInit(lang: 'es' | 'en') {
   console.log(chalk.cyan(t.next + chalk.bold('nexus context') + '\n'))
 }
 
-/**
- * Comando 'init': Inicializa el ecosistema Nexus en un proyecto local.
- * Crea un archivo de configuración (DNA) con valores por defecto basados en React y Tailwind.
- * 
- * @returns {Command} El objeto Command de Commander para ser registrado en el CLI.
- */
 export function initCommand(): Command {
   return new Command('init')
-    .description('Inicializa NEXUS en tu proyecto')
-    .option('--reset', 'Regenera nexus.config.json aunque ya exista')
-    .option('--lang <lang>', 'Idioma de la interfaz: es | en', 'es')
+    .description('Initialize NEXUS in your project')
+    .option('--reset', 'Regenerate nexus.config.json even if it already exists')
+    .option('--lang <lang>', 'Interface language: es | en', 'en')
     .action(async (options) => {
       const configPath = './nexus.config.json'
-      const lang = options.lang === 'en' ? 'en' : 'es'
+      const lang = options.lang === 'es' ? 'es' : 'en'
 
       if (fs.existsSync(configPath) && !options.reset) {
-        console.log(chalk.yellow('nexus.config.json ya existe'))
-        console.log(chalk.gray('Usa nexus init --reset para regenerarlo'))
+        console.log(chalk.yellow('nexus.config.json already exists'))
+        console.log(chalk.gray('Use nexus init --reset to regenerate it'))
         return
       }
 
       if (options.reset && fs.existsSync(configPath)) {
         fs.removeSync(configPath)
-        console.log(chalk.gray('Configuración anterior eliminada\n'))
+        console.log(chalk.gray('Previous config removed\n'))
       }
 
       await runInit(lang)

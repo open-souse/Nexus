@@ -5,23 +5,23 @@ import chalk from 'chalk'
 
 const BLUEPRINTS: Record<string, { description: string; file: string }> = {
   dashboard: {
-    description: 'Panel de administración con sidebar, stats y tabla',
+    description: 'Admin panel with sidebar, stats cards, and data table',
     file: 'dashboard.nexus'
   },
   landing: {
-    description: 'Página de marketing con hero, features y footer',
+    description: 'Marketing page with hero section, features, and footer',
     file: 'landing-page.nexus'
   },
   auth: {
-    description: 'Login con OAuth, validación y manejo de errores',
+    description: 'Login form with OAuth, validation, and error handling',
     file: 'auth-login.nexus'
   },
   profile: {
-    description: 'Perfil de usuario con edición inline y navegación de ajustes',
+    description: 'User profile with inline editing and settings navigation',
     file: 'profile.nexus'
   },
   cart: {
-    description: 'Carrito con Store global, animaciones y accesibilidad',
+    description: 'Shopping cart with global Store, animations, and accessibility',
     file: 'store-cart.nexus'
   }
 }
@@ -33,36 +33,36 @@ function getBlueprintsDir(): string {
 }
 
 function printList() {
-  console.log(chalk.cyan('\nBlueprints disponibles:\n'))
+  console.log(chalk.cyan('\nAvailable blueprints:\n'))
   for (const [name, { description }] of Object.entries(BLUEPRINTS)) {
     console.log(`  ${chalk.bold.green(name.padEnd(12))} ${chalk.gray(description)}`)
   }
-  console.log(chalk.gray('\nUso: nexus examples show <nombre>\n'))
+  console.log(chalk.gray('\nUsage: nexus examples show <name>\n'))
 }
 
 export function examplesCommand(): Command {
   const cmd = new Command('examples')
-    .description('Lista y muestra blueprints de código NEXUS')
+    .description('List and display NEXUS code blueprints')
 
   cmd
     .command('list')
-    .description('Lista todos los blueprints disponibles')
+    .description('List all available blueprints')
     .action(printList)
 
   cmd
     .command('show <name>')
-    .description('Muestra el contenido de un blueprint')
+    .description('Display the content of a blueprint')
     .action((name: string) => {
       const blueprint = BLUEPRINTS[name]
       if (!blueprint) {
-        console.log(chalk.red(`Blueprint "${name}" no encontrado.`))
-        console.log(chalk.gray('Usa nexus examples list para ver los disponibles.'))
+        console.log(chalk.red(`Blueprint "${name}" not found.`))
+        console.log(chalk.gray('Run nexus examples list to see available blueprints.'))
         process.exit(1)
       }
 
       const filePath = path.join(getBlueprintsDir(), blueprint.file)
       if (!fs.existsSync(filePath)) {
-        console.log(chalk.red(`Archivo no encontrado: ${filePath}`))
+        console.log(chalk.red(`File not found: ${filePath}`))
         process.exit(1)
       }
 

@@ -4,147 +4,154 @@
 [![npm version](https://img.shields.io/npm/v/nxlang.svg)](https://www.npmjs.com/package/nxlang)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-**Deja de escribir "prompts". Empieza a escribir intenciones.**
+**Stop writing "prompts". Start writing intentions.**
 
-Así como los lenguajes de programación simplificaron la comunicación humano-máquina, NEXUS simplifica la comunicación humano-IA. Una gramática estructurada que la IA interpreta de forma exacta, sin ambigüedad, sin distorsión.
-
----
-
-## El Problema
-
-Comunicarle una idea a una IA en lenguaje natural es impreciso. La IA distorsiona, adivina, o pide aclaraciones constantes. El resultado rara vez es el esperado al primer intento.
-
-**NEXUS es la capa de abstracción.** Una gramática concisa que la IA entiende de forma nativa.
+Just as programming languages simplified human-machine communication, NEXUS simplifies human-AI communication. A structured grammar that AI interprets exactly — no ambiguity, no distortion.
 
 ---
 
-## Instalación
+## The Problem
+
+Communicating an idea to an AI in natural language is imprecise. The AI distorts, guesses, or asks constant clarifying questions. The result rarely matches what you envisioned on the first try.
+
+**NEXUS is the abstraction layer.** A concise grammar the AI understands natively.
+
+---
+
+## Installation
 
 ```bash
 npm install -g nxlang
 ```
 
-> Requiere Node.js >= 18
+> Requires Node.js >= 18
 
 ---
 
-## Cómo funciona
+## How it works
 
-### 1. Inicializa tu proyecto
+### 1. Initialize your project
 
 ```bash
 nexus init
 ```
 
-NEXUS te hace preguntas sobre tu framework, colores e iconos, y genera un `nexus.config.json` personalizado — el DNA de tu proyecto. La IA lo usará como contexto global en cada sesión.
+NEXUS asks about your framework, colors, and icons, then generates a personalized `nexus.config.json` — the DNA of your project. The AI uses it as global context in every session.
 
-### 2. Induce a la IA
+### 2. Induce the AI
 
 ```bash
 nexus context
 ```
 
-Genera el prompt maestro con la gramática completa y ejemplos. Cópialo y pégalo al inicio de tu sesión con Claude, GPT-4 o Gemini. La IA responderá: `NEXUS_SYSTEM_ONLINE`.
+Generates the master prompt with the complete grammar and examples. Copy and paste it at the start of your session with Claude Code, Cursor, or Copilot. The AI responds: `NEXUS_SYSTEM_ONLINE`.
 
-## ⚙️ Configuración Global
+### 3. Validate your files
 
-Nexus te permite guardar preferencias que persisten en toda tu computadora:
+```bash
+nexus validate ./my-component.nexus
+```
 
-*   **Ver tu configuración actual:**
-    ```bash
-    nexus config show
-    ```
-*   **Establecer un valor global:**
-    ```bash
-    nexus config set <clave> <valor>
-    ```
-    *Ejemplo: `nexus config set author "2026 Ventures SAS"`*
+Checks syntax before sending it to the AI.
 
 ---
 
-## 💬 Cómo hablar en NEXUS (Shorthand)
+## Writing in NEXUS
 
-Una vez inducida la IA, escribe directamente en sintaxis NEXUS:
+Once the AI is induced, write directly in NEXUS syntax:
 
 ```nexus
 @React #Tailwind
 Card #glass
-  Text "Hola Mundo" !bold
-  Button "Aceptar" #primary -> /dashboard
+  Text "Hello World" !bold
+  Button "Accept" #primary -> /dashboard
 ```
 
-La IA entrega el código exacto siguiendo tu DNA.
-
-### 3. Valida tus archivos
-
-```bash
-nexus validate ./mi-componente.nexus
-```
-
-Verifica la sintaxis antes de enviársela a la IA.
+The AI delivers exact code following your DNA.
 
 ---
 
-## 📖 Gramática Maestra (v3.1)
+## Grammar v3.3
 
-| Operador | Significado | Ejemplo |
+| Operator | Meaning | Example |
 |---|---|---|
-| `@` | Directivas de entorno | `@React`, `@CleanCode` |
-| `#` | Design Tokens / Estilos | `Button #primary #glass` |
-| `$` | Variables Globales / DNA | `$brand: "Nexus"` |
-| `~` | Estado Local / Reactividad | `~isOpen: false`, `~count: 0` |
-| `|` | Adaptabilidad (Responsive) | `Grid [cols:1 \| cols:3]` |
-| `* N` | Multiplicador de elementos | `Card * 3` |
-| `?` | Estados UI | `?loading`, `?error` |
-| `!` | Prioridad / Énfasis | `Text !bold !danger` |
-| `[locked]` | **Componente Protegido** | `Navbar [locked]` |
-| `[ ]` | Atributos técnicos | `Grid [cols:3]` |
-| `->` | Flujo de navegación | `-> /dashboard` |
+| `@` | Environment directives | `@React`, `@CleanCode` |
+| `#` | Design Tokens / Styles | `Button #primary #glass` |
+| `$` | Global Variables / DNA | `$brand: "Nexus"` |
+| `~` | Local State / Reactivity | `~isOpen: false` |
+| `\|` | Responsive / Adaptability | `Grid [cols:1 \| cols:3]` |
+| `* N` | Element multiplier | `Card * 3` |
+| `?` | UI States | `?loading`, `?error` |
+| `!` | Priority / Emphasis | `Text !bold !danger` |
+| `[locked]` | Protected component | `Navbar [locked]` |
+| `[ ]` | Technical attributes | `Grid [cols:3]` |
+| `[animate:]` | Animations | `Modal [animate: fade-in, duration: 200ms]` |
+| `[hover:]` | Hover styles | `Card [hover: scale-105]` |
+| `[a11y:]` | ARIA accessibility | `Button [a11y: aria-label="Close"]` |
+| `->` | Navigation flow | `-> /dashboard` |
 | `=>` | Side-effects / API | `=> login()` |
 | `<` | Data binding / Types | `Table < User` |
-| `{ }` | Inyección de contexto | `{ ./UserCard.tsx }` |
-| `( cond ) -> A : B` | Condicional de intención | `( ?auth ) -> Home : Login` |
-| `@modify [preserve:all]` | **Intervención Mínima** | La IA solo entrega el fragmento modificado |
+| `{ }` | Context injection | `{ ./UserCard.tsx }` |
+| `( cond ) -> A : B` | Conditional | `( ?auth ) -> Home : Login` |
+| `@modify [preserve:all]` | Safe edit mode | AI delivers only the modified fragment |
+| `?? "question"` | Query operator | Ask a question without leaving NEXUS mode |
 
-Ver gramática completa en [NEXUS-Grammar.md](./NEXUS-Grammar.md).
+See full grammar in [NEXUS-Grammar.md](./NEXUS-Grammar.md).
 
 ---
 
-## Comandos CLI
+## CLI Commands
 
-| Comando | Descripción |
+| Command | Description |
 |---|---|
-| `nexus init` | Inicializa `nexus.config.json` (Soporta módulos: Frontend, Medical, etc.) |
-| `nexus context` | Genera el inductor de lenguaje modular para la IA |
-| `nexus validate <file>` | Valida la sintaxis de un archivo .nexus |
-| `nexus examples list` | Lista ejemplos de blueprints disponibles |
-| `nexus doctor` | Diagnostica el estado de tu configuración |
-| `nexus config set <key> <value>` | Guarda configuración global |
-| `nexus config show` | Muestra la configuración actual |
+| `nexus init` | Initialize `nexus.config.json` with your project DNA |
+| `nexus context` | Generate the AI language inductor prompt |
+| `nexus lockdown` | Generate strict NEXUS-only mode prompt (blocks natural language) |
+| `nexus learn` | Launch the Nexus Sensei interactive tutorial (5 levels) |
+| `nexus validate <file>` | Validate the syntax of a `.nexus` file |
+| `nexus scaffold` | Generate starter files and folder structure |
+| `nexus examples list` | List available code blueprints |
+| `nexus examples show <name>` | Display a blueprint |
+| `nexus doctor` | Diagnose your configuration |
+| `nexus update` | Check for a newer version on npm |
+| `nexus config set <key> <value>` | Save global config |
+| `nexus config show` | Display current global config |
 
 ---
 
-## Desarrollo local
+## Works with
+
+NEXUS is designed for coding tools with filesystem access:
+
+- **Claude Code** ✓
+- **Cursor** ✓
+- **GitHub Copilot** ✓
+
+> Plain chat (Claude.ai, ChatGPT web) can interpret NEXUS but cannot write files to disk.
+
+---
+
+## Local Development
 
 ```bash
 git clone https://github.com/edwinreal/Nexus-.git
 cd Nexus-
 npm install
-npm run build    # Compila TypeScript a dist/
-npm test         # Corre los tests
-npm install -g . # Instala el CLI globalmente
+npm run build    # Compile TypeScript to dist/
+npm test         # Run 95 tests
+npm install -g . # Install CLI globally
 ```
 
 ---
 
-## Visión
+## Vision
 
-NEXUS nació enfocado en frontend, pero la visión es más amplia: convertirse en el estándar de comunicación Humano-IA para cualquier dominio. Un lenguaje abierto, universal y construido por la comunidad.
+NEXUS started focused on frontend, but the vision is broader: become the standard for Human-AI communication across any domain. An open, universal language built by the community.
 
 ---
 
-## Contribuir
+## Contributing
 
-NEXUS es un estándar abierto. Lee [CONTRIBUTING.md](./CONTRIBUTING.md) para saber cómo participar.
+NEXUS is an open standard. Read [CONTRIBUTING.md](./CONTRIBUTING.md) to learn how to participate.
 
-**Licencia MIT** — Desarrollado por [Edwin Realpe](https://github.com/edwinreal)
+**MIT License** — Developed by [Edwin Realpe](https://github.com/edwinreal)

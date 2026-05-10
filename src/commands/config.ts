@@ -4,34 +4,27 @@ import chalk from 'chalk'
 
 const config = new Conf({ projectName: 'nxlang' })
 
-/**
- * Comando 'config': Gestiona la configuración global de Nexus mediante persistencia local.
- * Permite establecer (set) y mostrar (show) valores de configuración que persisten
- * entre diferentes sesiones y proyectos.
- * 
- * @returns {Command} El comando de configuración con subcomandos 'set' y 'show'.
- */
 export function configCommand(): Command {
   const configCmd = new Command("config")
-    .description("Configuración de NEXUS")
+    .description("Manage global NEXUS configuration")
 
   configCmd
     .command("set <key> <value>")
-    .description("Guarda un valor en la configuración global")
+    .description("Save a value to the global config")
     .action((key, value) => {
       config.set(key, value)
-      console.log(chalk.green(`Configuración global actualizada: ${key} = ${value}`))
+      console.log(chalk.green(`Global config updated: ${key} = ${value}`))
     })
 
   configCmd
     .command("show")
-    .description("Muestra la configuración actual")
+    .description("Display the current global config")
     .action(() => {
       const allConfig = config.store
       if (Object.keys(allConfig).length === 0) {
-        console.log(chalk.yellow("No hay configuración global guardada."))
+        console.log(chalk.yellow("No global config saved yet."))
       } else {
-        console.log(chalk.blue("Configuración global actual:"))
+        console.log(chalk.blue("Current global config:"))
         console.log(JSON.stringify(allConfig, null, 2))
       }
     })
