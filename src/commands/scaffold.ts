@@ -14,11 +14,16 @@ function getUtilsContent(styling: string): string {
   if (styling === 'tailwind') {
     return `type ClassValue = string | undefined | null | false | ClassValue[]
 
+function flatClasses(inputs: ClassValue[]): string[] {
+  return inputs.reduce<string[]>((acc, val) => {
+    if (Array.isArray(val)) return acc.concat(flatClasses(val))
+    if (val) acc.push(val)
+    return acc
+  }, [])
+}
+
 function cn(...inputs: ClassValue[]): string {
-  return inputs
-    .flat(Infinity as 0)
-    .filter(Boolean)
-    .join(' ')
+  return flatClasses(inputs).join(' ')
 }
 
 export { cn }
