@@ -120,7 +120,7 @@ NEXUS SYNTAX REFERENCE (v4.0):
 - ${orchList} : Structure orchestrators.
 - Store Name { ~state Action Selector } : Global state (Zustand/Redux/Pinia).
 - Create Name [type:component|page|hook|feature, path:route] : Create files on disk.${activeModules.includes('testing') ? `
-- Test Name [type] : Define a test case. Use keywords Frontend or Backend to scope context.
+- Test Name [type:unit|e2e, framework:vitest|jest|cypress] : Define a test case. Use keywords Frontend or Backend to scope context.
 - Suite "Name" { } : Group related tests.
 - renders: state1, state2 : Render cases to cover (Frontend).
 - handles: event1, event2 : Interactions to test.
