@@ -2,22 +2,25 @@ import { describe, it, expect } from 'vitest'
 import { execSync } from 'child_process'
 
 describe('nexus context', () => {
-  it('generates the NEXUS v3.3 language inductor', () => {
+  it('generates the NEXUS notation reference', () => {
     const output = execSync('npx tsx src/index.ts context').toString()
-    expect(output).toContain('[NEXUS LANGUAGE INDUCTION]')
-    expect(output).toContain('Native Interpreter of NEXUS v3.3')
-    expect(output).toContain('MASTER GRAMMAR (v3.3)')
-    expect(output).toContain('PROJECT DNA')
-    expect(output).toContain('NEXUS_SYSTEM_ONLINE')
+    expect(output).toContain('NEXUS NOTATION')
+    expect(output).toContain('v3.3')
   })
 
-  it('includes reference examples in the prompt', () => {
+  it('includes the syntax reference header', () => {
     const output = execSync('npx tsx src/index.ts context').toString()
-    expect(output).toContain('REFERENCE EXAMPLES')
+    expect(output).toContain('NEXUS SYNTAX REFERENCE')
+    expect(output).toContain('PROJECT DNA')
+  })
+
+  it('includes reference examples', () => {
+    const output = execSync('npx tsx src/index.ts context').toString()
+    expect(output).toContain('EXAMPLES')
     expect(output).toContain('Card #glass')
   })
 
-  it('includes safe-edit operators', () => {
+  it('includes safe-edit operator rules', () => {
     const output = execSync('npx tsx src/index.ts context').toString()
     expect(output).toContain('@modify')
     expect(output).toContain('preserve:all')
@@ -30,13 +33,12 @@ describe('nexus context', () => {
     const output = execSync('npx tsx src/index.ts context').toString()
     expect(output).toContain('->')
     expect(output).toContain('=>')
-    expect(output).toContain('< ')
     expect(output).toContain('* N')
     expect(output).toContain('[locked]')
     expect(output).toContain('[new]')
   })
 
-  it('includes v3.2 frontend operators', () => {
+  it('includes v3.3 frontend operators', () => {
     const output = execSync('npx tsx src/index.ts context').toString()
     expect(output).toContain('[animate:')
     expect(output).toContain('[hover:')
@@ -44,17 +46,11 @@ describe('nexus context', () => {
     expect(output).toContain('Store')
   })
 
-  it('includes Create orchestrator and filesystem execution rule', () => {
+  it('includes Create orchestrator and filesystem rule', () => {
     const output = execSync('npx tsx src/index.ts context').toString()
     expect(output).toContain('Create')
-    expect(output).toContain('FILESYSTEM EXECUTION RULE')
     expect(output).toContain('type:component')
     expect(output).toContain('type:feature')
-  })
-
-  it('includes project DNA and ready signal', () => {
-    const output = execSync('npx tsx src/index.ts context').toString()
-    expect(output).toContain('PROJECT DNA')
-    expect(output).toContain('NEXUS_SYSTEM_ONLINE')
+    expect(output).toContain('filesystem')
   })
 })

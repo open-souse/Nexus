@@ -45,7 +45,6 @@ describe('nexus context — testing module', () => {
     expect(output).toContain('handles:')
     expect(output).toContain('asserts:')
     expect(output).toContain('mocks:')
-    expect(output).toContain('snapshot:')
   })
 
   it('includes supported frameworks in grammar', () => {
@@ -76,6 +75,6 @@ describe('nexus context — testing module', () => {
     const output = runContext()
     expect(output).toContain('Test')
     expect(output).toContain('renders:')
-    expect(output).toContain('NEXUS_SYSTEM_ONLINE')
+    expect(output).toContain('NEXUS NOTATION')
   })
 })

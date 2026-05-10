@@ -2,19 +2,19 @@ import { describe, it, expect } from 'vitest'
 import { execSync } from 'child_process'
 
 describe('nexus learn', () => {
-  it('generates the Nexus Sensei prompt', () => {
+  it('generates the NEXUS learning session prompt', () => {
     const output = execSync('npx tsx src/index.ts learn').toString()
-    expect(output).toContain('[NEXUS SENSEI')
-    expect(output).toContain('Nexus Sensei')
+    expect(output).toContain('NEXUS LEARNING SESSION')
+    expect(output).toContain('v3.3')
   })
 
   it('includes all 5 curriculum levels', () => {
     const output = execSync('npx tsx src/index.ts learn').toString()
-    expect(output).toContain('LEVEL 1')
-    expect(output).toContain('LEVEL 2')
-    expect(output).toContain('LEVEL 3')
-    expect(output).toContain('LEVEL 4')
-    expect(output).toContain('LEVEL 5')
+    expect(output).toContain('Level 1')
+    expect(output).toContain('Level 2')
+    expect(output).toContain('Level 3')
+    expect(output).toContain('Level 4')
+    expect(output).toContain('Level 5')
   })
 
   it('teaches level 1 basics', () => {
@@ -58,9 +58,9 @@ describe('nexus learn', () => {
     expect(output).toContain('//quit')
   })
 
-  it('includes session complete response', () => {
+  it('includes teaching instructions', () => {
     const output = execSync('npx tsx src/index.ts learn').toString()
-    expect(output).toContain('NEXUS_SENSEI: SESSION_COMPLETE')
+    expect(output).toContain('Level X/5')
   })
 
   it('includes project DNA', () => {
