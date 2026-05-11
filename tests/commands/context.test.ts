@@ -26,8 +26,8 @@ function runContext() {
   return execSync(`npx tsx ${ROOT}/src/index.ts context`, { cwd: tmpDir }).toString()
 }
 
-function readClaudeMd() {
-  return fs.readFileSync(path.join(tmpDir, 'CLAUDE.md'), 'utf8')
+function readNexusMd() {
+  return fs.readFileSync(path.join(tmpDir, 'NEXUS.md'), 'utf8')
 }
 
 afterEach(() => {
@@ -35,10 +35,10 @@ afterEach(() => {
 })
 
 describe('nexus context', () => {
-  it('generates CLAUDE.md with the NEXUS notation reference', () => {
+  it('generates NEXUS.md with the NEXUS notation reference', () => {
     setup()
     runContext()
-    const content = readClaudeMd()
+    const content = readNexusMd()
     expect(content).toContain('NEXUS NOTATION')
     expect(content).toContain('v4.0')
   })
@@ -46,7 +46,7 @@ describe('nexus context', () => {
   it('includes the syntax reference header', () => {
     setup()
     runContext()
-    const content = readClaudeMd()
+    const content = readNexusMd()
     expect(content).toContain('NEXUS SYNTAX REFERENCE')
     expect(content).toContain('PROJECT DNA')
   })
@@ -54,7 +54,7 @@ describe('nexus context', () => {
   it('includes reference examples', () => {
     setup()
     runContext()
-    const content = readClaudeMd()
+    const content = readNexusMd()
     expect(content).toContain('EXAMPLES')
     expect(content).toContain('Card #glass')
   })
@@ -62,7 +62,7 @@ describe('nexus context', () => {
   it('includes safe-edit operator rules', () => {
     setup()
     runContext()
-    const content = readClaudeMd()
+    const content = readNexusMd()
     expect(content).toContain('@modify')
     expect(content).toContain('preserve:all')
     expect(content).toContain('inherit:siblings')
@@ -73,7 +73,7 @@ describe('nexus context', () => {
   it('includes all main grammar operators', () => {
     setup()
     runContext()
-    const content = readClaudeMd()
+    const content = readNexusMd()
     expect(content).toContain('->')
     expect(content).toContain('=>')
     expect(content).toContain('* N')
@@ -84,7 +84,7 @@ describe('nexus context', () => {
   it('includes v3.3 frontend operators', () => {
     setup()
     runContext()
-    const content = readClaudeMd()
+    const content = readNexusMd()
     expect(content).toContain('[animate:')
     expect(content).toContain('[hover:')
     expect(content).toContain('[a11y:')

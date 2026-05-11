@@ -4,7 +4,6 @@ export { validateNexus } from './commands/validate.js'
 export type { ValidationError } from './commands/validate.js'
 
 export { buildPrompt as buildContextPrompt } from './commands/context.js'
-export { buildLockdownPrompt as buildPrecisionPrompt } from './commands/lockdown.js'
 export type { NexusConfig, NexusTokens } from './types/nexus.js'
 
 export {

@@ -5,7 +5,7 @@
 ## 🌟 Cómo puedes ayudar
 
 ### 1. Mejorar la Gramática
-Si encuentras ambigüedades en la gramática actual (v2.5) o sientes que falta un operador para describir una intención compleja, abre un **Issue** para discutir la propuesta.
+Si encuentras ambigüedades en la gramática actual (v4.0) o sientes que falta un operador para describir una intención compleja, abre un **Issue** para discutir la propuesta.
 
 ### 2. Crear Inductores de Lenguaje
 Cada IA (Claude, GPT-4, Gemini) puede interpretar Nexus de forma ligeramente distinta. Necesitamos "Inductores" optimizados para cada modelo.

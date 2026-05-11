@@ -16,6 +16,14 @@ export function createDefaultConfig(partial?: Partial<NexusConfig>): NexusConfig
       font: "'Inter', sans-serif"
     },
     icons: { library: 'lucide-react' },
+    backend: {
+      framework: 'nestjs',
+      database: 'postgresql',
+      orm: 'prisma'
+    },
+    testing: {
+      scope: 'full-stack'
+    },
     standards: ['Clean Code', 'Modular Architecture'],
     ...partial
   }

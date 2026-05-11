@@ -157,6 +157,25 @@ export function validateNexus(content: string): ValidationError[] {
         }
       }
     }
+
+    // !pk — primary key constraint
+    if (trimmed.includes('!pk') && !trimmed.includes('Entity') && !trimmed.includes('id')) {
+      // Valid but unusual
+    }
+
+    // @Auth — authentication directive
+    if (trimmed.includes('@Auth')) {
+      if (!trimmed.match(/@Auth(\[.*\])?/)) {
+        errors.push({ line: lineNumber, message: 'Invalid @Auth directive. Expected format: @Auth or @Auth[mode:...]' })
+      }
+    }
+
+    // @RateLimit — rate limit directive
+    if (trimmed.includes('@RateLimit')) {
+      if (!trimmed.match(/@RateLimit\[\d+\/\w+\]/)) {
+        errors.push({ line: lineNumber, message: 'Invalid @RateLimit. Expected format: @RateLimit[number/unit] (e.g. 100/min)' })
+      }
+    }
   })
 
   // Check that all balances are zero at end of file

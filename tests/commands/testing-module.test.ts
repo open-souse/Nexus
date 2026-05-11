@@ -24,7 +24,7 @@ function setup(modules: string[]) {
 
 function runContext() {
   execSync(`npx tsx ${ROOT}/src/index.ts context`, { cwd: tmpDir })
-  return fs.readFileSync(path.join(tmpDir, 'CLAUDE.md'), 'utf8')
+  return fs.readFileSync(path.join(tmpDir, 'NEXUS.md'), 'utf8')
 }
 
 afterEach(() => {

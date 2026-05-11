@@ -76,7 +76,7 @@ export function buildPrompt(config: Partial<NexusConfig>): string {
       dynamicExamples += MODULE_EXAMPLES[mod] + '\n'
     }
     if (mod === 'backend') {
-      ['Model', 'Controller', 'Middleware', 'Service', 'Endpoint'].forEach(o => {
+      ['Model', 'Controller', 'Middleware', 'Service', 'Endpoint', 'Worker', 'Queue', 'CronJob'].forEach(o => {
         if (!orchestrators.includes(o)) orchestrators.push(o)
       })
     }
@@ -111,9 +111,12 @@ NEXUS SYNTAX REFERENCE (v4.0):
 - [animate: type, duration: Xms] : Entry/exit animation.
 - [hover: ...] : Hover/focus styles.
 - [a11y: ...] : ARIA accessibility attributes.
+- !pk : Database primary key constraint.
+- @Auth[mode:jwt] : Requires authentication for an endpoint or resource.
+- @RateLimit[X/min] : Limits request frequency.
 - ?? "question" : I'm asking a quick question — answer briefly, then continue coding.
 - ( cond ) -> A : B : Conditional rendering.
-- -> : Navigation / routing.
+- -> : Navigation / routing / relations.
 - => : Side-effects / API calls / handlers.
 - < : Data binding / types.
 - { path } : Inject existing code or file.
@@ -166,7 +169,7 @@ const SLASH_COMMAND_CONTENT = `# NEXUS Context Refresh
 Regenerate and reload the NEXUS notation reference for this session.
 
 \`\`\`bash
-npx nxlang context
+npx nexus context
 \`\`\`
 
 After running, the NEXUS grammar and project DNA are reloaded from \`nexus.config.json\`.
@@ -175,7 +178,7 @@ Use this command whenever the AI seems to have forgotten NEXUS syntax.
 
 export function contextCommand(): Command {
   return new Command('context')
-    .description('Generate CLAUDE.md with the NEXUS notation reference for Claude Code')
+    .description('Generate NEXUS.md with the NEXUS notation reference for AI context induction')
     .action(async () => {
       const spinner = ora('Generating NEXUS notation reference...').start()
 
@@ -192,19 +195,19 @@ export function contextCommand(): Command {
         }
 
         const prompt = buildPrompt(config)
-        const claudeMd = `# NEXUS Notation Reference\n\n${prompt}\n`
+        const nexusMd = `# NEXUS Notation Reference\n\n${prompt}\n`
 
-        // Write CLAUDE.md — Claude Code reads this automatically at startup
-        const claudeMdPath = path.join(cwd, 'CLAUDE.md')
-        await fs.writeFile(claudeMdPath, claudeMd, 'utf8')
+        // Write NEXUS.md — The universal context for AI models
+        const nexusMdPath = path.join(cwd, 'NEXUS.md')
+        await fs.writeFile(nexusMdPath, nexusMd, 'utf8')
 
         // Register /nexus slash command for mid-session refresh
         const slashDir = path.join(cwd, '.claude', 'commands')
         await fs.ensureDir(slashDir)
         await fs.writeFile(path.join(slashDir, 'nexus.md'), SLASH_COMMAND_CONTENT, 'utf8')
 
-        spinner.succeed(chalk.green('NEXUS notation reference written to CLAUDE.md'))
-        console.log(chalk.cyan('\nClaude Code will load it automatically on next session start.'))
+        spinner.succeed(chalk.green('NEXUS notation reference written to NEXUS.md'))
+        console.log(chalk.cyan('\nYour AI context is ready in NEXUS.md.'))
         console.log(chalk.cyan('Use /nexus inside Claude Code to refresh context mid-session.\n'))
 
       } catch (error: unknown) {

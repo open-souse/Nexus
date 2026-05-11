@@ -14,7 +14,7 @@ NEXUS is a structured, AI-native shorthand designed to eliminate the ambiguity o
 Nexus has pivoted. We've stripped away the CLI clutter to focus on being the most robust **Human-AI Communication Layer** for both Frontend and Backend development.
 
 ### Key Enhancements:
-- **Full-Stack Orchestration**: New specialized operators for Backend (Models, Controllers, Workers).
+- **Elite Backend Support**: Complete grammar for models, controllers, services, and workers.
 - **Library-First Architecture**: Designed to be imported into web editors and IDEs.
 - **Provider-Aware Prompts**: Built-in support for generating system prompts for Claude, GPT-4, and Gemini.
 - **Filesystem Native**: Optimized for tools like Claude Code, Cursor, and Copilot.
@@ -44,20 +44,17 @@ import {
   createDefaultConfig 
 } from 'nxlang';
 
-// 1. Create a project DNA
+// 1. Create a project DNA (Full-Stack Support)
 const config = createDefaultConfig({
   framework: 'next-ts',
   backend: {
     framework: 'nestjs',
     database: 'postgresql',
     orm: 'prisma'
-  },
-  testing: {
-    scope: 'full-stack'
   }
 });
 
-// 2. Build a provider-optimized prompt
+// 2. Build a provider-optimized prompt (Claude, GPT, Gemini)
 const prompt = buildSystemPrompt(config, 'claude');
 
 // 3. Validate NEXUS syntax on the fly
@@ -68,7 +65,7 @@ const errors = validateNexus('@React Page Home');
 
 ## 💬 The NEXUS Grammar (v4.0)
 
-| Operator | Meaning | Backend / DB Example |
+| Operator | Meaning | Example |
 |---|---|---|
 | `!pk` | **Primary Key** | `Entity id type:uuid !pk` |
 | `@Auth` | **Authentication** | `@Auth[mode:jwt]` |
@@ -81,7 +78,7 @@ const errors = validateNexus('@React Page Home');
 ### Advanced Orchestrators:
 - **Frontend**: `Page`, `Layout`, `Section`, `Store`
 - **Backend**: `Model`, `Controller`, `Service`, `Worker`, `Queue`, `CronJob`
-- **Testing**: `Test`, `Suite`
+*Para una referencia completa, consulta [NEXUS-Grammar.md](./NEXUS-Grammar.md)*
 
 ---
 
@@ -90,16 +87,14 @@ const errors = validateNexus('@React Page Home');
 | Command | Description |
 |---|---|
 | `nexus init` | Initialize your project DNA (`nexus.config.json`) |
-| `nexus context` | Generate `CLAUDE.md` for native Claude Code integration |
+| `nexus context` | Generate `NEXUS.md` for universal AI integration |
 | `nexus validate <file>` | Validate syntax of a `.nexus` file |
-| `nexus scaffold` | Generate file structures from intentions |
-| `nexus lockdown` | Strict mode: Blocks the AI from using natural language |
 
 ---
 
 ## 🗺️ Vision
 
-NEXUS was born from the frustration of explaining complex Frontend structures to IAs. Today, it is evolving into a universal protocol that simplifies how humans and machines build full-stack software together.
+NEXUS was born from the frustration of explaining complex structures to IAs. Today, it is a universal protocol that simplifies how humans and machines build full-stack software together.
 
 **NEXUS Studio** is coming soon.
 
