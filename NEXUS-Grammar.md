@@ -37,13 +37,6 @@ NEXUS se basa en la indentación (2 espacios). Cada línea representa un **Orque
 
 ## 3. Orquestadores
 
-### 📂 SDD (Software Design Document)
-*Usado para arquitectura de sistemas de alto nivel.*
-- `System`: El contenedor principal de la aplicación.
-- `Actor`: Roles de usuario y sus capacidades.
-- `Requirement`: Restricciones de negocio o técnicas.
-- `Flow`: Rutas lógicas entre capas (UX/API/DB).
-
 ### 🎨 Frontend
 - `Page`: Una pantalla o vista completa.
 - `Layout`: Envoltorio estructural reutilizable.
@@ -60,45 +53,13 @@ NEXUS se basa en la indentación (2 espacios). Cada línea representa un **Orque
 - `Middleware`: Interceptores de petición/respuesta.
 - `Worker` / `Queue` / `CronJob`: Tareas en segundo plano.
 
-### 🛠️ Database Avanzado
-- `Index`: Índices de optimización de base de datos.
-- `Trigger`: Lógica de DB automatizada en eventos.
-- `Procedure`: Procedimientos almacenados o consultas complejas.
-
 ### 🧪 Testing
 - `Suite`: Grupo de pruebas relacionadas.
 - `Test`: Caso de prueba individual (Unit, Integration, E2E).
 
 ---
 
-## 4. Palabras Clave Avanzadas
-
-| Palabra Clave | Contexto | Propósito |
-|:---|:---|:---|
-| `can` | `Actor` | Define permisos/capacidades del usuario. |
-| `must` / `should` | `Requirement` | Define restricciones estrictas o sugeridas. |
-| `policy` | `Router` / `Controller` | Nombre de la lógica de control de acceso. |
-| `architecture` | `System` | Patrón global (Hexagonal, Monolito). |
-| `Entity` | `Model` | Define un campo en la base de datos. |
-| `Relation` | `Model` | Define relaciones de clave foránea. |
-| `unique` | `Index` | Asegura que un campo sea único. |
-| `renders` | `Test` | Estados de UI a verificar. |
-| `handles` | `Test` / `Endpoint` | Eventos o rutas a procesar. |
-| `expects` | `Test` | Aserciones sobre los resultados. |
-
----
-
-## 5. Ejemplos de Implementación
-
-### Arquitectura de Sistema (SDD)
-```nexus
-System "GestorPedidos"
-  architecture: Hexagonal
-  Actor "DueñoTienda"
-    can: gestionar-inventario, ver-reportes
-  Requirement "Rendimiento"
-    must: cargar-en-menos-de-200ms
-```
+## 4. Ejemplos de Implementación
 
 ### Lógica Full-Stack
 ```nexus
@@ -109,7 +70,6 @@ Model Cuenta
   Index id [unique]
 
 Controller CuentaController
-  policy: es-dueño
   Endpoint GET /saldo => CuentaService.obtenerSaldo()
 ```
 
