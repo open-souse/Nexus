@@ -1,7 +1,7 @@
 // NEXUS grammar as structured data — used by NEXUS Studio for syntax highlighting,
 // autocomplete, validation, and documentation.
 
-export const NEXUS_VERSION = '4.5.0'
+export const NEXUS_VERSION = '4.0'
 
 export interface NexusOperator {
   symbol: string
@@ -27,16 +27,13 @@ export interface NexusBlueprint {
 export const NEXUS_ORCHESTRATORS = [
   'Page', 'Layout', 'Section', 'Store', 'Type', 'Create',
   'Test', 'Suite', 'Model', 'Controller', 'Middleware', 'Service', 'Endpoint',
-  'Worker', 'Queue', 'CronJob',
-  'System', 'Actor', 'Flow', 'Requirement', 'Router',
-  'Index', 'Trigger', 'Procedure'
+  'Worker', 'Queue', 'CronJob'
 ] as const
 
 export const NEXUS_KEYWORDS = [
   'Action', 'Selector', 'Method', 'Auth', 'Response', 'Schema', 'Guard', 'Interceptor', 'Payload',
   'Entity', 'Relation', 'Repository', 'renders', 'handles', 'asserts', 'mocks',
-  'expects', 'status', 'body', 'db', 'Frontend', 'Backend', 'components', 'hooks', 'types',
-  'can', 'must', 'should', 'architecture', 'policy', 'unique', 'type'
+  'expects', 'status', 'body', 'db', 'Frontend', 'Backend', 'components', 'hooks', 'types'
 ] as const
 
 export const NEXUS_OPERATORS: NexusOperator[] = [
@@ -73,25 +70,19 @@ export const NEXUS_MODULES: NexusModule[] = [
     id: 'frontend',
     name: 'Frontend',
     description: 'React, Vue, Next.js components and pages',
-    orchestrators: ['Page', 'Layout', 'Section', 'Store', 'Type', 'Create', 'Router']
+    orchestrators: ['Page', 'Layout', 'Section', 'Store', 'Type', 'Create']
   },
   {
     id: 'backend',
     name: 'Backend',
     description: 'API endpoints, services, database models and controllers',
-    orchestrators: ['Model', 'Controller', 'Middleware', 'Service', 'Endpoint', 'Worker', 'Queue', 'CronJob', 'Router']
+    orchestrators: ['Model', 'Controller', 'Middleware', 'Service', 'Endpoint', 'Worker', 'Queue', 'CronJob']
   },
   {
     id: 'testing',
     name: 'Testing',
     description: 'Vitest, Jest, and Cypress test suites',
     orchestrators: ['Test', 'Suite']
-  },
-  {
-    id: 'sdd',
-    name: 'SDD',
-    description: 'Software Design Document and Architecture',
-    orchestrators: ['System', 'Actor', 'Flow', 'Requirement']
   },
   {
     id: 'design',
@@ -133,82 +124,3 @@ export const NEXUS_BLUEPRINTS: NexusBlueprint[] = [
     file: 'store-cart.nexus'
   }
 ]
-
-/**
- * Define qué Orchestrators pueden contener a otros elementos.
- * Ayuda al validador semántico a detectar estructuras imposibles o mal organizadas.
- */
-export const ORCHESTRATOR_RULES: Record<string, { allowedKeywords: string[], allowedOrchestrators?: string[] }> = {
-  Page: {
-    allowedKeywords: ['Auth', 'Response', 'renders', 'handles', 'components', 'hooks', 'types'],
-    allowedOrchestrators: ['Section', 'Store']
-  },
-  Layout: {
-    allowedKeywords: ['components', 'hooks', 'types'],
-    allowedOrchestrators: ['Section']
-  },
-  Store: {
-    allowedKeywords: ['Action', 'Selector', 'Response', 'Schema'],
-    allowedOrchestrators: []
-  },
-  Model: {
-    allowedKeywords: ['Entity', 'Relation', 'Schema', 'unique'],
-    allowedOrchestrators: ['Index']
-  },
-  Controller: {
-    allowedKeywords: ['Guard', 'Interceptor', 'Auth', 'RateLimit', 'Endpoint', 'policy'],
-    allowedOrchestrators: ['Router']
-  },
-  Service: {
-    allowedKeywords: ['Method', 'Repository'],
-    allowedOrchestrators: []
-  },
-  Endpoint: {
-    allowedKeywords: ['Auth', 'Response', 'Schema', 'Payload', 'status', 'body', 'policy'],
-    allowedOrchestrators: []
-  },
-  Test: {
-    allowedKeywords: ['renders', 'handles', 'asserts', 'mocks', 'expects', 'status', 'body', 'db'],
-    allowedOrchestrators: []
-  },
-  Suite: {
-    allowedKeywords: [],
-    allowedOrchestrators: ['Test']
-  },
-  Create: {
-    allowedKeywords: ['components', 'hooks', 'types'],
-    allowedOrchestrators: []
-  },
-  System: {
-    allowedKeywords: ['architecture'],
-    allowedOrchestrators: ['Actor', 'Flow', 'Requirement']
-  },
-  Actor: {
-    allowedKeywords: ['can'],
-    allowedOrchestrators: []
-  },
-  Flow: {
-    allowedKeywords: [],
-    allowedOrchestrators: ['Page', 'Endpoint', 'Model']
-  },
-  Requirement: {
-    allowedKeywords: ['must', 'should'],
-    allowedOrchestrators: []
-  },
-  Router: {
-    allowedKeywords: ['policy'],
-    allowedOrchestrators: ['Endpoint']
-  },
-  Index: {
-    allowedKeywords: ['unique', 'type'],
-    allowedOrchestrators: []
-  },
-  Trigger: {
-    allowedKeywords: ['Method'],
-    allowedOrchestrators: []
-  },
-  Procedure: {
-    allowedKeywords: ['Method', 'Schema'],
-    allowedOrchestrators: []
-  }
-}

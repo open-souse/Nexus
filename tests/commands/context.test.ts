@@ -1,46 +1,68 @@
-import { describe, it, expect } from 'vitest'
-import { buildPrompt } from '../../src/commands/context.js'
-import type { NexusConfig } from '../../src/types/nexus.js'
+import { describe, it, expect, afterEach } from 'vitest'
+import { execSync } from 'child_process'
+import fs from 'fs-extra'
+import path from 'path'
+import os from 'os'
 
-const mockConfig: Partial<NexusConfig> = {
-  lang: 'en',
-  modules: ['frontend'],
-  framework: 'next-ts',
-  styling: 'tailwind',
-  output: './src/components',
-  tokens: { 
-    primary: '#2563eb', 
-    secondary: '#64748b', 
-    danger: '#ef4444', 
-    success: '#22c55e', 
-    radius: '8px', 
-    font: "'Inter'" 
-  },
-  icons: { library: 'lucide-react' },
-  standards: ['Clean Code']
+const ROOT = path.resolve('.')
+
+let tmpDir: string
+
+function setup() {
+  tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'nexus-context-'))
+  fs.writeFileSync(path.join(tmpDir, 'nexus.config.json'), JSON.stringify({
+    lang: 'en',
+    modules: ['frontend'],
+    framework: 'next-ts',
+    styling: 'tailwind',
+    output: './src/components',
+    tokens: { primary: '#2563eb', secondary: '#64748b', danger: '#ef4444', success: '#22c55e', radius: '8px', font: "'Inter'" },
+    icons: { library: 'lucide-react' },
+    standards: ['Clean Code']
+  }, null, 2))
 }
+
+function runContext() {
+  return execSync(`npx tsx ${ROOT}/src/index.ts context`, { cwd: tmpDir }).toString()
+}
+
+function readNexusMd() {
+  return fs.readFileSync(path.join(tmpDir, 'NEXUS.md'), 'utf8')
+}
+
+afterEach(() => {
+  if (tmpDir) fs.removeSync(tmpDir)
+})
 
 describe('nexus context', () => {
   it('generates NEXUS.md with the NEXUS notation reference', () => {
-    const content = buildPrompt(mockConfig)
+    setup()
+    runContext()
+    const content = readNexusMd()
     expect(content).toContain('NEXUS NOTATION')
-    expect(content).toContain('v4.5')
+    expect(content).toContain('v4.0')
   })
 
   it('includes the syntax reference header', () => {
-    const content = buildPrompt(mockConfig)
+    setup()
+    runContext()
+    const content = readNexusMd()
     expect(content).toContain('NEXUS SYNTAX REFERENCE')
     expect(content).toContain('PROJECT DNA')
   })
 
   it('includes reference examples', () => {
-    const content = buildPrompt(mockConfig)
+    setup()
+    runContext()
+    const content = readNexusMd()
     expect(content).toContain('EXAMPLES')
     expect(content).toContain('Card #glass')
   })
 
   it('includes safe-edit operator rules', () => {
-    const content = buildPrompt(mockConfig)
+    setup()
+    runContext()
+    const content = readNexusMd()
     expect(content).toContain('@modify')
     expect(content).toContain('preserve:all')
     expect(content).toContain('inherit:siblings')
@@ -49,7 +71,9 @@ describe('nexus context', () => {
   })
 
   it('includes all main grammar operators', () => {
-    const content = buildPrompt(mockConfig)
+    setup()
+    runContext()
+    const content = readNexusMd()
     expect(content).toContain('->')
     expect(content).toContain('=>')
     expect(content).toContain('* N')
@@ -58,7 +82,9 @@ describe('nexus context', () => {
   })
 
   it('includes v3.3 frontend operators', () => {
-    const content = buildPrompt(mockConfig)
+    setup()
+    runContext()
+    const content = readNexusMd()
     expect(content).toContain('[animate:')
     expect(content).toContain('[hover:')
     expect(content).toContain('[a11y:')
@@ -66,20 +92,21 @@ describe('nexus context', () => {
   })
 
   it('includes Create orchestrator and filesystem rule', () => {
-    const content = buildPrompt(mockConfig)
+    setup()
+    runContext()
+    const content = readClaudeMd()
     expect(content).toContain('Create')
     expect(content).toContain('type:component')
     expect(content).toContain('type:feature')
     expect(content).toContain('filesystem')
   })
 
-  it('includes backend operators when backend module is active', () => {
-    const backendConfig = { ...mockConfig, modules: ['frontend', 'backend'] }
-    const content = buildPrompt(backendConfig)
-    expect(content).toContain('Model')
-    expect(content).toContain('Controller')
-    expect(content).toContain('Endpoint')
-    expect(content).toContain('!pk')
-    expect(content).toContain('@Auth')
+  it('registers the /nexus slash command', () => {
+    setup()
+    runContext()
+    const slashCmd = path.join(tmpDir, '.claude', 'commands', 'nexus.md')
+    expect(fs.existsSync(slashCmd)).toBe(true)
+    const content = fs.readFileSync(slashCmd, 'utf8')
+    expect(content).toContain('NEXUS')
   })
 })

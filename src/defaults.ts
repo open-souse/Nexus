@@ -1,4 +1,4 @@
-import type { NexusConfig } from '../types/nexus.js'
+import type { NexusConfig } from './types/nexus.js'
 
 export function createDefaultConfig(partial?: Partial<NexusConfig>): NexusConfig {
   return {

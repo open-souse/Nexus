@@ -1,117 +1,76 @@
-# 📖 Referencia de Gramática NEXUS (v4.5.0)
+# NEXUS: The AI-Native Language Protocol (v4.0)
 
-NEXUS es el lenguaje de alto nivel diseñado para una comunicación exacta y fluida entre Humanos e IAs. Elimina la ambigüedad del lenguaje natural y permite orquestar aplicaciones full-stack completas a través de intenciones estructuradas.
+NEXUS is the high-level language designed for exact and fluid communication between Humans and AIs. It eliminates natural language ambiguity and allows orchestrating complete full-stack applications.
 
----
+## 1. Structure and Hierarchy
+Based on indentation (2 spaces).
+`Component #Style [Attributes] "Content" => Logic -> Destination`
 
-## 1. Sintaxis y Jerarquía
-NEXUS se basa en la indentación (2 espacios). Cada línea representa un **Orquestador**, una **Palabra Clave (Keyword)** o un **Operador**.
+## 2. Master Operators (Semantic Dictionary)
 
-**Anatomía de una línea NEXUS:**
-`Orquestador Nombre #Estilo [Atributos] "Contenido" => Lógica -> Destino`
+- `@` **Behavior Directives**: Sets the AI's thinking mode, technical environment, or predefined layouts.
+  - *Example:* `@React @CleanCode @Layout:Sidebar`
+- `@modify` **Safe Edit Mode (Minimal Intervention)**: Indicates the element ALREADY EXISTS. The AI is forbidden from rewriting unaffected parts.
+  - *Example:* `@modify [preserve:all]` → AI only returns the modified fragment.
+- `#` **Design Tokens / Styles**: Links the component with the design system (DNA). Supports inheritance.
+- `$` **Global Variables / DNA**: Defines system constants or parameters.
+- `~` **Local State / Reactivity**: Defines variables that change during the session (useState/Signals).
+- `|` **Adaptability (Responsive)**: Defines variations according to screen size.
+- `* N` **Multiplier**: Indicates repetition of structures with automatic data variation.
+- `?` **UI States**: Defines visual or logical variants based on state.
+- `!` **Priority / Emphasis**: Indicates visual weight or critical importance.
+- `[new]` **New Element**: Marks an element as newly added.
+- `[locked]` **Protected Component**: Forbids the AI from altering or regenerating this component.
+- `[` `]` **Technical Attributes**: Passes configuration parameters (props).
+- `!pk` **Primary Key**: Defines a database primary key.
+- `@Auth` **Authentication**: Defines endpoint security requirements.
+- `@RateLimit` **Rate Limiting**: Defines request constraints.
+- `?? "question"` **Query Operator**: Ask a question mid-session without leaving NEXUS mode.
+- `( cond ) -> A : B` **Intent Conditional**: Defines logical visualization branches.
+- `->` **Navigation Flow / Routing / Relations**: Indicates location change or database relation.
+- `=>` **Logic / Side-Effects / Handlers**: Asynchronous actions or data processing.
+- `<` **Data Binding / Types**: Links components with data sources or schemas.
+- `{ path }` **Context Injection**: Integrates existing code or files.
 
----
+## 3. Structure Orchestrators
 
-## 2. Operadores Maestros (Diccionario Semántico)
+### Frontend
+- `Page`: Defines a complete view or screen.
+- `Layout`: Defines a reusable structural wrapper.
+- `Section`: Defines a thematic block within a page.
+- `Store`: Defines global state (Actions/Selectors).
 
-| Operador | Nombre | Propósito | Ejemplo |
-|:---:|:---:|:---|:---|
-| `@` | **Directiva** | Define el entorno o modo de pensamiento. | `@React @CleanCode` |
-| `@modify` | **Edición Segura** | Solo modifica el elemento especificado. | `@modify [preserve:all]` |
-| `#` | **Estilo** | Tokens de diseño del DNA del proyecto. | `#glass #primary` |
-| `$` | **Var DNA** | Constantes globales o valores de config. | `$primary-color` |
-| `~` | **Estado Local** | Variables reactivas (useState/Signals). | `~isOpen:false` |
-| `|` | **Responsivo** | Variaciones para móvil/escritorio. | `|mobile:hide` |
-| `* N` | **Multiplicador** | Repetición de estructuras. | `Card * 5` |
-| `?` | **Estado UI** | Variantes visuales/lógicas (loading/error). | `?loading:Skeleton` |
-| `!` | **Prioridad** | Peso visual o importancia crítica. | `Text "Título" !bold` |
-| `!pk` | **Primary Key** | Restricción de clave primaria de DB. | `Entity id !pk` |
-| `@Auth` | **Seguridad** | Requisitos de autenticación. | `@Auth[mode:jwt]` |
-| `??` | **Consulta** | Pregunta rápida a la IA dentro del código. | `?? "¿Por qué este hook?"` |
-| `->` | **Flujo** | Navegación, rutas o relaciones. | `PageA -> PageB` |
-| `=>` | **Lógica** | Efectos secundarios, APIs o manejadores. | `Click => guardar()` |
-| `<` | **Binding** | Fuentes de datos o tipos de datos. | `Table < UserData` |
-| `{ ruta }` | **Inyección** | Inyecta archivos o contexto existente. | `{ ./utils.ts }` |
+### Backend
+- `Model`: Defines a database entity and its relations.
+- `Controller`: Defines an API resource and its endpoints.
+- `Service`: Defines business logic.
+- `Middleware`: Defines request processing logic.
+- `Endpoint`: Defines an API route.
+- `Worker` / `Queue` / `CronJob`: Defines asynchronous or scheduled tasks.
 
----
+## 4. Usage Examples
 
-## 3. Orquestadores
-
-### 📂 SDD (Software Design Document)
-*Usado para arquitectura de sistemas de alto nivel.*
-- `System`: El contenedor principal de la aplicación.
-- `Actor`: Roles de usuario y sus capacidades.
-- `Requirement`: Restricciones de negocio o técnicas.
-- `Flow`: Rutas lógicas entre capas (UX/API/DB).
-
-### 🎨 Frontend
-- `Page`: Una pantalla o vista completa.
-- `Layout`: Envoltorio estructural reutilizable.
-- `Section`: Un bloque temático dentro de una página.
-- `Store`: Estado global (Zustand/Redux/Pinia).
-- `Type`: Interfaces o tipos de TypeScript.
-
-### ⚙️ Backend
-- `Model`: Definición de entidad de base de datos.
-- `Controller`: Agrupación de recursos de API.
-- `Router`: Organización de rutas anidadas.
-- `Endpoint`: Ruta de API específica.
-- `Service`: Encapsulación de lógica de negocio.
-- `Middleware`: Interceptores de petición/respuesta.
-- `Worker` / `Queue` / `CronJob`: Tareas en segundo plano.
-
-### 🛠️ Database Avanzado
-- `Index`: Índices de optimización de base de datos.
-- `Trigger`: Lógica de DB automatizada en eventos.
-- `Procedure`: Procedimientos almacenados o consultas complejas.
-
-### 🧪 Testing
-- `Suite`: Grupo de pruebas relacionadas.
-- `Test`: Caso de prueba individual (Unit, Integration, E2E).
-
----
-
-## 4. Palabras Clave Avanzadas
-
-| Palabra Clave | Contexto | Propósito |
-|:---|:---|:---|
-| `can` | `Actor` | Define permisos/capacidades del usuario. |
-| `must` / `should` | `Requirement` | Define restricciones estrictas o sugeridas. |
-| `policy` | `Router` / `Controller` | Nombre de la lógica de control de acceso. |
-| `architecture` | `System` | Patrón global (Hexagonal, Monolito). |
-| `Entity` | `Model` | Define un campo en la base de datos. |
-| `Relation` | `Model` | Define relaciones de clave foránea. |
-| `unique` | `Index` | Asegura que un campo sea único. |
-| `renders` | `Test` | Estados de UI a verificar. |
-| `handles` | `Test` / `Endpoint` | Eventos o rutas a procesar. |
-| `expects` | `Test` | Aserciones sobre los resultados. |
-
----
-
-## 5. Ejemplos de Implementación
-
-### Arquitectura de Sistema (SDD)
+### Full-Stack Definition
 ```nexus
-System "AppFintech"
-  architecture: Hexagonal
-  Actor "Cliente"
-    can: depositar, retirar, ver-saldo
-  Requirement "Seguridad"
-    must: cumplir-pci, usar-2fa
+@NestJS @Prisma @PostgreSQL
+
+Model User
+  Entity id type:uuid !pk
+  Entity email type:string !unique
+  Relation posts -> Post * N
+
+Controller UserController [route:/api/users]
+  @Auth[mode:jwt]
+  @RateLimit[100/min]
+  Endpoint GET / -> UserService.findAll()
+  Endpoint POST / => UserService.create()
 ```
 
-### Lógica Full-Stack
+### Safe Edit: Moving an element
 ```nexus
-@NestJS @Prisma
-Model Cuenta
-  Entity id !pk
-  Entity saldo type:decimal
-  Index id [unique]
-
-Controller CuentaController
-  policy: es-dueño
-  Endpoint GET /saldo => CuentaService.obtenerSaldo()
+@modify [preserve:all]
+Card "credit-summary" [position:move-to:1]
 ```
 
 ---
-*Nexus: Menos palabras, más intención.*
+*Nexus: Fewer words, more intention.*

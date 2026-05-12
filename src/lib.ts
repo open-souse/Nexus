@@ -1,11 +1,9 @@
 // NEXUS core library — importable by NEXUS Studio and other integrations
 
-export { validateNexus } from './core/validator/index.js'
-export type { ValidationError } from './core/validator/index.js'
+export { validateNexus } from './commands/validate.js'
+export type { ValidationError } from './commands/validate.js'
 
-export { buildPrompt, buildSystemPrompt } from './core/prompts/builder.js'
-export type { NexusProvider } from './core/prompts/builder.js'
-
+export { buildPrompt as buildContextPrompt } from './commands/context.js'
 export type { NexusConfig, NexusTokens } from './types/nexus.js'
 
 export {
@@ -18,4 +16,7 @@ export {
 } from './grammar.js'
 export type { NexusOperator, NexusModule, NexusBlueprint } from './grammar.js'
 
-export { createDefaultConfig } from './core/config.js'
+export { createDefaultConfig } from './defaults.js'
+
+export { buildSystemPrompt } from './system-prompt.js'
+export type { NexusProvider } from './system-prompt.js'

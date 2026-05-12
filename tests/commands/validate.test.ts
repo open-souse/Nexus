@@ -1,11 +1,20 @@
 import { describe, it, expect } from 'vitest'
-import { validateNexus } from '../../src/commands/validate.js'
+import { execSync } from 'child_process'
+import { writeFileSync, unlinkSync } from 'fs'
+
+const TMP = './tmp-test.nexus'
 
 function run(content: string): { output: string; ok: boolean } {
-  const errors = validateNexus(content)
-  const ok = errors.length === 0
-  const output = errors.map(e => e.message).join('\n')
-  return { output, ok }
+  writeFileSync(TMP, content)
+  try {
+    const output = execSync(`npx tsx src/index.ts validate ${TMP}`).toString()
+    return { output, ok: true }
+  } catch (e: unknown) {
+    const err = e as { stdout?: Buffer }
+    return { output: err.stdout?.toString() ?? '', ok: false }
+  } finally {
+    unlinkSync(TMP)
+  }
 }
 
 describe('nexus validate — valid cases', () => {

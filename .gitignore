@@ -5,6 +5,5 @@ coverage/
 nexus.config.json
 temp_*/
 BITACORA.md
-ROADMAP-*.md
-NEXUS-Plan-*.md
-*.nexus-tmp
+NEXUS-Plan-Ejecucion.md
+NEXUS-Plan-Maestro-v2.md
