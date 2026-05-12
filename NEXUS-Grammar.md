@@ -1,4 +1,4 @@
-# 📖 Referencia de Gramática NEXUS (v4.5.0)
+# 📖 Referencia de Gramática NEXUS (v4.0.0)
 
 NEXUS es el lenguaje de alto nivel diseñado para una comunicación exacta y fluida entre Humanos e IAs. Elimina la ambigüedad del lenguaje natural y permite orquestar aplicaciones full-stack completas a través de intenciones estructuradas.
 

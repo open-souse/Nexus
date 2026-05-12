@@ -1,4 +1,4 @@
-# 🌌 Protocolo NEXUS v4.5.0
+# 🌌 Protocolo NEXUS v4.0.0
 ### La Capa de Comunicación Humano-IA para Arquitecturas de Software Modernas
 
 [![npm version](https://img.shields.io/npm/v/nxlang.svg?style=flat-square)](https://www.npmjs.com/package/nxlang)
@@ -26,7 +26,7 @@ El lenguaje natural es hermoso para la poesía, pero peligroso para el software.
 
 ---
 
-## ✨ Características Clave (v4.5.0)
+## ✨ Características Clave (v4.0.0)
 
 ### 📐 SDD: Documentos de Diseño de Software
 Diseña todo tu sistema antes de escribir una sola línea de lógica. Define Actores, Sistemas, Requisitos y Flujos.
@@ -107,7 +107,7 @@ Page Dashboard
 
 ## 🛠️ Uso como Librería
 
-NEXUS 4.5.0 es un motor "Library-First". Puedes integrarlo en tus propias extensiones de IDE, editores web o pipelines de CI/CD.
+NEXUS 4.0.0 es un motor "Library-First". Puedes integrarlo en tus propias extensiones de IDE, editores web o pipelines de CI/CD.
 
 ```typescript
 import { validateNexus, buildPrompt, createDefaultConfig } from 'nxlang';
@@ -131,7 +131,7 @@ const systemPrompt = buildPrompt(dna);
 ## 🗺️ Hoja de Roadmap
 
 - [x] **v4.0**: Rediseño Modular y Arquitectura Library-First.
-- [x] **v4.5**: Módulo SDD, Motor Semántico y CLI Doctor.
+- [x] **v4.0**: Módulo SDD, Motor Semántico y CLI Doctor.
 
 ---
 
