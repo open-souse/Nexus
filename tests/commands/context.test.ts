@@ -94,7 +94,7 @@ describe('nexus context', () => {
   it('includes Create orchestrator and filesystem rule', () => {
     setup()
     runContext()
-    const content = readClaudeMd()
+    const content = readNexusMd()
     expect(content).toContain('Create')
     expect(content).toContain('type:component')
     expect(content).toContain('type:feature')
