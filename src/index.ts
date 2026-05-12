@@ -3,6 +3,8 @@ import { Command } from 'commander'
 import { initCommand } from './commands/init.js'
 import { contextCommand } from './commands/context.js'
 import { validateCommand } from './commands/validate.js'
+import { doctorCommand } from './commands/doctor.js'
+import { blueprintsCommand } from './commands/blueprints.js'
 import fs from 'fs'
 
 const pkgPath = new URL('../package.json', import.meta.url)
@@ -19,5 +21,7 @@ program
 program.addCommand(initCommand())
 program.addCommand(contextCommand())
 program.addCommand(validateCommand())
+program.addCommand(doctorCommand())
+program.addCommand(blueprintsCommand())
 
 program.parse()
