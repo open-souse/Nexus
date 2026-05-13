@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { Command } from 'commander'
-import { initCommand } from './commands/init.js'
-import { contextCommand } from './commands/context.js'
-import { validateCommand } from './commands/validate.js'
+import { initCommand } from './cli/init.js'
+import { contextCommand } from './cli/context.js'
+import { validateCommand } from './cli/validate.js'
 import fs from 'fs'
 
 const pkgPath = new URL('../package.json', import.meta.url)

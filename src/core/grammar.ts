@@ -26,7 +26,7 @@ export interface NexusBlueprint {
 
 export const NEXUS_ORCHESTRATORS = [
   'Page', 'Layout', 'Section', 'Store', 'Type', 'Create',
-  'Test', 'Suite', 'Model', 'Controller', 'Middleware', 'Service', 'Endpoint',
+  'Test', 'Suite', 'Model', 'Controller', 'Router', 'Middleware', 'Service', 'Endpoint',
   'Worker', 'Queue', 'CronJob'
 ] as const
 
@@ -76,7 +76,7 @@ export const NEXUS_MODULES: NexusModule[] = [
     id: 'backend',
     name: 'Backend',
     description: 'API endpoints, services, database models and controllers',
-    orchestrators: ['Model', 'Controller', 'Middleware', 'Service', 'Endpoint', 'Worker', 'Queue', 'CronJob']
+    orchestrators: ['Model', 'Controller', 'Router', 'Middleware', 'Service', 'Endpoint', 'Worker', 'Queue', 'CronJob']
   },
   {
     id: 'testing',

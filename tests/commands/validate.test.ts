@@ -1,20 +1,13 @@
 import { describe, it, expect } from 'vitest'
-import { execSync } from 'child_process'
-import { writeFileSync, unlinkSync } from 'fs'
+import { validateNexus } from '../../src/core/validator.js'
 
-const TMP = './tmp-test.nexus'
-
+// Thin wrapper that mirrors the original { output, ok } interface so all
+// existing test assertions work without modification, but calls validateNexus
+// directly instead of spawning an npx child process.
 function run(content: string): { output: string; ok: boolean } {
-  writeFileSync(TMP, content)
-  try {
-    const output = execSync(`npx tsx src/index.ts validate ${TMP}`).toString()
-    return { output, ok: true }
-  } catch (e: unknown) {
-    const err = e as { stdout?: Buffer }
-    return { output: err.stdout?.toString() ?? '', ok: false }
-  } finally {
-    unlinkSync(TMP)
-  }
+  const errors = validateNexus(content)
+  const output = errors.map(e => `  Line ${e.line}: ${e.message}`).join('\n')
+  return { output, ok: errors.length === 0 }
 }
 
 describe('nexus validate — valid cases', () => {
@@ -222,5 +215,164 @@ describe('nexus validate — multiple errors', () => {
     expect(output).toContain('"*" without')
     expect(output).toContain('Invalid indentation')
     expect(output).toContain('"->" without')
+  })
+})
+
+// ─── Direct-import tests (no execSync) ────────────────────────────────────────
+
+describe('validateNexus — conditional expressions (direct import)', () => {
+  it('accepts single-line conditional: ( ?auth ) -> Home : Login', () => {
+    const errors = validateNexus('( ?auth ) -> Home : Login')
+    expect(errors).toHaveLength(0)
+  })
+
+  it('accepts multi-line conditional with : separator', () => {
+    const src = [
+      '( ~editing ) ->',
+      '  Form "profile-edit"',
+      ':',
+      '  Stack #gap-1',
+    ].join('\n')
+    const errors = validateNexus(src)
+    expect(errors).toHaveLength(0)
+  })
+
+  it('accepts nested multi-line conditionals', () => {
+    const src = [
+      '( ?loading ) ->',
+      '  Skeleton',
+      ':',
+      '  ( ~empty ) ->',
+      '    EmptyState',
+      '  :',
+      '    Table < Data',
+    ].join('\n')
+    const errors = validateNexus(src)
+    expect(errors).toHaveLength(0)
+  })
+
+  it('reports error for multi-line conditional without closing :', () => {
+    const src = [
+      '( ~editing ) ->',
+      '  Form "profile-edit"',
+    ].join('\n')
+    const errors = validateNexus(src)
+    expect(errors.length).toBeGreaterThan(0)
+    expect(errors[0].message).toContain('"( cond ) ->"')
+    expect(errors[0].line).toBe(1)
+  })
+
+  it('still reports error for plain -> without destination', () => {
+    const errors = validateNexus('Button "Go" ->')
+    expect(errors.length).toBeGreaterThan(0)
+    expect(errors[0].message).toContain('"->" without')
+  })
+})
+
+describe('validateNexus — $ variable value required (direct import)', () => {
+  it('accepts $brand: "Nexus"', () => {
+    expect(validateNexus('$brand: "Nexus"')).toHaveLength(0)
+  })
+
+  it('accepts $count: 42', () => {
+    expect(validateNexus('$count: 42')).toHaveLength(0)
+  })
+
+  it('rejects $brand: (colon with no value)', () => {
+    const errors = validateNexus('$brand:')
+    expect(errors.length).toBeGreaterThan(0)
+    expect(errors[0].message).toContain('Invalid variable')
+  })
+
+  it('rejects $brand: (colon followed only by spaces)', () => {
+    const errors = validateNexus('$brand:   ')
+    expect(errors.length).toBeGreaterThan(0)
+    expect(errors[0].message).toContain('Invalid variable')
+  })
+
+  it('rejects $brand (no colon at all)', () => {
+    const errors = validateNexus('$brand')
+    expect(errors.length).toBeGreaterThan(0)
+    expect(errors[0].message).toContain('Invalid variable')
+  })
+})
+
+describe('validateNexus — # token scanner ignores string content (direct import)', () => {
+  it('does not flag #number inside double-quoted string', () => {
+    expect(validateNexus('Text "Error #404 not found"')).toHaveLength(0)
+  })
+
+  it('does not flag #word inside single-quoted string', () => {
+    expect(validateNexus("Text 'Message #1'")).toHaveLength(0)
+  })
+
+  it('still flags invalid # token outside strings', () => {
+    const errors = validateNexus('Card #123')
+    expect(errors.length).toBeGreaterThan(0)
+    expect(errors[0].message).toContain('Invalid token')
+  })
+
+  it('accepts valid # token alongside string content', () => {
+    expect(validateNexus('Button #primary "Click #1"')).toHaveLength(0)
+  })
+})
+
+describe('validateNexus — input sanitization (direct import)', () => {
+  it('rejects content exceeding 500 KB', () => {
+    const huge = 'Card #glass\n'.repeat(50000) // ~600 KB
+    const errors = validateNexus(huge)
+    expect(errors).toHaveLength(1)
+    expect(errors[0].line).toBe(0)
+    expect(errors[0].message).toContain('500 KB')
+  })
+
+  it('rejects content with null bytes', () => {
+    const errors = validateNexus('Card #glass\0Button')
+    expect(errors).toHaveLength(1)
+    expect(errors[0].message).toContain('null bytes')
+  })
+
+  it('rejects content exceeding 2000 lines', () => {
+    const big = 'Card #glass\n'.repeat(2001)
+    const errors = validateNexus(big)
+    expect(errors).toHaveLength(1)
+    expect(errors[0].message).toContain('2000 lines')
+  })
+
+  it('normalizes CRLF without error', () => {
+    const errors = validateNexus('@React\r\nCard #glass\r\n')
+    expect(errors).toHaveLength(0)
+  })
+})
+
+describe('validateNexus — @Auth validation (direct import)', () => {
+  it('accepts standalone @Auth', () => {
+    expect(validateNexus('Endpoint GET /profile @Auth')).toHaveLength(0)
+  })
+
+  it('accepts @Auth[mode:jwt]', () => {
+    expect(validateNexus('@Auth[mode:jwt]')).toHaveLength(0)
+  })
+
+  it('accepts @Auth[role:admin, mode:jwt]', () => {
+    expect(validateNexus('Endpoint POST /admin @Auth[role:admin, mode:jwt]')).toHaveLength(0)
+  })
+
+  it('rejects @Auth followed by parentheses: @Auth()', () => {
+    const errors = validateNexus('@Auth(jwt)')
+    expect(errors.length).toBeGreaterThan(0)
+    expect(errors[0].message).toContain('Invalid @Auth')
+  })
+
+  it('rejects @Auth followed by alphanumeric: @Auth123', () => {
+    const errors = validateNexus('@Auth123')
+    expect(errors.length).toBeGreaterThan(0)
+    expect(errors[0].message).toContain('Invalid @Auth')
+  })
+
+  it('rejects @Auth followed by colon: @Auth:role', () => {
+    const errors = validateNexus('Endpoint GET /me @Auth:role')
+    expect(errors.length).toBeGreaterThan(0)
+    expect(errors[0].message).toContain('Invalid @Auth')
   })
 })

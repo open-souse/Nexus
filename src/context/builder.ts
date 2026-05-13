@@ -1,9 +1,13 @@
-import { Command } from 'commander'
-import fs from 'fs-extra'
-import path from 'path'
-import chalk from 'chalk'
-import ora from 'ora'
 import type { NexusConfig } from '../types/nexus.js'
+import { NEXUS_MODULES } from '../core/grammar.js'
+
+export type NexusProvider = 'claude' | 'gpt' | 'gemini'
+
+const PROVIDER_HEADERS: Record<NexusProvider, string> = {
+  claude: 'You are a coding assistant. The user writes requests in NEXUS notation — a structured shorthand for UI, logic, and project structure. Parse NEXUS input and generate the implementation.',
+  gpt: 'You are a precise coding assistant. The user communicates using NEXUS notation, a structured DSL for describing UI components, logic, and project structure. Interpret NEXUS syntax and generate the corresponding implementation.',
+  gemini: 'You are a coding assistant that understands NEXUS notation — a shorthand language for describing UI, logic, and code structure. When the user writes NEXUS, generate the implementation code.'
+}
 
 const MODULE_EXAMPLES: Record<string, string> = {
   frontend: `
@@ -67,25 +71,26 @@ Create useCart [type:hook, path:src/hooks]`
 
 export function buildPrompt(config: Partial<NexusConfig>): string {
   const activeModules = config.modules || ['frontend']
-  const orchestrators = ['Page', 'Layout', 'Section', 'Store', 'Type', 'Create']
+
+  // Build orchestrator list from NEXUS_MODULES (single source of truth)
+  const orchestrators: string[] = []
+  activeModules.forEach((mod: string) => {
+    const module = NEXUS_MODULES.find(m => m.id === mod)
+    if (module) {
+      module.orchestrators.forEach(o => {
+        if (!orchestrators.includes(o)) orchestrators.push(o)
+      })
+    }
+  })
+  // Create is always available regardless of active modules
+  if (!orchestrators.includes('Create')) orchestrators.push('Create')
 
   let dynamicExamples = 'EXAMPLES:\n'
-
   activeModules.forEach((mod: string) => {
     if (MODULE_EXAMPLES[mod]) {
       dynamicExamples += MODULE_EXAMPLES[mod] + '\n'
     }
-    if (mod === 'backend') {
-      ['Model', 'Controller', 'Middleware', 'Service', 'Endpoint', 'Worker', 'Queue', 'CronJob'].forEach(o => {
-        if (!orchestrators.includes(o)) orchestrators.push(o)
-      })
-    }
-    if (mod === 'testing' && !orchestrators.includes('Test')) {
-      orchestrators.push('Test')
-      orchestrators.push('Suite')
-    }
   })
-
   dynamicExamples += MODULE_EXAMPLES['create'] + '\n'
 
   const orchList = orchestrators.join(' / ')
@@ -164,55 +169,8 @@ ${JSON.stringify(config, null, 2)}
   `.trim()
 }
 
-const SLASH_COMMAND_CONTENT = `# NEXUS Context Refresh
-
-Regenerate and reload the NEXUS notation reference for this session.
-
-\`\`\`bash
-npx nexus context
-\`\`\`
-
-After running, the NEXUS grammar and project DNA are reloaded from \`nexus.config.json\`.
-Use this command whenever the AI seems to have forgotten NEXUS syntax.
-`
-
-export function contextCommand(): Command {
-  return new Command('context')
-    .description('Generate NEXUS.md with the NEXUS notation reference for AI context induction')
-    .action(async () => {
-      const spinner = ora('Generating NEXUS notation reference...').start()
-
-      try {
-        const cwd = process.cwd()
-        const configPath = path.join(cwd, 'nexus.config.json')
-        let config: Partial<NexusConfig> = { lang: 'en', modules: ['frontend'] }
-
-        if (fs.existsSync(configPath)) {
-          const content = await fs.readFile(configPath, 'utf8')
-          try {
-            config = JSON.parse(content)
-          } catch { /* use default */ }
-        }
-
-        const prompt = buildPrompt(config)
-        const nexusMd = `# NEXUS Notation Reference\n\n${prompt}\n`
-
-        // Write NEXUS.md — The universal context for AI models
-        const nexusMdPath = path.join(cwd, 'NEXUS.md')
-        await fs.writeFile(nexusMdPath, nexusMd, 'utf8')
-
-        // Register /nexus slash command for mid-session refresh
-        const slashDir = path.join(cwd, '.claude', 'commands')
-        await fs.ensureDir(slashDir)
-        await fs.writeFile(path.join(slashDir, 'nexus.md'), SLASH_COMMAND_CONTENT, 'utf8')
-
-        spinner.succeed(chalk.green('NEXUS notation reference written to NEXUS.md'))
-        console.log(chalk.cyan('\nYour AI context is ready in NEXUS.md.'))
-        console.log(chalk.cyan('Use /nexus inside Claude Code to refresh context mid-session.\n'))
-
-      } catch (error: unknown) {
-        const msg = error instanceof Error ? error.message : String(error)
-        spinner.fail(chalk.red(`Error: ${msg}`))
-      }
-    })
+export function buildSystemPrompt(config: Partial<NexusConfig>, provider: NexusProvider = 'claude'): string {
+  const header = PROVIDER_HEADERS[provider]
+  const grammar = buildPrompt(config)
+  return `${header}\n\n${grammar}`
 }
