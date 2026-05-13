@@ -1,3 +1,11 @@
+<p align="center">
+  <img src="./assets/nexus-npm-banner.svg" alt="NEXUS Banner" width="100%"/>
+</p>
+
+<p align="center">
+  <img src="./assets/nexus-logo.svg" alt="NEXUS Logo" width="100"/>
+</p>
+
 # 🌌 Protocolo NEXUS — nxlang
 
 > **Deja de escribir prompts. Empieza a escribir intenciones.**
