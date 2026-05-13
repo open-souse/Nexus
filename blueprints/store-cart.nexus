@@ -36,7 +36,7 @@ Drawer #right ~open:CartStore.isOpen
     Stack
       List [animate: stagger, children: fade-in, delay: 30ms]
         [a11y: aria-label="Productos en el carrito"]
-        Item * N < CartStore.items
+        Item < CartStore.items
           [hover: bg-gray-50]
           Image < item.image [a11y: alt=$item.name]
           Stack

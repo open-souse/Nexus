@@ -1,18 +1,37 @@
-import { Command } from 'commander'
-import fs from 'fs-extra'
-import chalk from 'chalk'
+// Pure NEXUS validation logic — no CLI, no FS, no framework dependencies.
+import { stripStringContent } from './parser.js'
 
 const VALID_DIRECTIVE = /^@[A-Za-z]/
 const VALID_TOKEN = /^#[a-zA-Z]/
+const CONDITIONAL_OPENER = /^\(.*\)\s*->$/
 
 export interface ValidationError {
   line: number
   message: string
 }
 
+const MAX_FILE_BYTES = 500 * 1024 // 500 KB
+const MAX_LINES = 2000
+
 export function validateNexus(content: string): ValidationError[] {
   const errors: ValidationError[] = []
-  const lines = content.split('\n')
+
+  // Input guards — reject oversized or malformed content immediately
+  if (Buffer.byteLength(content, 'utf8') > MAX_FILE_BYTES) {
+    return [{ line: 0, message: 'File exceeds maximum allowed size of 500 KB.' }]
+  }
+  // Strip \r to normalize CRLF before splitting
+  const normalized = content.replace(/\r/g, '')
+  // Reject null bytes (binary / injection)
+  if (normalized.includes('\0')) {
+    return [{ line: 0, message: 'File contains null bytes (\\0). Only plain text is allowed.' }]
+  }
+
+  const lines = normalized.split('\n')
+
+  if (lines.length > MAX_LINES) {
+    return [{ line: 0, message: `File exceeds maximum of ${MAX_LINES} lines (found ${lines.length}).` }]
+  }
 
   // Global depth counters for braces and brackets
   // (support multi-line blocks like Type User { ... })
@@ -20,6 +39,10 @@ export function validateNexus(content: string): ValidationError[] {
   let bracketDepth = 0
   let braceOpenLine = 0
   let bracketOpenLine = 0
+
+  // Conditional block state: ( cond ) -> ... : ...
+  let conditionalDepth = 0
+  let conditionalOpenLine = 0
 
   lines.forEach((raw, index) => {
     const lineNumber = index + 1
@@ -49,8 +72,8 @@ export function validateNexus(content: string): ValidationError[] {
       }
     }
 
-    // # tokens: must match #[a-zA-Z] (e.g. #primary, #glass)
-    const tokenMatches = trimmed.match(/#\S*/g) || []
+    // # tokens: must match #[a-zA-Z] — ignore tokens inside quoted strings
+    const tokenMatches = stripStringContent(trimmed).match(/#\S*/g) || []
     for (const token of tokenMatches) {
       if (!VALID_TOKEN.test(token)) {
         errors.push({
@@ -60,9 +83,19 @@ export function validateNexus(content: string): ValidationError[] {
       }
     }
 
-    // -> without destination
+    // -> without destination — unless it opens a multi-line conditional block: ( cond ) ->
     if (/->$/.test(trimmed)) {
-      errors.push({ line: lineNumber, message: '"->" without a defined destination.' })
+      if (CONDITIONAL_OPENER.test(trimmed)) {
+        if (conditionalDepth === 0) conditionalOpenLine = lineNumber
+        conditionalDepth++
+      } else {
+        errors.push({ line: lineNumber, message: '"->" without a defined destination.' })
+      }
+    }
+
+    // : separator — closes the nearest open conditional block
+    if (trimmed === ':') {
+      if (conditionalDepth > 0) conditionalDepth--
     }
 
     // => without action
@@ -70,12 +103,14 @@ export function validateNexus(content: string): ValidationError[] {
       errors.push({ line: lineNumber, message: '"=>" without a defined action.' })
     }
 
-    // $ variables: must have : and value (e.g. $brand: "Nexus")
-    if (trimmed.startsWith('$') && !/^\$[a-zA-Z_]\w*\s*:/.test(trimmed)) {
-      errors.push({
-        line: lineNumber,
-        message: `Invalid variable: "${trimmed.split(/[\s:]/)[0]}". Expected format: $name: value`
-      })
+    // $ variables: must have : followed by a non-whitespace value (e.g. $brand: "Nexus")
+    if (trimmed.startsWith('$')) {
+      if (!/^\$[a-zA-Z_]\w*\s*:\s*\S/.test(trimmed)) {
+        errors.push({
+          line: lineNumber,
+          message: `Invalid variable: "${trimmed.split(/[\s:]/)[0]}". Expected format: $name: value`
+        })
+      }
     }
 
     // ~ local state: must have : (e.g. ~isOpen: false)
@@ -103,7 +138,7 @@ export function validateNexus(content: string): ValidationError[] {
       }
     }
 
-    // < data binding: cannot appear alone at end of line (e.g. Table < User is valid; Table < is not)
+    // < data binding: cannot appear alone at end of line
     if (/\s<$/.test(trimmed) || trimmed === '<') {
       errors.push({
         line: lineNumber,
@@ -130,7 +165,6 @@ export function validateNexus(content: string): ValidationError[] {
     }
 
     // { } — cumulative balance across the entire file
-    // Supports multi-line blocks: Type User { \n ... \n }
     for (const ch of trimmed) {
       if (ch === '{') {
         if (braceDepth === 0) braceOpenLine = lineNumber
@@ -158,15 +192,14 @@ export function validateNexus(content: string): ValidationError[] {
       }
     }
 
-    // !pk — primary key constraint
-    if (trimmed.includes('!pk') && !trimmed.includes('Entity') && !trimmed.includes('id')) {
-      // Valid but unusual
-    }
-
-    // @Auth — authentication directive
+    // @Auth — must be standalone or @Auth[key:value]; reject @Auth(...), @Auth123, etc.
     if (trimmed.includes('@Auth')) {
-      if (!trimmed.match(/@Auth(\[.*\])?/)) {
-        errors.push({ line: lineNumber, message: 'Invalid @Auth directive. Expected format: @Auth or @Auth[mode:...]' })
+      const badAuth = trimmed.match(/@Auth([^\s\[])/)
+      if (badAuth) {
+        errors.push({
+          line: lineNumber,
+          message: `Invalid @Auth directive: "@Auth${badAuth[1]}...". Expected @Auth or @Auth[mode:...]`
+        })
       }
     }
 
@@ -185,35 +218,9 @@ export function validateNexus(content: string): ValidationError[] {
   if (bracketDepth > 0) {
     errors.push({ line: bracketOpenLine, message: `"[" unclosed (${bracketDepth} unclosed at end of file).` })
   }
+  if (conditionalDepth > 0) {
+    errors.push({ line: conditionalOpenLine, message: '"( cond ) ->" without closing ":".' })
+  }
 
   return errors
-}
-
-export function validateCommand(): Command {
-  return new Command('validate')
-    .description('Validate the syntax of a .nexus file')
-    .argument('<file>', '.nexus file to validate')
-    .action((file: string) => {
-      if (!fs.existsSync(file)) {
-        console.log(chalk.red(`File not found: ${file}`))
-        process.exit(1)
-      }
-
-      if (!file.endsWith('.nexus')) {
-        console.log(chalk.yellow('Warning: file does not have a .nexus extension'))
-      }
-
-      const content = fs.readFileSync(file, 'utf8')
-      const errors = validateNexus(content)
-
-      if (errors.length === 0) {
-        console.log(chalk.green(`✓ ${file} — valid syntax`))
-      } else {
-        console.log(chalk.red(`✗ ${file} — ${errors.length} error(s) found:\n`))
-        for (const error of errors) {
-          console.log(chalk.red(`  Line ${error.line}: `) + error.message)
-        }
-        process.exit(1)
-      }
-    })
 }
