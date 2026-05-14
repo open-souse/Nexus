@@ -1,4 +1,4 @@
-# 📖 Referencia de Gramática NEXUS (v4.0.0)
+# 📖 Referencia de Gramática NEXUS (v4.0.1)
 
 NEXUS es el lenguaje de alto nivel diseñado para una comunicación exacta y fluida entre Humanos e IAs. Elimina la ambigüedad del lenguaje natural y permite orquestar aplicaciones full-stack completas a través de intenciones estructuradas.
 
@@ -71,6 +71,114 @@ Model Cuenta
 
 Controller CuentaController
   Endpoint GET /saldo => CuentaService.obtenerSaldo()
+```
+
+---
+
+## 5. Operadores v4.0.1 — Nuevos en esta versión
+
+### 5.1 Manejo de Errores — `!error:`
+
+Captura errores de acciones `=>` y redirige al destino especificado. Siempre va indentado bajo una línea con `=>`.
+
+**Sintaxis:**
+```nexus
+Elemento => Servicio.metodo()
+  !error:código -> /destino
+```
+
+**Códigos de error válidos:**
+
+| Código | Tipo |
+|:---|:---|
+| `400`–`599` | Código HTTP de error (ej. 400, 401, 403, 404, 500) |
+| `timeout` | La petición superó el tiempo límite |
+| `network` | Error de red / sin conexión |
+| `*` | Comodín — captura cualquier error no manejado |
+
+**Reglas:**
+- Solo válido anidado bajo una línea con `=>`
+- Siempre requiere `-> /destino` después del código
+- Se pueden encadenar múltiples `!error` bajo el mismo `=>`
+
+**Ejemplo:**
+```nexus
+Button "Pagar" => PagoService.procesar()
+  !error:400 -> /error/pago
+  !error:500 -> /error/servidor
+  !error:timeout -> /reintentar
+  !error:* -> /error/general
+```
+
+---
+
+### 5.2 Paginación Nativa — `[paginate:N]`
+
+Genera paginación automática en elementos con binding de datos `<`. La IA genera el componente paginado completo con controles de navegación.
+
+**Sintaxis:**
+```nexus
+Elemento < Fuente [paginate:N]
+Elemento < Fuente [paginate:N, page:~variable]
+Elemento < Fuente [paginate:N, layout:grid|list]
+```
+
+**Parámetros:**
+
+| Parámetro | Descripción | Valores |
+|:---|:---|:---|
+| `paginate:N` | Ítems por página (requerido) | Entero entre 1 y 500 |
+| `page:~var` | Variable de estado para la página actual | Variable local `~nombre` |
+| `layout:X` | Disposición visual de los ítems | `grid` \| `list` |
+
+**Reglas:**
+- Requiere binding de datos `<` en la misma línea
+- No puede combinarse con el multiplicador `* N`
+- N debe ser un entero positivo entre 1 y 500
+
+**Ejemplo:**
+```nexus
+Table < Pedido [paginate:20]
+Table < Usuario [paginate:10, page:~currentPage]
+List < Producto [paginate:12, layout:grid]
+```
+
+---
+
+### 5.3 Relaciones entre Modelos — `-> Model.Nombre`
+
+Define relaciones tipadas entre entidades de base de datos dentro de bloques `Model`. La IA genera las claves foráneas, restricciones y relaciones inversas según el ORM activo.
+
+**Sintaxis:**
+```nexus
+Model NombreModelo
+  Entity campo -> Model.OtroModelo
+  Entity campo -> Model.OtroModelo [modificador]
+  Entity campo -> Model.OtroModelo [mod1, mod2]
+```
+
+**Modificadores de relación:**
+
+| Modificador | Cardinalidad | Descripción |
+|:---|:---|:---|
+| *(sin modificador)* | Uno a uno requerido | NOT NULL, clave foránea obligatoria |
+| `[many]` | Uno a muchos | Array / tabla de unión |
+| `[optional]` | Opcional | Permite NULL |
+| `[cascade]` | Con cascada | Al eliminar el padre, se eliminan los hijos |
+
+**Reglas:**
+- Solo válido dentro de una línea `Entity`
+- El nombre del modelo referenciado debe empezar con mayúscula
+- Los modificadores válidos son: `many`, `optional`, `cascade`
+
+**Ejemplo:**
+```nexus
+Model Pedido
+  Entity id !pk
+  Entity usuario -> Model.Usuario
+  Entity items -> Model.Producto [many]
+  Entity categoria -> Model.Categoria [optional]
+  Entity facturas -> Model.Factura [many, cascade]
 ```
 
 ---

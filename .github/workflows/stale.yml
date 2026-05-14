@@ -1,0 +1,35 @@
+name: Stale Issues and PRs
+
+on:
+  schedule:
+    - cron: '0 8 * * 1'  # Every Monday at 8am UTC
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    name: Mark stale issues and PRs
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/stale@v10
+        with:
+          stale-issue-message: |
+            Este issue ha estado inactivo por 30 días.
+            Se cerrará automáticamente en 7 días si no hay actividad.
+            Si sigue siendo relevante, deja un comentario.
+          stale-pr-message: |
+            Este PR ha estado inactivo por 14 días.
+            Se cerrará automáticamente en 7 días si no hay actividad.
+          close-issue-message: |
+            Issue cerrado por inactividad.
+            Puede reabrirse si el problema persiste.
+          days-before-issue-stale: 30
+          days-before-pr-stale: 14
+          days-before-close: 7
+          stale-issue-label: 'stale'
+          stale-pr-label: 'stale'
+          exempt-issue-labels: 'pinned,security,RFC'
+          exempt-pr-labels: 'pinned,security'
