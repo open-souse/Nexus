@@ -1,34 +1,73 @@
 # Changelog
 
-All notable changes to `nxlang` are documented here.
+<p align="center">
+  <a href="./CHANGELOG.es.md">🇪🇸 Español</a> ·
+  <a href="./CHANGELOG.md">🇺🇸 English</a>
+</p>
+
+All notable changes to `nxlang` will be documented in this file.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-## [4.0.0] - 2026-05-10
+## [4.1.0] — 2026-05-14
 
 ### Added
-- **Elite Backend Support**: Complete grammar for backend orchestration:
-  - New Orchestrators: `Model`, `Controller`, `Service`, `Middleware`, `Worker`, `Queue`, `CronJob`.
-  - New Keywords: `Entity`, `Relation`, `Repository`.
-  - New Operators: `!pk` (Primary Key), `@Auth` (Authentication), `@RateLimit` (Rate Limiting).
-- **Backend DNA in `nexus init`**: The CLI now asks for Backend Framework (Express, NestJS, etc.), Database (Postgres, Mongo, etc.), and ORM (Prisma, TypeORM, etc.).
-- **Library-First Focus**: Streamlined exports in `src/lib.ts` to power NEXUS Studio.
+- `!error:code -> route` operator for explicit error handling under `=>` actions
+  - Valid codes: 400–599, `timeout`, `network`, `*` (wildcard)
+  - Multiple `!error` can be chained under the same `=>`
+- `[paginate:N]` operator for native pagination on `<` bound elements
+  - Parameters: `paginate:N` (1–500), `page:~var`, `layout:grid|list`
+  - Conflict with `* N` multiplier validated
+- `-> Model.Name [modifier]` syntax for database model relations
+  - Modifiers: `many`, `optional`, `cascade`
+  - AI generates foreign keys, constraints, and inverse relations based on the active ORM
+- Complete bilingual documentation (Spanish/English):
+  - `docs/es/`: grammar, operators, examples, roadmap, RFC template
+  - `docs/en/`: grammar, operators, examples, roadmap, RFC template
+- `README.es.md` and `README.en.md` with language selector
+- `CONTRIBUTING.es.md` with contribution and RFC process
+- `CHANGELOG.es.md`
+- `CODE_OF_CONDUCT.md` and `CODE_OF_CONDUCT.es.md`
+- Updated `SECURITY.md` and `SECURITY.es.md` with supported versions
 
-### Removed (The Big Cleanup)
-- **Dead CLI Commands**: Removed `learn`, `examples`, `update`, `doctor`, and `config` to focus on the core engine.
-- **`conf` dependency**: Removed global config persistence to keep the library lightweight.
-- **Medical Module**: Removed the medical triage examples to focus on professional Full-Stack development.
-
-### Changed
-- **Grammar Version**: Updated to v4.0.
-- **README.md**: Completely rewritten to reflect the new vision as an IDE-ready core protocol.
-- **Tests**: Consolidated test suite to focus on Core, Context, Scaffold, and Validation.
+### Tests
+- 31 new tests (total: 121 tests)
+  - 11 tests for `!error:` (`tests/error-handler.test.ts`)
+  - 11 tests for `[paginate:N]` (`tests/pagination.test.ts`)
+  - 10 tests for `-> Model.Name` (`tests/model-relations.test.ts`)
 
 ---
 
-## [0.4.0] - 2026-05-10
+## [4.0.1] — 2026-05-12
+
+### Fixed
+- Version references `4.0.0` → `4.0.1` across documentation
+- Tests badge updated to 121 tests
+- Logo SVG text updated to `PROTOCOL v4.0.1`
+
+---
+
+## [4.0.0] — 2026-05-10
+
 ### Added
-- **Library exports** (`dist/lib.js`): `nxlang` is now importable as a Node.js library.
-- **`buildSystemPrompt(config, provider)`**: Builds a provider-aware system prompt for Claude, GPT-4, or Gemini.
-...
+- Library-First architecture (`core/`, `context/`, `cli/`)
+- Defensive security:
+  - 500KB per-file limit
+  - 2000 line limit
+  - Null byte detection
+  - String-aware tokenizer
+- Public API: `validateNexus()`, `buildSystemPrompt()`, `createDefaultConfig()`
+- Multi-provider support: Claude, GPT, Gemini
+- CLI: `nexus init`, `nexus validate`
+- Full Backend support: `Model`, `Controller`, `Service`, `Middleware`, `Worker`, `Queue`, `CronJob`
+- 90 tests, suite in ~1 second
+
+### Removed
+- Legacy CLI commands: `learn`, `examples`, `update`, `doctor`, `config`
+- `conf` dependency
+- Medical module examples
+
+### Changed
+- Grammar version updated to `v4.0`
+- README completely rewritten with Library-First vision

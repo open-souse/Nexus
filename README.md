@@ -6,6 +6,11 @@
   <img src="./assets/nexus-logo.svg" alt="NEXUS Logo" width="100"/>
 </p>
 
+<p align="center">
+  <a href="./README.es.md">🇪🇸 Español</a> ·
+  <a href="./README.en.md">🇺🇸 English</a>
+</p>
+
 # 🌌 Protocolo NEXUS — nxlang
 
 > **Deja de escribir prompts. Empieza a escribir intenciones.**

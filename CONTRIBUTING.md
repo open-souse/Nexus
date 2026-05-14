@@ -1,29 +1,116 @@
-# Contribuir a NEXUS: Human-AI Language Protocol
+<p align="center">
+  <a href="./CONTRIBUTING.es.md">🇪🇸 Español</a> ·
+  <a href="./CONTRIBUTING.md">🇺🇸 English</a>
+</p>
 
-¡Gracias por querer formar parte del estándar de comunicación Humano-IA! Nexus es un proyecto impulsado por la comunidad y tu ayuda es vital para que se convierta en el lenguaje universal de la era de la IA.
+# Contribution Guide — NEXUS Protocol
 
-## 🌟 Cómo puedes ayudar
+## Welcome
 
-### 1. Mejorar la Gramática
-Si encuentras ambigüedades en la gramática actual (v4.0) o sientes que falta un operador para describir una intención compleja, abre un **Issue** para discutir la propuesta.
-
-### 2. Crear Inductores de Lenguaje
-Cada IA (Claude, GPT-4, Gemini) puede interpretar Nexus de forma ligeramente distinta. Necesitamos "Inductores" optimizados para cada modelo.
-
-### 3. Reportar Bugs en el CLI
-Aunque el CLI es minimalista, debe ser robusto. Si `nexus context` o `nexus init` fallan, por favor repórtalo.
-
-## 🛠️ Configuración de Desarrollo Local
-
-1.  Clona el repositorio: `git clone https://github.com/edwinreal/Nexus-.git`
-2.  Instala las dependencias: `npm install`
-3.  Corre los tests para asegurar estabilidad: `npm test`
-4.  Crea una rama para tu mejora: `git checkout -b feature/mejora-increible`
-
-## 📜 Reglas de Oro para Contribuciones
-- **Mantenlo Minimalista**: No añadidas funciones que vuelvan tediosa la comunicación. Nexus debe ser rápido y directo.
-- **Sigue el Estándar**: Cualquier cambio en el CLI debe respetar la gramática definida en `NEXUS-Grammar.md`.
-- **Tests Primero**: Si añades una funcionalidad al CLI, debe venir acompañada de su test en Vitest.
+NEXUS is an open standard. Every contribution builds the future of Human-AI communication.
 
 ---
-Nexus es el puente. Ayúdanos a hacerlo indestructible. 🚀🤖
+
+## Ways to Contribute
+
+### 1. Report a bug
+
+Open an issue with:
+- nxlang version (`npm list nxlang`)
+- The `.nexus` file that causes the problem
+- The error you see
+- The behavior you expected
+
+### 2. Propose a protocol extension (RFC)
+
+Protocol extensions follow a formal process:
+
+1. Open an issue with the `[RFC]` prefix
+2. Use the template at [`docs/en/rfcs/RFC-0001-template.md`](./docs/en/rfcs/RFC-0001-template.md)
+3. The community discusses for a **minimum of 14 days**
+4. Edwin Realpe (protocol guardian) approves or rejects
+5. If approved, it's implemented in the next minor version
+
+### 3. Improve documentation
+
+- Fix errors in `docs/es/` or `docs/en/`
+- Add real examples to `docs/en/examples.md`
+- Translate to new languages (create `docs/XX/` following the existing structure)
+
+### 4. Contribute code
+
+```bash
+git clone https://github.com/open-souse/Nexus.git
+cd Nexus
+npm install
+npm run test        # tests must pass
+npm run build       # must compile without errors
+```
+
+Create your branch:
+```bash
+git checkout -b feat/change-name
+# or
+git checkout -b fix/bug-name
+```
+
+**PR rules:**
+- Tests must pass (`npm run test`)
+- Build must complete without errors (`npm run build`)
+- If you change the grammar, update `core/grammar.ts`, `core/validator.ts`, `context/builder.ts`, and the corresponding documentation files
+- If you change operators, add tests in `tests/`
+- Documentation must be updated in both languages
+
+### 5. Expand to new industries
+
+If you use NEXUS outside programming (design, marketing, legal, etc.) and want to share your grammar, open an issue with the `[INDUSTRY]` prefix describing your use case.
+
+---
+
+## What We Do NOT Accept
+
+- Changes that break backward compatibility without an approved RFC
+- Code without tests
+- Documentation in only one language (if you add docs, add in ES and EN)
+- Extensions that turn NEXUS into a compiler or direct code generator
+
+---
+
+## Review Process
+
+PRs are reviewed within **7 days maximum**. If there's no response by then, mention `@edwinreal` in the PR.
+
+---
+
+## Development Setup
+
+```bash
+# Install dependencies
+npm install
+
+# Run tests (requires Node ≥ 20)
+npm run test
+
+# Run tests in watch mode
+npx vitest
+
+# Build
+npm run build
+
+# Lint
+npm run lint
+```
+
+The full suite runs in ~1 second. If you introduce a change that makes it slower, investigate before submitting a PR.
+
+---
+
+## Code of Conduct
+
+→ [See code of conduct](./CODE_OF_CONDUCT.md)
+
+---
+
+## License
+
+By contributing, you agree that your code is distributed under the project's [MIT license](./LICENSE).
