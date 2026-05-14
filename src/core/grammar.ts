@@ -1,7 +1,7 @@
 // NEXUS grammar as structured data — used by NEXUS Studio for syntax highlighting,
 // autocomplete, validation, and documentation.
 
-export const NEXUS_VERSION = '4.0.1'
+export const NEXUS_VERSION = '4.1.1'
 
 export interface NexusOperator {
   symbol: string
@@ -25,9 +25,17 @@ export interface NexusBlueprint {
 }
 
 export const NEXUS_ORCHESTRATORS = [
+  // Structure
   'Page', 'Layout', 'Section', 'Store', 'Type', 'Create',
-  'Test', 'Suite', 'Model', 'Controller', 'Router', 'Middleware', 'Service', 'Endpoint',
-  'Worker', 'Queue', 'CronJob'
+  // Backend
+  'Model', 'Controller', 'Router', 'Middleware', 'Service', 'Endpoint',
+  'Worker', 'Queue', 'CronJob',
+  // Testing
+  'Test', 'Suite',
+  // UI components
+  'Card', 'Button', 'Text', 'Image', 'Input', 'Badge', 'Nav', 'Navbar',
+  'Header', 'Grid', 'List', 'Form', 'Table', 'Chart', 'Modal', 'Select',
+  'Skeleton', 'Stack', 'Field'
 ] as const
 
 export const NEXUS_KEYWORDS = [

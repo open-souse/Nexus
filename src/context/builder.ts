@@ -1,5 +1,5 @@
 import type { NexusConfig } from '../types/nexus.js'
-import { NEXUS_MODULES } from '../core/grammar.js'
+import { NEXUS_MODULES, NEXUS_VERSION } from '../core/grammar.js'
 
 export type NexusProvider = 'claude' | 'gpt' | 'gemini'
 
@@ -69,10 +69,7 @@ Create dashboard [type:page, path:src/app]
 Create useCart [type:hook, path:src/hooks]`
 }
 
-export function buildPrompt(config: Partial<NexusConfig>): string {
-  const activeModules = config.modules || ['frontend']
-
-  // Build orchestrator list from NEXUS_MODULES (single source of truth)
+function buildOrchestratorList(activeModules: string[]): string {
   const orchestrators: string[] = []
   activeModules.forEach((mod: string) => {
     const module = NEXUS_MODULES.find(m => m.id === mod)
@@ -82,21 +79,34 @@ export function buildPrompt(config: Partial<NexusConfig>): string {
       })
     }
   })
-  // Create is always available regardless of active modules
   if (!orchestrators.includes('Create')) orchestrators.push('Create')
+  return orchestrators.join(' / ')
+}
 
-  let dynamicExamples = 'EXAMPLES:\n'
+function buildModuleExamples(activeModules: string[]): string {
+  let examples = 'EXAMPLES:\n'
   activeModules.forEach((mod: string) => {
     if (MODULE_EXAMPLES[mod]) {
-      dynamicExamples += MODULE_EXAMPLES[mod] + '\n'
+      examples += MODULE_EXAMPLES[mod] + '\n'
     }
   })
-  dynamicExamples += MODULE_EXAMPLES['create'] + '\n'
+  examples += MODULE_EXAMPLES['create'] + '\n'
+  return examples
+}
 
-  const orchList = orchestrators.join(' / ')
+function buildGrammarReference(orchList: string, activeModules: string[]): string {
+  const testingExtension = activeModules.includes('testing') ? `
+- Test Name [type:unit|e2e, framework:vitest|jest|cypress] : Define a test case. Use keywords Frontend or Backend to scope context.
+- Suite "Name" { } : Group related tests.
+- renders: state1, state2 : Render cases to cover (Frontend).
+- handles: event1, event2 : Interactions to test.
+- expects: status:200, body:schema : Backend expectations.
+- asserts: condition : Specific assertions.
+- db: change1, change2 : Database side-effects to verify (Backend).
+- mocks: dep1, dep2 : Dependencies to mock.` : ''
 
-  const grammar = `
-NEXUS SYNTAX REFERENCE (v4.0.1):
+  return `
+NEXUS SYNTAX REFERENCE (v${NEXUS_VERSION}):
 - Indentation: 2 spaces per level.
 - @ : Directives (e.g. @React, @CleanCode).
 - @modify [preserve:all] : Safe edit — only apply the explicit change, nothing else.
@@ -130,18 +140,17 @@ NEXUS SYNTAX REFERENCE (v4.0.1):
 - -> Model.Name [mod] : Inside Entity; defines typed DB relation. Modifiers: [many] [optional] [cascade].
 - ${orchList} : Structure orchestrators.
 - Store Name { ~state Action Selector } : Global state (Zustand/Redux/Pinia).
-- Create Name [type:component|page|hook|feature, path:route] : Create files on disk.${activeModules.includes('testing') ? `
-- Test Name [type:unit|e2e, framework:vitest|jest|cypress] : Define a test case. Use keywords Frontend or Backend to scope context.
-- Suite "Name" { } : Group related tests.
-- renders: state1, state2 : Render cases to cover (Frontend).
-- handles: event1, event2 : Interactions to test.
-- expects: status:200, body:schema : Backend expectations.
-- asserts: condition : Specific assertions.
-- db: change1, change2 : Database side-effects to verify (Backend).
-- mocks: dep1, dep2 : Dependencies to mock.` : ''}`.trim()
+- Create Name [type:component|page|hook|feature, path:route] : Create files on disk.${testingExtension}`.trim()
+}
+
+export function buildPrompt(config: Partial<NexusConfig>): string {
+  const activeModules = config.modules || ['frontend']
+  const orchList = buildOrchestratorList(activeModules)
+  const dynamicExamples = buildModuleExamples(activeModules)
+  const grammar = buildGrammarReference(orchList, activeModules)
 
   return `
-NEXUS NOTATION — v4.0.1
+NEXUS NOTATION — v${NEXUS_VERSION}
 
 I write my development requests using NEXUS, a shorthand notation for UI, logic, and project structure.
 This is the syntax reference. When I send you NEXUS, generate the implementation.

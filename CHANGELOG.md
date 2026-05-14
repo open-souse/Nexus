@@ -13,6 +13,32 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [4.1.1] — 2026-05-14
+
+### Fixed
+- **Orchestrator validation**: `validator.ts` now validates PascalCase orchestrator names against the full set of known orchestrators + keywords. Catches typos like `PAge`, `Controlador`, or unknown names at dev time.
+- **Grammar expansion**: Added UI components to `NEXUS_ORCHESTRATORS` — `Card`, `Button`, `Text`, `Image`, `Input`, `Badge`, `Nav`, `Navbar`, `Header`, `Grid`, `List`, `Form`, `Table`, `Chart`, `Modal`, `Select`, `Skeleton`, `Stack`, `Field`.
+- **Version constant**: `builder.ts` now imports `NEXUS_VERSION` from `grammar.ts` instead of using a hardcoded string. Version is now a single source of truth.
+- **Deep merge config**: `createDefaultConfig` now uses `deepMerge` so partial overrides like `{ tokens: { primary: '#red' } }` no longer lose sibling token defaults.
+- **Escaped quotes in strings**: `stripStringContent` now handles `\"` and `\'` inside quoted strings, preventing false-positive token errors.
+- **buildPrompt refactor**: Split 139-line `buildPrompt` into three focused private functions (`buildOrchestratorList`, `buildModuleExamples`, `buildGrammarReference`) each under 40 lines.
+- **Hex color validation**: `nexus init` now validates color inputs with `/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/` — rejects invalid hex before writing config.
+- **Config not found warning**: `nexus context` now prints a `chalk.yellow` warning when `nexus.config.json` is not found instead of silently using defaults.
+
+### Breaking Changes
+- `buildContextPrompt` export removed from `src/lib.ts`. Use `buildPrompt` directly (exported from the same package root).
+
+### Tests
+- 14 new tests (total: 135 tests)
+  - Orchestrator validation: invalid/valid orchestrators
+  - `@RateLimit` invalid format detection
+  - `]` without matching `[` detection
+  - Escaped quotes in string content
+  - Deep merge token partial override
+  - Unknown module graceful handling
+
+---
+
 ## [4.1.0] — 2026-05-14
 
 ### Added

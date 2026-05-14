@@ -1,6 +1,8 @@
 // Pure NEXUS validation logic — no CLI, no FS, no framework dependencies.
 import { stripStringContent } from './parser.js'
+import { NEXUS_ORCHESTRATORS, NEXUS_KEYWORDS } from './grammar.js'
 
+const VALID_ORCHESTRATORS = new Set<string>([...NEXUS_ORCHESTRATORS, ...NEXUS_KEYWORDS])
 const VALID_DIRECTIVE = /^@[A-Za-z]/
 const VALID_TOKEN = /^#[a-zA-Z]/
 const CONDITIONAL_OPENER = /^\(.*\)\s*->$/
@@ -68,6 +70,18 @@ export function validateNexus(content: string): ValidationError[] {
     // Track lines that have a complete => action (used to validate !error parent)
     if (/=>\s*\S+/.test(trimmed)) {
       lastActionIndent = leadingSpaces
+    }
+
+    // Orchestrator validation: PascalCase word followed by an identifier
+    const orchestratorMatch = trimmed.match(/^([A-Z][a-zA-Z]+)\s+([A-Za-z]\w*)/)
+    if (orchestratorMatch) {
+      const word = orchestratorMatch[1]
+      if (!VALID_ORCHESTRATORS.has(word)) {
+        errors.push({
+          line: lineNumber,
+          message: `Unknown orchestrator "${word}". Valid orchestrators: ${[...VALID_ORCHESTRATORS].join(', ')}`
+        })
+      }
     }
 
     // ── !error: handler ──────────────────────────────────────────────────────

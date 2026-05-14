@@ -13,6 +13,32 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ---
 
+## [4.1.1] — 2026-05-14
+
+### Correcciones
+- **Validación de orquestadores**: `validator.ts` ahora valida nombres PascalCase contra el conjunto completo de orquestadores y palabras clave. Detecta errores tipográficos como `PAge`, `Controlador` o nombres desconocidos en tiempo de desarrollo.
+- **Expansión de gramática**: Se añadieron componentes UI a `NEXUS_ORCHESTRATORS` — `Card`, `Button`, `Text`, `Image`, `Input`, `Badge`, `Nav`, `Navbar`, `Header`, `Grid`, `List`, `Form`, `Table`, `Chart`, `Modal`, `Select`, `Skeleton`, `Stack`, `Field`.
+- **Constante de versión**: `builder.ts` ahora importa `NEXUS_VERSION` desde `grammar.ts` en lugar de usar una cadena de texto fija. La versión es ahora una única fuente de verdad.
+- **Merge profundo en config**: `createDefaultConfig` ahora usa `deepMerge` para que sobrescrituras parciales como `{ tokens: { primary: '#rojo' } }` no pierdan los otros valores por defecto de tokens.
+- **Comillas escapadas en strings**: `stripStringContent` ahora maneja `\"` y `\'` dentro de cadenas, evitando falsos positivos en el escáner de tokens.
+- **Refactor de buildPrompt**: La función de 139 líneas se dividió en tres funciones privadas (`buildOrchestratorList`, `buildModuleExamples`, `buildGrammarReference`) de menos de 40 líneas cada una.
+- **Validación de color hex**: `nexus init` ahora valida los colores con `/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/` — rechaza colores hex inválidos antes de escribir la configuración.
+- **Advertencia sin config**: `nexus context` ahora muestra una advertencia en amarillo cuando no se encuentra `nexus.config.json` en lugar de usar valores por defecto en silencio.
+
+### Cambios Incompatibles
+- El export `buildContextPrompt` fue eliminado de `src/lib.ts`. Usa `buildPrompt` directamente (exportado desde la misma raíz del paquete).
+
+### Tests
+- 14 nuevos tests (total: 135 tests)
+  - Validación de orquestadores: válidos e inválidos
+  - Detección de formato inválido en `@RateLimit`
+  - Detección de `]` sin `[` correspondiente
+  - Comillas escapadas en contenido de strings
+  - Merge parcial de tokens (merge profundo)
+  - Manejo de módulo desconocido sin lanzar excepción
+
+---
+
 ## [4.1.0] — 2026-05-14
 
 ### Agregado
