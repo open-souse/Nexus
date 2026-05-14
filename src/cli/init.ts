@@ -3,6 +3,10 @@ import fs from 'fs-extra'
 import chalk from 'chalk'
 import inquirer from 'inquirer'
 
+function isValidHex(value: string): boolean {
+  return /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(value)
+}
+
 async function runInit(lang: 'es' | 'en') {
   const t = lang === 'es' ? {
     welcome: '\nBienvenido a NEXUS — Configuremos el DNA de tu proyecto\n',
@@ -90,19 +94,22 @@ async function runInit(lang: 'es' | 'en') {
       type: 'input',
       name: 'primary',
       message: t.primary,
-      default: '#2563eb'
+      default: '#2563eb',
+      validate: (input: string) => isValidHex(input) || 'Invalid hex color. Use format #RGB or #RRGGBB (e.g. #6EE7B7)'
     },
     {
       type: 'input',
       name: 'secondary',
       message: t.secondary,
-      default: '#64748b'
+      default: '#64748b',
+      validate: (input: string) => isValidHex(input) || 'Invalid hex color. Use format #RGB or #RRGGBB (e.g. #6EE7B7)'
     },
     {
       type: 'input',
       name: 'danger',
       message: t.danger,
-      default: '#ef4444'
+      default: '#ef4444',
+      validate: (input: string) => isValidHex(input) || 'Invalid hex color. Use format #RGB or #RRGGBB (e.g. #6EE7B7)'
     },
     {
       type: 'list',

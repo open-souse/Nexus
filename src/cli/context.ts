@@ -34,6 +34,11 @@ export function contextCommand(): Command {
           try {
             config = JSON.parse(content)
           } catch { /* use default */ }
+        } else {
+          console.warn(
+            chalk.yellow('⚠ nexus.config.json not found. Using defaults.') +
+            chalk.dim('\n  Run "nexus init" to create your project DNA file.\n')
+          )
         }
 
         const prompt = buildPrompt(config)

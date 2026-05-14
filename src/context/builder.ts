@@ -1,5 +1,5 @@
 import type { NexusConfig } from '../types/nexus.js'
-import { NEXUS_MODULES } from '../core/grammar.js'
+import { NEXUS_MODULES, NEXUS_VERSION } from '../core/grammar.js'
 
 export type NexusProvider = 'claude' | 'gpt' | 'gemini'
 
@@ -69,10 +69,7 @@ Create dashboard [type:page, path:src/app]
 Create useCart [type:hook, path:src/hooks]`
 }
 
-export function buildPrompt(config: Partial<NexusConfig>): string {
-  const activeModules = config.modules || ['frontend']
-
-  // Build orchestrator list from NEXUS_MODULES (single source of truth)
+function buildOrchestratorList(activeModules: string[]): string {
   const orchestrators: string[] = []
   activeModules.forEach((mod: string) => {
     const module = NEXUS_MODULES.find(m => m.id === mod)
@@ -82,21 +79,34 @@ export function buildPrompt(config: Partial<NexusConfig>): string {
       })
     }
   })
-  // Create is always available regardless of active modules
   if (!orchestrators.includes('Create')) orchestrators.push('Create')
+  return orchestrators.join(' / ')
+}
 
-  let dynamicExamples = 'EXAMPLES:\n'
+function buildModuleExamples(activeModules: string[]): string {
+  let examples = 'EXAMPLES:\n'
   activeModules.forEach((mod: string) => {
     if (MODULE_EXAMPLES[mod]) {
-      dynamicExamples += MODULE_EXAMPLES[mod] + '\n'
+      examples += MODULE_EXAMPLES[mod] + '\n'
     }
   })
-  dynamicExamples += MODULE_EXAMPLES['create'] + '\n'
+  examples += MODULE_EXAMPLES['create'] + '\n'
+  return examples
+}
 
-  const orchList = orchestrators.join(' / ')
+function buildGrammarReference(orchList: string, activeModules: string[]): string {
+  const testingExtension = activeModules.includes('testing') ? `
+- Test Name [type:unit|e2e, framework:vitest|jest|cypress] : Define a test case. Use keywords Frontend or Backend to scope context.
+- Suite "Name" { } : Group related tests.
+- renders: state1, state2 : Render cases to cover (Frontend).
+- handles: event1, event2 : Interactions to test.
+- expects: status:200, body:schema : Backend expectations.
+- asserts: condition : Specific assertions.
+- db: change1, change2 : Database side-effects to verify (Backend).
+- mocks: dep1, dep2 : Dependencies to mock.` : ''
 
-  const grammar = `
-NEXUS SYNTAX REFERENCE (v4.0):
+  return `
+NEXUS SYNTAX REFERENCE (v${NEXUS_VERSION}):
 - Indentation: 2 spaces per level.
 - @ : Directives (e.g. @React, @CleanCode).
 - @modify [preserve:all] : Safe edit — only apply the explicit change, nothing else.
@@ -125,20 +135,22 @@ NEXUS SYNTAX REFERENCE (v4.0):
 - => : Side-effects / API calls / handlers.
 - < : Data binding / types.
 - { path } : Inject existing code or file.
+- !error:code -> dest : Nested under =>; catches HTTP errors, timeout, network, or * (wildcard).
+- [paginate:N] : On a < bound element; generates paginated fetch + UI controls (N items/page, max 500).
+- -> Model.Name [mod] : Inside Entity; defines typed DB relation. Modifiers: [many] [optional] [cascade].
 - ${orchList} : Structure orchestrators.
 - Store Name { ~state Action Selector } : Global state (Zustand/Redux/Pinia).
-- Create Name [type:component|page|hook|feature, path:route] : Create files on disk.${activeModules.includes('testing') ? `
-- Test Name [type:unit|e2e, framework:vitest|jest|cypress] : Define a test case. Use keywords Frontend or Backend to scope context.
-- Suite "Name" { } : Group related tests.
-- renders: state1, state2 : Render cases to cover (Frontend).
-- handles: event1, event2 : Interactions to test.
-- expects: status:200, body:schema : Backend expectations.
-- asserts: condition : Specific assertions.
-- db: change1, change2 : Database side-effects to verify (Backend).
-- mocks: dep1, dep2 : Dependencies to mock.` : ''}`.trim()
+- Create Name [type:component|page|hook|feature, path:route] : Create files on disk.${testingExtension}`.trim()
+}
+
+export function buildPrompt(config: Partial<NexusConfig>): string {
+  const activeModules = config.modules || ['frontend']
+  const orchList = buildOrchestratorList(activeModules)
+  const dynamicExamples = buildModuleExamples(activeModules)
+  const grammar = buildGrammarReference(orchList, activeModules)
 
   return `
-NEXUS NOTATION — v4.0
+NEXUS NOTATION — v${NEXUS_VERSION}
 
 I write my development requests using NEXUS, a shorthand notation for UI, logic, and project structure.
 This is the syntax reference. When I send you NEXUS, generate the implementation.
@@ -163,6 +175,43 @@ Create / Test rule (filesystem tools like Claude Code, Cursor, Copilot):
 - No filesystem access → show the code for me to copy.
 
 ${dynamicExamples}
+
+ERROR HANDLING OPERATOR (!error):
+When you see !error: under a => action, generate proper error handling code.
+!error:400 → handle bad request (validation errors, show form errors)
+!error:401 → handle unauthorized (redirect to login, clear session)
+!error:403 → handle forbidden (show permission denied UI)
+!error:404 → handle not found (show 404 component or redirect)
+!error:500 → handle server error (show error boundary, log to console)
+!error:timeout → handle request timeout (show retry UI, cancel pending requests)
+!error:network → handle network failure (show offline indicator)
+!error:* → catch-all error handler (fallback for any unhandled error)
+The -> destination after !error is the redirect route or recovery action.
+Always generate try/catch or .catch() blocks. Never swallow errors silently.
+
+PAGINATION OPERATOR ([paginate]):
+When you see [paginate:N] on a data-bound element:
+- Generate server-side or client-side pagination fetching N items per page
+- Include page state management (useState or URL params)
+- Generate Previous/Next controls or page number buttons
+- If page:~var is specified, bind the current page to that state variable
+- If layout:grid, render items in a CSS grid; if layout:list, render as vertical list
+- Always show total count and current range (e.g., "Showing 1-20 of 156")
+- Handle loading state between page changes
+- Handle empty state when no items exist
+
+MODEL RELATIONS (-> Model.Name):
+When you see -> Model.Name inside an Entity definition:
+- Generate a foreign key or reference field pointing to that model
+- Without modifier: one-to-one required relation (NOT NULL foreign key)
+- [many]: one-to-many relation (generate array field or junction table)
+- [optional]: nullable relation (allow NULL foreign key)
+- [cascade]: on parent delete, cascade delete children
+- Adapt to the active database:
+  MongoDB/Mongoose → use ObjectId refs and populate()
+  PostgreSQL/Prisma → use @relation with proper foreign keys
+  MySQL → use foreign key constraints
+- Always generate the inverse relation on the referenced model
 
 PROJECT DNA:
 ${JSON.stringify(config, null, 2)}
