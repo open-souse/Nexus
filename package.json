@@ -54,11 +54,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/edwinreal/Nexus-.git"
+    "url": "https://github.com/open-souse/Nexus.git"
   },
-  "homepage": "https://github.com/edwinreal/Nexus-#readme",
+  "homepage": "https://github.com/open-souse/Nexus#readme",
   "bugs": {
-    "url": "https://github.com/edwinreal/Nexus-/issues"
+    "url": "https://github.com/open-souse/Nexus/issues"
   },
   "engines": {
     "node": ">=20.0.0"
