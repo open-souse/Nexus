@@ -251,7 +251,7 @@ El editor no necesita entender NEXUS — solo necesita llamar a `validateNexus()
 ## Roadmap
 
 - [x] **v4.0** — Núcleo modular, arquitectura Library-First, seguridad defensiva, 90 tests
-- [x] **v4.1** — Manejo de errores (`!error`), paginación nativa (`[paginate]`), relaciones entre modelos
+- [x] **v4.0.1** — Manejo de errores (`!error`), paginación nativa (`[paginate]`), relaciones entre modelos
 - [ ] **v4.5** — Módulo SDD, Motor Semántico (detección de arquitecturas imposibles), CLI Doctor
 - [ ] **v5.0** — NEXUS Language Server Protocol (LSP) para integración nativa con editores
 

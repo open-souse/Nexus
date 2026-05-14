@@ -96,7 +96,7 @@ export function buildPrompt(config: Partial<NexusConfig>): string {
   const orchList = orchestrators.join(' / ')
 
   const grammar = `
-NEXUS SYNTAX REFERENCE (v4.1):
+NEXUS SYNTAX REFERENCE (v4.0.1):
 - Indentation: 2 spaces per level.
 - @ : Directives (e.g. @React, @CleanCode).
 - @modify [preserve:all] : Safe edit — only apply the explicit change, nothing else.
@@ -141,7 +141,7 @@ NEXUS SYNTAX REFERENCE (v4.1):
 - mocks: dep1, dep2 : Dependencies to mock.` : ''}`.trim()
 
   return `
-NEXUS NOTATION — v4.1
+NEXUS NOTATION — v4.0.1
 
 I write my development requests using NEXUS, a shorthand notation for UI, logic, and project structure.
 This is the syntax reference. When I send you NEXUS, generate the implementation.
