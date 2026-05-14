@@ -12,7 +12,7 @@
 
 [![npm version](https://img.shields.io/npm/v/nxlang.svg?style=flat-square)](https://www.npmjs.com/package/nxlang)
 [![Licencia: MIT](https://img.shields.io/badge/Licencia-MIT-blue.svg?style=flat-square)](./LICENSE)
-[![Tests](https://img.shields.io/badge/tests-90%20pasando-brightgreen?style=flat-square)]()
+[![Tests](https://img.shields.io/badge/tests-121%20pasando-brightgreen?style=flat-square)]()
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue?style=flat-square)]()
 
 **NEXUS** es un protocolo de lenguaje minimalista Humano-IA que comprime arquitecturas de software complejas en fragmentos precisos y sin ambigüedad. Construido como núcleo library-first — diseñado para potenciar editores de código, herramientas de IA y flujos de trabajo de desarrollo.
@@ -65,7 +65,7 @@ Un bloque. Cero ambigüedad. La IA sabe exactamente qué construir.
 
 ## Arquitectura
 
-NEXUS v4.0.0 está construido **library-first**. El núcleo es un módulo TypeScript puro sin dependencias del CLI — diseñado para ser embebido en editores, IDEs y herramientas potenciadas por IA.
+NEXUS v4.0.1 está construido **library-first**. El núcleo es un módulo TypeScript puro sin dependencias del CLI — diseñado para ser embebido en editores, IDEs y herramientas potenciadas por IA.
 
 ```
 nxlang/
@@ -225,7 +225,7 @@ const config = createDefaultConfig({ project: 'mi-editor', modules: ['frontend']
 
 ## Seguridad
 
-NEXUS v4.0.0 incluye validación defensiva de inputs:
+NEXUS v4.0.1 incluye validación defensiva de inputs:
 
 - **Límite de 500 KB por archivo** — rechaza archivos demasiado grandes antes de procesarlos
 - **Límite de 2000 líneas** — previene ejecución no acotada
