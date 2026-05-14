@@ -63,7 +63,41 @@ npm publish --provenance (con attestation de GitHub)
 
 ---
 
-## 4. Branch Protection Rules (configurar manualmente)
+## 4. CodeQL — Conflicto con Default Setup
+
+Si ves este error en el workflow de CodeQL:
+> "CodeQL analyses from advanced configurations cannot be processed when the default setup is enabled"
+
+**Causa:** GitHub tiene el "Default setup" de CodeQL activo, que entra en conflicto con el workflow personalizado.
+
+**Solución (una vez, manual en GitHub):**
+1. Repositorio → **Settings** → **Code security and analysis**
+2. Sección **CodeQL analysis** → hacer clic en **Disable** junto a "Default setup"
+3. Confirmar. El workflow personalizado tomará el control.
+
+**Por qué el workflow personalizado es mejor:**
+- Usa `queries: security-extended` (más reglas que el default)
+- Corre en push + PR + schedule semanal
+- Está versionado en el repo junto al resto del pipeline
+
+---
+
+## 5. Publicar desde Windows (primera vez)
+
+Si acabas de clonar el repo y `npm publish` falla con:
+> `"tsc" no se reconoce como un comando interno o externo`
+
+El problema es que `tsc` vive en `node_modules/.bin` y aún no instalaste dependencias.
+
+```powershell
+# En el directorio del proyecto:
+npm install          # instala todas las devDependencies incluyendo TypeScript
+npm publish --access public
+```
+
+---
+
+## 6. Branch Protection Rules (configurar manualmente)
 
 Ver [branch-protection.md](./branch-protection.md) para las reglas completas.
 

@@ -17,6 +17,9 @@ jobs:
   analyze:
     name: CodeQL Analysis
     runs-on: ubuntu-latest
+    # Requires GitHub Default Setup to be DISABLED in:
+    # Settings → Code security → CodeQL analysis → Disable default setup
+    # If default setup is enabled, disable it before enabling this workflow.
 
     steps:
       - name: Checkout
@@ -25,7 +28,7 @@ jobs:
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
         with:
-          languages: typescript
+          languages: javascript-typescript
           queries: security-extended
 
       - name: Build for analysis
@@ -36,4 +39,4 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
         with:
-          category: "/language:typescript"
+          category: "/language:javascript-typescript"
