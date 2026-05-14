@@ -1,0 +1,70 @@
+<svg width="900" height="200" viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="900" height="200" rx="12" fill="#1C1433"/>
+
+  <!-- Top accent -->
+  <rect x="0" y="0" width="900" height="3" rx="1" fill="#5DCAA5"/>
+
+  <!-- Subtle grid -->
+  <defs>
+    <pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#AFA9EC" stroke-width="0.15" opacity="0.2"/>
+    </pattern>
+  </defs>
+  <rect width="900" height="200" rx="12" fill="url(#g)"/>
+
+  <!-- Logomark pequeño -->
+  <polygon points="64,72 84,83 84,105 64,116 44,105 44,83"
+    fill="none" stroke="#5DCAA5" stroke-width="2"/>
+  <circle cx="64" cy="94" r="5" fill="#5DCAA5"/>
+  <line x1="64" y1="94" x2="64" y2="72" stroke="#5DCAA5" stroke-width="1.2" opacity="0.5"/>
+  <line x1="64" y1="94" x2="84" y2="83" stroke="#5DCAA5" stroke-width="1.2" opacity="0.5"/>
+  <line x1="64" y1="94" x2="84" y2="105" stroke="#5DCAA5" stroke-width="1.2" opacity="0.5"/>
+  <line x1="64" y1="94" x2="64" y2="116" stroke="#5DCAA5" stroke-width="1.2" opacity="0.5"/>
+  <line x1="64" y1="94" x2="44" y2="105" stroke="#5DCAA5" stroke-width="1.2" opacity="0.5"/>
+  <line x1="64" y1="94" x2="44" y2="83" stroke="#5DCAA5" stroke-width="1.2" opacity="0.5"/>
+  <circle cx="64" cy="72" r="3" fill="#AFA9EC"/>
+  <circle cx="84" cy="83" r="3" fill="#AFA9EC"/>
+  <circle cx="84" cy="105" r="3" fill="#AFA9EC"/>
+  <circle cx="64" cy="116" r="3" fill="#AFA9EC"/>
+  <circle cx="44" cy="105" r="3" fill="#AFA9EC"/>
+  <circle cx="44" cy="83" r="3" fill="#AFA9EC"/>
+
+  <!-- Wordmark -->
+  <text x="110" y="106"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="48" font-weight="500" fill="#FFFFFF" letter-spacing="10">NEXUS</text>
+
+  <!-- Versión -->
+  <rect x="110" y="116" width="68" height="18" rx="4" fill="#3C3489"/>
+  <text x="144" y="129" text-anchor="middle"
+    font-family="ui-monospace, monospace"
+    font-size="10" fill="#CECBF6">v4.0.0</text>
+
+  <!-- Separator vertical -->
+  <rect x="380" y="56" width="1" height="90" fill="#3C3489"/>
+
+  <!-- Tagline y stats -->
+  <text x="408" y="80"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="14" fill="#AFA9EC">Protocolo de lenguaje minimalista Humano-IA</text>
+  <text x="408" y="102"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="13" fill="#7F77DD">Menos líneas · Cero ambigüedad · Library-First</text>
+
+  <!-- Mini stats -->
+  <rect x="408" y="120" width="110" height="26" rx="5" fill="#26215C"/>
+  <text x="463" y="137" text-anchor="middle"
+    font-family="ui-monospace, monospace" font-size="11" fill="#AFA9EC">✓ 90 tests</text>
+
+  <rect x="530" y="120" width="130" height="26" rx="5" fill="#04342C"/>
+  <text x="595" y="137" text-anchor="middle"
+    font-family="ui-monospace, monospace" font-size="11" fill="#5DCAA5">⚡ ~1s suite</text>
+
+  <rect x="672" y="120" width="100" height="26" rx="5" fill="#4A1B0C"/>
+  <text x="722" y="137" text-anchor="middle"
+    font-family="ui-monospace, monospace" font-size="11" fill="#F0997B">MIT</text>
+
+  <!-- Bottom line -->
+  <rect x="0" y="197" width="900" height="3" rx="1" fill="#3C3489"/>
+</svg>
