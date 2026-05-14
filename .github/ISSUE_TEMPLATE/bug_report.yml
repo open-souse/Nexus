@@ -1,0 +1,62 @@
+name: Bug Report
+description: Reportar un error en nxlang
+title: "[BUG] "
+labels: ["bug", "needs-triage"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Gracias por reportar un bug. Por favor completa toda la información — mientras más detalle, más rápido podemos resolverlo.
+
+  - type: input
+    id: version
+    attributes:
+      label: Versión de nxlang
+      placeholder: "4.1.0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: blueprint
+    attributes:
+      label: Blueprint .nexus que causa el problema
+      description: Pega el contenido del archivo .nexus que genera el error
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Comportamiento esperado
+      description: ¿Qué debería pasar?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Comportamiento actual / Error que ves
+      description: ¿Qué pasa en cambio? Pega el mensaje de error completo.
+    validations:
+      required: true
+
+  - type: input
+    id: node
+    attributes:
+      label: Versión de Node.js
+      placeholder: "20.0.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Sistema operativo
+      options:
+        - Linux
+        - macOS
+        - Windows
+    validations:
+      required: true
