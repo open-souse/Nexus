@@ -96,7 +96,7 @@ export function buildPrompt(config: Partial<NexusConfig>): string {
   const orchList = orchestrators.join(' / ')
 
   const grammar = `
-NEXUS SYNTAX REFERENCE (v4.0):
+NEXUS SYNTAX REFERENCE (v4.1):
 - Indentation: 2 spaces per level.
 - @ : Directives (e.g. @React, @CleanCode).
 - @modify [preserve:all] : Safe edit — only apply the explicit change, nothing else.
@@ -125,6 +125,9 @@ NEXUS SYNTAX REFERENCE (v4.0):
 - => : Side-effects / API calls / handlers.
 - < : Data binding / types.
 - { path } : Inject existing code or file.
+- !error:code -> dest : Nested under =>; catches HTTP errors, timeout, network, or * (wildcard).
+- [paginate:N] : On a < bound element; generates paginated fetch + UI controls (N items/page, max 500).
+- -> Model.Name [mod] : Inside Entity; defines typed DB relation. Modifiers: [many] [optional] [cascade].
 - ${orchList} : Structure orchestrators.
 - Store Name { ~state Action Selector } : Global state (Zustand/Redux/Pinia).
 - Create Name [type:component|page|hook|feature, path:route] : Create files on disk.${activeModules.includes('testing') ? `
@@ -138,7 +141,7 @@ NEXUS SYNTAX REFERENCE (v4.0):
 - mocks: dep1, dep2 : Dependencies to mock.` : ''}`.trim()
 
   return `
-NEXUS NOTATION — v4.0
+NEXUS NOTATION — v4.1
 
 I write my development requests using NEXUS, a shorthand notation for UI, logic, and project structure.
 This is the syntax reference. When I send you NEXUS, generate the implementation.
@@ -163,6 +166,43 @@ Create / Test rule (filesystem tools like Claude Code, Cursor, Copilot):
 - No filesystem access → show the code for me to copy.
 
 ${dynamicExamples}
+
+ERROR HANDLING OPERATOR (!error):
+When you see !error: under a => action, generate proper error handling code.
+!error:400 → handle bad request (validation errors, show form errors)
+!error:401 → handle unauthorized (redirect to login, clear session)
+!error:403 → handle forbidden (show permission denied UI)
+!error:404 → handle not found (show 404 component or redirect)
+!error:500 → handle server error (show error boundary, log to console)
+!error:timeout → handle request timeout (show retry UI, cancel pending requests)
+!error:network → handle network failure (show offline indicator)
+!error:* → catch-all error handler (fallback for any unhandled error)
+The -> destination after !error is the redirect route or recovery action.
+Always generate try/catch or .catch() blocks. Never swallow errors silently.
+
+PAGINATION OPERATOR ([paginate]):
+When you see [paginate:N] on a data-bound element:
+- Generate server-side or client-side pagination fetching N items per page
+- Include page state management (useState or URL params)
+- Generate Previous/Next controls or page number buttons
+- If page:~var is specified, bind the current page to that state variable
+- If layout:grid, render items in a CSS grid; if layout:list, render as vertical list
+- Always show total count and current range (e.g., "Showing 1-20 of 156")
+- Handle loading state between page changes
+- Handle empty state when no items exist
+
+MODEL RELATIONS (-> Model.Name):
+When you see -> Model.Name inside an Entity definition:
+- Generate a foreign key or reference field pointing to that model
+- Without modifier: one-to-one required relation (NOT NULL foreign key)
+- [many]: one-to-many relation (generate array field or junction table)
+- [optional]: nullable relation (allow NULL foreign key)
+- [cascade]: on parent delete, cascade delete children
+- Adapt to the active database:
+  MongoDB/Mongoose → use ObjectId refs and populate()
+  PostgreSQL/Prisma → use @relation with proper foreign keys
+  MySQL → use foreign key constraints
+- Always generate the inverse relation on the referenced model
 
 PROJECT DNA:
 ${JSON.stringify(config, null, 2)}

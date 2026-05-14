@@ -1,7 +1,7 @@
 // NEXUS grammar as structured data — used by NEXUS Studio for syntax highlighting,
 // autocomplete, validation, and documentation.
 
-export const NEXUS_VERSION = '4.0'
+export const NEXUS_VERSION = '4.1'
 
 export interface NexusOperator {
   symbol: string
@@ -63,6 +63,9 @@ export const NEXUS_OPERATORS: NexusOperator[] = [
   { symbol: '!pk', name: 'Primary Key', description: 'Database primary key constraint', example: 'Entity id type:uuid !pk' },
   { symbol: '@Auth', name: 'Authentication', description: 'Require authentication for endpoint', example: '@Auth[mode:jwt]' },
   { symbol: '@RateLimit', name: 'Rate Limiting', description: 'Limit requests', example: '@RateLimit[100/min]' },
+  { symbol: '!error:', name: 'Error Handler', description: 'Error handler — catches specific HTTP errors or timeouts and redirects', example: '!error:400 -> /error' },
+  { symbol: '[paginate:]', name: 'Pagination', description: 'Native pagination — generates paginated data fetching with UI controls', example: 'Table < User [paginate:20]' },
+  { symbol: '-> Model.', name: 'Model Relation', description: 'Defines a typed relation between database models', example: 'Entity items -> Model.Product [many]' },
 ]
 
 export const NEXUS_MODULES: NexusModule[] = [

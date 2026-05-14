@@ -166,6 +166,9 @@ Controller PedidoController
 | `$var: valor` | Declaración de variable |
 | `@Auth[rol]` | Guard de autenticación |
 | `* N` | Repetir N veces |
+| `!error:código -> ruta` | Manejo de errores — captura errores HTTP y redirige |
+| `[paginate:N]` | Paginación nativa — genera paginación automática |
+| `-> Model.Nombre` | Relación entre modelos — define relaciones de base de datos |
 
 [→ Referencia Completa de Gramática](./NEXUS-Grammar.md)
 
@@ -248,6 +251,7 @@ El editor no necesita entender NEXUS — solo necesita llamar a `validateNexus()
 ## Roadmap
 
 - [x] **v4.0** — Núcleo modular, arquitectura Library-First, seguridad defensiva, 90 tests
+- [x] **v4.1** — Manejo de errores (`!error`), paginación nativa (`[paginate]`), relaciones entre modelos
 - [ ] **v4.5** — Módulo SDD, Motor Semántico (detección de arquitecturas imposibles), CLI Doctor
 - [ ] **v5.0** — NEXUS Language Server Protocol (LSP) para integración nativa con editores
 

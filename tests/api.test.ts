@@ -35,7 +35,7 @@ describe('buildSystemPrompt', () => {
   it('includes NEXUS header for default claude provider', () => {
     const prompt = buildSystemPrompt(config)
     expect(prompt).toContain('NEXUS NOTATION')
-    expect(prompt).toContain('v4.0')
+    expect(prompt).toContain('v4.1')
   })
 
   it('adapts header for gpt provider', () => {
