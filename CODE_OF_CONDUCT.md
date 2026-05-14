@@ -1,6 +1,9 @@
 <p align="center">
-  <a href="./CODE_OF_CONDUCT.es.md">🇪🇸 Español</a> ·
-  <a href="./CODE_OF_CONDUCT.md">🇺🇸 English</a>
+  <img src="./assets/nexus-logo.svg" alt="NEXUS" width="80"/>
+</p>
+
+<p align="center">
+  <a href="./CODE_OF_CONDUCT.es.md">🇪🇸 Español</a> · <strong>🇺🇸 English</strong>
 </p>
 
 # Code of Conduct — NEXUS Protocol

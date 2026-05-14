@@ -1,6 +1,9 @@
 <p align="center">
-  <a href="./CONTRIBUTING.es.md">🇪🇸 Español</a> ·
-  <a href="./CONTRIBUTING.md">🇺🇸 English</a>
+  <img src="./assets/nexus-logo.svg" alt="NEXUS" width="80"/>
+</p>
+
+<p align="center">
+  <a href="./CONTRIBUTING.es.md">🇪🇸 Español</a> · <strong>🇺🇸 English</strong>
 </p>
 
 # Contribution Guide — NEXUS Protocol

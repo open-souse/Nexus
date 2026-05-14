@@ -1,6 +1,12 @@
-# NEXUS Protocol Roadmap
+<p align="center">
+  <img src="../../assets/nexus-logo.svg" alt="NEXUS" width="80"/>
+</p>
 
-<p align="right"><a href="../es/roadmap.md">🇪🇸 Versión en español</a></p>
+<p align="center">
+  <a href="../es/roadmap.md">🇪🇸 Español</a> · <strong>🇺🇸 English</strong>
+</p>
+
+# NEXUS Protocol Roadmap
 
 ## Philosophy
 

@@ -1,6 +1,12 @@
-# Diccionario de Operadores NEXUS
+<p align="center">
+  <img src="../../assets/nexus-logo.svg" alt="NEXUS" width="80"/>
+</p>
 
-<p align="right"><a href="../en/operators.md">🇺🇸 English version</a></p>
+<p align="center">
+  <strong>🇪🇸 Español</strong> · <a href="../en/operators.md">🇺🇸 English</a>
+</p>
+
+# Diccionario de Operadores NEXUS
 
 Referencia completa de todos los operadores del protocolo NEXUS v4.1.0.
 

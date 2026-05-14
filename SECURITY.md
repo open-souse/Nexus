@@ -1,6 +1,9 @@
 <p align="center">
-  <a href="./SECURITY.es.md">🇪🇸 Español</a> ·
-  <a href="./SECURITY.md">🇺🇸 English</a>
+  <img src="./assets/nexus-logo.svg" alt="NEXUS" width="80"/>
+</p>
+
+<p align="center">
+  <a href="./SECURITY.es.md">🇪🇸 Español</a> · <strong>🇺🇸 English</strong>
 </p>
 
 # Security Policy — NEXUS Protocol

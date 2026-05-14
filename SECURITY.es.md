@@ -1,6 +1,12 @@
-# Política de Seguridad — NEXUS Protocol
+<p align="center">
+  <img src="./assets/nexus-logo.svg" alt="NEXUS" width="80"/>
+</p>
 
-<p align="right"><a href="./SECURITY.md">🇺🇸 English version</a></p>
+<p align="center">
+  <strong>🇪🇸 Español</strong> · <a href="./SECURITY.md">🇺🇸 English</a>
+</p>
+
+# Política de Seguridad — NEXUS Protocol
 
 ## Versiones Soportadas
 

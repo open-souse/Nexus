@@ -1,3 +1,11 @@
+<p align="center">
+  <img src="../../../assets/nexus-logo.svg" alt="NEXUS" width="80"/>
+</p>
+
+<p align="center">
+  <strong>🇪🇸 Español</strong> · <a href="../rfcs/RFC-0001-template.md">🇺🇸 English</a>
+</p>
+
 # RFC-XXXX — [Título de la Propuesta]
 
 **Estado:** `Borrador` | `En revisión` | `Aprobado` | `Rechazado`

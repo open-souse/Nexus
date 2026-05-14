@@ -1,6 +1,12 @@
-# NEXUS Grammar — Complete Reference
+<p align="center">
+  <img src="../../assets/nexus-logo.svg" alt="NEXUS" width="80"/>
+</p>
 
-<p align="right"><a href="../es/gramatica.md">🇪🇸 Versión en español</a></p>
+<p align="center">
+  <a href="../es/gramatica.md">🇪🇸 Español</a> · <strong>🇺🇸 English</strong>
+</p>
+
+# NEXUS Grammar — Complete Reference
 
 ## Fundamental Principles
 

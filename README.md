@@ -7,8 +7,7 @@
 </p>
 
 <p align="center">
-  <a href="./README.es.md">🇪🇸 Español</a> ·
-  <a href="./README.en.md">🇺🇸 English</a>
+  <strong>🇪🇸 Español</strong> · <a href="./README.en.md">🇺🇸 English</a>
 </p>
 
 # 🌌 Protocolo NEXUS — nxlang

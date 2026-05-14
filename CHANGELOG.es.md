@@ -1,6 +1,12 @@
-# Registro de Cambios
+<p align="center">
+  <img src="./assets/nexus-logo.svg" alt="NEXUS" width="80"/>
+</p>
 
-<p align="right"><a href="./CHANGELOG.md">🇺🇸 English version</a></p>
+<p align="center">
+  <strong>🇪🇸 Español</strong> · <a href="./CHANGELOG.md">🇺🇸 English</a>
+</p>
+
+# Registro de Cambios
 
 Todos los cambios notables de `nxlang` se documentan en este archivo.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).

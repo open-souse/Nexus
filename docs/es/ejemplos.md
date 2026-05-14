@@ -1,6 +1,12 @@
-# Ejemplos NEXUS — Casos Reales
+<p align="center">
+  <img src="../../assets/nexus-logo.svg" alt="NEXUS" width="80"/>
+</p>
 
-<p align="right"><a href="../en/examples.md">🇺🇸 English version</a></p>
+<p align="center">
+  <strong>🇪🇸 Español</strong> · <a href="../en/examples.md">🇺🇸 English</a>
+</p>
+
+# Ejemplos NEXUS — Casos Reales
 
 Seis ejemplos completos que cubren los casos de uso más comunes del protocolo NEXUS.
 

@@ -1,6 +1,12 @@
-# Guía de Contribución — NEXUS Protocol
+<p align="center">
+  <img src="./assets/nexus-logo.svg" alt="NEXUS" width="80"/>
+</p>
 
-<p align="right"><a href="./CONTRIBUTING.md">🇺🇸 English version</a></p>
+<p align="center">
+  <strong>🇪🇸 Español</strong> · <a href="./CONTRIBUTING.md">🇺🇸 English</a>
+</p>
+
+# Guía de Contribución — NEXUS Protocol
 
 ## Bienvenido
 

@@ -1,6 +1,12 @@
-# Código de Conducta — NEXUS Protocol
+<p align="center">
+  <img src="./assets/nexus-logo.svg" alt="NEXUS" width="80"/>
+</p>
 
-<p align="right"><a href="./CODE_OF_CONDUCT.md">🇺🇸 English version</a></p>
+<p align="center">
+  <strong>🇪🇸 Español</strong> · <a href="./CODE_OF_CONDUCT.md">🇺🇸 English</a>
+</p>
+
+# Código de Conducta — NEXUS Protocol
 
 ## Nuestro Compromiso
 
