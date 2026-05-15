@@ -345,6 +345,70 @@ describe('validateNexus — input sanitization (direct import)', () => {
   })
 })
 
+describe('validateNexus — control characters (direct import)', () => {
+  it('rejects \\x01 at start of content', () => {
+    const errors = validateNexus('\x01Page Dashboard')
+    expect(errors).toHaveLength(1)
+    expect(errors[0].line).toBe(0)
+    expect(errors[0].message).toContain('control characters')
+  })
+
+  it('rejects \\x1F at start of content', () => {
+    const errors = validateNexus('\x1FPage Dashboard')
+    expect(errors).toHaveLength(1)
+    expect(errors[0].message).toContain('control characters')
+  })
+
+  it('rejects \\x02 embedded at end of line', () => {
+    const errors = validateNexus('Page Dashboard\x02')
+    expect(errors).toHaveLength(1)
+    expect(errors[0].message).toContain('control characters')
+  })
+
+  it('accepts tab \\x09 as legitimate whitespace', () => {
+    const errors = validateNexus('Page Dashboard\t')
+    expect(errors).toHaveLength(0)
+  })
+
+  it('accepts newline \\x0A as legitimate line separator', () => {
+    const errors = validateNexus('Page Dashboard\n  Section Hero')
+    expect(errors).toHaveLength(0)
+  })
+})
+
+describe('validateNexus — bracket per-line validation (direct import)', () => {
+  it('rejects [ on one line closed by ] on next line', () => {
+    const errors = validateNexus('Section Hero [sin-cerrar\nSection Body ]sin-abrir')
+    expect(errors).toHaveLength(2)
+    expect(errors[0].message).toContain('unclosed')
+    expect(errors[1].message).toContain('"]"')
+  })
+
+  it('rejects unclosed [ on its line', () => {
+    const errors = validateNexus('Table < User [paginate:20')
+    expect(errors).toHaveLength(1)
+    expect(errors[0].message).toContain('unclosed')
+  })
+
+  it('rejects ] with no matching [ on its line', () => {
+    const errors = validateNexus('Table < User paginate:20]')
+    expect(errors).toHaveLength(1)
+    expect(errors[0].message).toContain('"]"')
+  })
+
+  it('accepts balanced brackets on same line', () => {
+    expect(validateNexus('Table < User [paginate:20]')).toHaveLength(0)
+  })
+
+  it('accepts multiple balanced attributes on same line', () => {
+    expect(validateNexus('Table < User [paginate:10, layout:grid]')).toHaveLength(0)
+  })
+
+  it('accepts brackets in different independent lines when each is balanced', () => {
+    expect(validateNexus('Section Hero [type:dark, size:lg]\nTable < User [paginate:20]')).toHaveLength(0)
+  })
+})
+
 describe('validateNexus — orchestrator validation (direct import)', () => {
   it('rejects unknown PascalCase orchestrator followed by identifier', () => {
     const errors = validateNexus('FooBar miComponente')
