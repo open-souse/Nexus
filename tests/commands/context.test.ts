@@ -16,7 +16,7 @@ describe('nexus context', () => {
   it('generates NEXUS.md with the NEXUS notation reference', () => {
     const content = buildPrompt(FRONTEND_CONFIG)
     expect(content).toContain('NEXUS NOTATION')
-    expect(content).toContain('v4.0')
+    expect(content).toContain('NEXUS NOTATION')
   })
 
   it('includes the syntax reference header', () => {

@@ -31,5 +31,5 @@
     font-size="22" font-weight="500" fill="#FFFFFF" letter-spacing="6">NEXUS</text>
   <text x="100" y="176" text-anchor="middle"
     font-family="ui-monospace, monospace"
-    font-size="9" fill="#5DCAA5" letter-spacing="2">PROTOCOL v4.0</text>
+    font-size="9" fill="#5DCAA5" letter-spacing="2">PROTOCOL v4.0.1</text>
 </svg>

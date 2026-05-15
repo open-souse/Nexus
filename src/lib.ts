@@ -3,7 +3,7 @@
 export { validateNexus } from './core/validator.js'
 export type { ValidationError } from './core/validator.js'
 
-export { buildPrompt as buildContextPrompt, buildSystemPrompt } from './context/builder.js'
+export { buildPrompt, buildSystemPrompt } from './context/builder.js'
 export type { NexusProvider } from './context/builder.js'
 
 export type { NexusConfig, NexusTokens } from './types/nexus.js'

@@ -1,9 +1,13 @@
 // Pure NEXUS validation logic — no CLI, no FS, no framework dependencies.
 import { stripStringContent } from './parser.js'
+import { NEXUS_ORCHESTRATORS, NEXUS_KEYWORDS } from './grammar.js'
 
+const VALID_ORCHESTRATORS = new Set<string>([...NEXUS_ORCHESTRATORS, ...NEXUS_KEYWORDS])
 const VALID_DIRECTIVE = /^@[A-Za-z]/
 const VALID_TOKEN = /^#[a-zA-Z]/
 const CONDITIONAL_OPENER = /^\(.*\)\s*->$/
+const VALID_ERROR_CODES = new Set(['timeout', 'network', '*'])
+const VALID_RELATION_MODS = new Set(['many', 'optional', 'cascade'])
 
 export interface ValidationError {
   line: number
@@ -54,6 +58,9 @@ export function validateNexus(content: string): ValidationError[] {
   let conditionalDepth = 0
   let conditionalOpenLine = 0
 
+  // Track indentation of the last line with a complete => action (for !error parent check)
+  let lastActionIndent = -1
+
   lines.forEach((raw, index) => {
     const lineNumber = index + 1
     const line = raw.trimEnd()
@@ -70,6 +77,52 @@ export function validateNexus(content: string): ValidationError[] {
     }
 
     const trimmed = line.trim()
+
+    // Track lines that have a complete => action (used to validate !error parent)
+    if (/=>\s*\S+/.test(trimmed)) {
+      lastActionIndent = leadingSpaces
+    }
+
+    // Orchestrator validation: PascalCase word followed by an identifier
+    const orchestratorMatch = trimmed.match(/^([A-Z][a-zA-Z]+)\s+([A-Za-z]\w*)/)
+    if (orchestratorMatch) {
+      const word = orchestratorMatch[1]
+      if (!VALID_ORCHESTRATORS.has(word)) {
+        errors.push({
+          line: lineNumber,
+          message: `Unknown orchestrator "${word}". Valid orchestrators: ${[...VALID_ORCHESTRATORS].join(', ')}`
+        })
+      }
+    }
+
+    // ── !error: handler ──────────────────────────────────────────────────────
+    if (trimmed.startsWith('!error:')) {
+      // Must be indented under a => action line
+      if (!(leadingSpaces > lastActionIndent && lastActionIndent >= 0)) {
+        errors.push({ line: lineNumber, message: "!error must be nested under a '=>' action" })
+      }
+      const errorMatch = trimmed.match(/^!error:(\S+?)(?:\s*->\s*(\S+))?$/)
+      if (!errorMatch) {
+        errors.push({ line: lineNumber, message: '!error syntax is invalid. Expected: !error:code -> destination' })
+      } else {
+        const code = errorMatch[1]
+        const dest = errorMatch[2]
+        const numCode = /^\d{3}$/.test(code) ? parseInt(code, 10) : null
+        const isValidCode =
+          (numCode !== null && numCode >= 400 && numCode <= 599) || VALID_ERROR_CODES.has(code)
+        if (!isValidCode) {
+          errors.push({
+            line: lineNumber,
+            message: "Invalid error code. Use HTTP status (400-599), 'timeout', 'network', or '*'"
+          })
+        }
+        if (!dest) {
+          errors.push({ line: lineNumber, message: '!error must include a destination: !error:code -> /route' })
+        }
+      }
+      // Skip remaining checks — !error lines don't use other operators
+      return
+    }
 
     // @ directives: must match @[A-Za-z] (e.g. @React, @modify)
     if (trimmed.startsWith('@')) {
@@ -174,6 +227,77 @@ export function validateNexus(content: string): ValidationError[] {
       })
     }
 
+    // ── [paginate:N] — native pagination ────────────────────────────────────
+    const paginateMatch = trimmed.match(/\[paginate:\s*([^\],\s]+)/)
+    if (paginateMatch) {
+      // Requires data binding < on the same line
+      if (!/</.test(trimmed)) {
+        errors.push({ line: lineNumber, message: "[paginate] requires a data binding operator '<'" })
+      }
+      // N must be a positive integer between 1 and 500
+      const paginateStr = paginateMatch[1]
+      if (!/^\d+$/.test(paginateStr)) {
+        errors.push({ line: lineNumber, message: 'Pagination size must be a positive integer. Expected: [paginate:N]' })
+      } else {
+        const paginateNum = parseInt(paginateStr, 10)
+        if (paginateNum < 1 || paginateNum > 500) {
+          errors.push({ line: lineNumber, message: 'Pagination size must be between 1 and 500' })
+        }
+      }
+      // Cannot combine with multiplier * N
+      if (/(?:^|\s)\*\s*\d+/.test(trimmed)) {
+        errors.push({ line: lineNumber, message: "Cannot use [paginate] with multiplier '* N' — choose one" })
+      }
+      // Optional page:~var must be a valid local state variable
+      const pageMatch = trimmed.match(/\bpage:\s*([^,\]\s]+)/)
+      if (pageMatch) {
+        const pageVar = pageMatch[1].trim()
+        if (!/^~[a-zA-Z_]\w*$/.test(pageVar)) {
+          errors.push({
+            line: lineNumber,
+            message: '"page:" value must reference a local state variable (e.g. page:~currentPage)'
+          })
+        }
+      }
+      // Optional layout: must be grid or list
+      const layoutMatch = trimmed.match(/\blayout:\s*([^,\]\s]+)/)
+      if (layoutMatch) {
+        const layout = layoutMatch[1].trim()
+        if (layout !== 'grid' && layout !== 'list') {
+          errors.push({ line: lineNumber, message: `Invalid layout: "${layout}". Use "grid" or "list"` })
+        }
+      }
+    }
+
+    // ── -> Model.Name — model relations inside Entity lines ──────────────────
+    const modelRelMatch = trimmed.match(/\->\s*Model\.([A-Za-z]\w*)/)
+    if (modelRelMatch) {
+      const modelName = modelRelMatch[1]
+      if (!trimmed.startsWith('Entity ')) {
+        errors.push({ line: lineNumber, message: "Model relations must be defined inside an Entity" })
+      } else {
+        if (!/^[A-Z]/.test(modelName)) {
+          errors.push({
+            line: lineNumber,
+            message: `Model name must start with uppercase: "Model.${modelName}"`
+          })
+        }
+        // Validate relation modifiers if present
+        const modMatch = trimmed.match(/Model\.\w+\s*\[([^\]]+)\]/)
+        if (modMatch) {
+          const mods = modMatch[1].split(',').map(m => m.trim())
+          for (const mod of mods) {
+            if (!VALID_RELATION_MODS.has(mod)) {
+              errors.push({
+                line: lineNumber,
+                message: `Invalid relation modifier "${mod}". Use [many], [optional], or [cascade]`
+              })
+            }
+          }
+        }
+      }
+    }
+
     // { } — cumulative balance across the entire file
     for (const ch of trimmed) {
       if (ch === '{') {
@@ -224,10 +348,13 @@ export function validateNexus(content: string): ValidationError[] {
       }
     }
 
-    // @RateLimit — rate limit directive
+    // @RateLimit — must match @RateLimit[number/unit]
     if (trimmed.includes('@RateLimit')) {
       if (!trimmed.match(/@RateLimit\[\d+\/\w+\]/)) {
-        errors.push({ line: lineNumber, message: 'Invalid @RateLimit. Expected format: @RateLimit[number/unit] (e.g. 100/min)' })
+        errors.push({
+          line: lineNumber,
+          message: 'Invalid @RateLimit. Expected format: @RateLimit[number/unit] (e.g. 100/min)'
+        })
       }
     }
   })

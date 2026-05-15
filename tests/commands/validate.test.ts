@@ -409,6 +409,74 @@ describe('validateNexus — bracket per-line validation (direct import)', () => 
   })
 })
 
+describe('validateNexus — orchestrator validation (direct import)', () => {
+  it('rejects unknown PascalCase orchestrator followed by identifier', () => {
+    const errors = validateNexus('FooBar miComponente')
+    expect(errors.length).toBeGreaterThan(0)
+    expect(errors[0].message).toContain('Unknown orchestrator')
+  })
+
+  it('rejects misspelled orchestrator PAge', () => {
+    const errors = validateNexus('PAge Dashboard')
+    expect(errors.length).toBeGreaterThan(0)
+    expect(errors[0].message).toContain('Unknown orchestrator')
+  })
+
+  it('rejects Spanish-named orchestrator Controlador', () => {
+    const errors = validateNexus('Controlador MiAPI')
+    expect(errors.length).toBeGreaterThan(0)
+    expect(errors[0].message).toContain('Unknown orchestrator')
+  })
+
+  it('accepts valid orchestrator Page', () => {
+    expect(validateNexus('Page Dashboard')).toHaveLength(0)
+  })
+
+  it('accepts valid orchestrator Controller', () => {
+    expect(validateNexus('Controller UserController')).toHaveLength(0)
+  })
+
+  it('accepts valid orchestrator Model', () => {
+    expect(validateNexus('Model Usuario')).toHaveLength(0)
+  })
+})
+
+describe('validateNexus — @RateLimit validation (direct import)', () => {
+  it('accepts valid @RateLimit[100/min]', () => {
+    expect(validateNexus('@RateLimit[100/min]')).toHaveLength(0)
+  })
+
+  it('rejects @RateLimit without brackets', () => {
+    const errors = validateNexus('@RateLimit 100/min')
+    expect(errors.length).toBeGreaterThan(0)
+    expect(errors[0].message).toContain('Invalid @RateLimit')
+  })
+
+  it('rejects @RateLimit with invalid format', () => {
+    const errors = validateNexus('@RateLimit[100]')
+    expect(errors.length).toBeGreaterThan(0)
+    expect(errors[0].message).toContain('Invalid @RateLimit')
+  })
+})
+
+describe('validateNexus — bracket balance (direct import)', () => {
+  it('rejects ] without matching [', () => {
+    const errors = validateNexus('Card]')
+    expect(errors.length).toBeGreaterThan(0)
+    expect(errors[0].message).toContain('"]" without matching')
+  })
+})
+
+describe('validateNexus — escaped quotes in strings (direct import)', () => {
+  it('does not flag # inside string with escaped quote', () => {
+    expect(validateNexus('Text "He said \\"#not-a-token\\""')).toHaveLength(0)
+  })
+
+  it('does not flag token characters inside escaped single-quoted string', () => {
+    expect(validateNexus("Text 'It\\'s #fine'")).toHaveLength(0)
+  })
+})
+
 describe('validateNexus — @Auth validation (direct import)', () => {
   it('accepts standalone @Auth', () => {
     expect(validateNexus('Endpoint GET /profile @Auth')).toHaveLength(0)

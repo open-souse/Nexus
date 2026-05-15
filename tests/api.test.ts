@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { buildSystemPrompt } from '../src/context/builder.js'
 import { createDefaultConfig } from '../src/context/config.js'
+import { NEXUS_VERSION } from '../src/core/grammar.js'
 
 describe('createDefaultConfig', () => {
   it('returns a complete config with all required fields', () => {
@@ -27,6 +28,13 @@ describe('createDefaultConfig', () => {
     expect(config.tokens).toHaveProperty('danger')
     expect(config.tokens).toHaveProperty('success')
   })
+
+  it('deep merges partial token overrides without losing other token defaults', () => {
+    const config = createDefaultConfig({ tokens: { primary: '#FF0000' } as never })
+    expect(config.tokens.primary).toBe('#FF0000')
+    expect(config.tokens.secondary).toBe('#64748b')
+    expect(config.tokens.success).toBe('#22c55e')
+  })
 })
 
 describe('buildSystemPrompt', () => {
@@ -35,7 +43,7 @@ describe('buildSystemPrompt', () => {
   it('includes NEXUS header for default claude provider', () => {
     const prompt = buildSystemPrompt(config)
     expect(prompt).toContain('NEXUS NOTATION')
-    expect(prompt).toContain('v4.0')
+    expect(prompt).toContain(`v${NEXUS_VERSION}`)
   })
 
   it('adapts header for gpt provider', () => {
@@ -73,5 +81,10 @@ describe('buildSystemPrompt', () => {
     const cfg = createDefaultConfig({ modules: ['frontend'] })
     const prompt = buildSystemPrompt(cfg)
     expect(prompt).not.toContain('renders:')
+  })
+
+  it('gracefully handles unknown module without throwing', () => {
+    const cfg = createDefaultConfig({ modules: ['design'] })
+    expect(() => buildSystemPrompt(cfg)).not.toThrow()
   })
 })

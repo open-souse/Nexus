@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="NEXUS Protocol — El protocolo de comunicación universal entre Humanos e IA. Elimina la ambigüedad. Escribe intenciones precisas.">
+  <meta name="keywords" content="NEXUS, nxlang, AI protocol, human-AI communication, code generation, prompt engineering">
+  <meta property="og:title" content="NEXUS Protocol — nxlang">
+  <meta property="og:description" content="El protocolo de comunicación universal entre Humanos e IA">
+  <meta property="og:image" content="https://nexuslang.dev/assets/nexus-social-preview.svg">
+  <meta property="og:url" content="https://nexuslang.dev">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="NEXUS Protocol — nxlang">
+  <meta name="twitter:description" content="El protocolo de comunicación universal entre Humanos e IA">
+  <meta name="twitter:image" content="https://nexuslang.dev/assets/nexus-social-preview.svg">
+  <title>NEXUS Protocol — nxlang | Human-AI Communication Protocol</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-base:      #080C10;
+      --bg-surface:   #1C1433;
+      --bg-elevated:  #26215C;
+      --primary:      #5DCAA5;
+      --secondary:    #AFA9EC;
+      --accent:       #F0997B;
+      --text:         #FFFFFF;
+      --text-muted:   rgba(255,255,255,0.5);
+      --border:       rgba(255,255,255,0.06);
+      --font-head:    'Syne', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+      --font-mono:    'JetBrains Mono', monospace;
+      --radius:       12px;
+      --radius-sm:    8px;
+      --transition:   0.2s ease;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-base);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-base); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-elevated); border-radius: 3px; }
+
+    /* ── Utility ── */
+    .container { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: var(--font-head);
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .section-subtitle {
+      font-size: 17px;
+      color: var(--text-muted);
+      max-width: 600px;
+      line-height: 1.7;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 99px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+    .badge-primary { background: rgba(93,202,165,0.15); color: var(--primary); border: 1px solid rgba(93,202,165,0.3); }
+    .badge-secondary { background: rgba(175,169,236,0.15); color: var(--secondary); border: 1px solid rgba(175,169,236,0.3); }
+    .badge-muted { background: rgba(255,255,255,0.06); color: var(--text-muted); border: 1px solid var(--border); }
+    .badge-accent { background: rgba(240,153,123,0.15); color: var(--accent); border: 1px solid rgba(240,153,123,0.3); }
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+    }
+    .card:hover { border-color: rgba(255,255,255,0.12); }
+
+    /* ── Navbar ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      height: 64px;
+      background: rgba(8,12,16,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo span { font-family: var(--font-head); font-weight: 700; font-size: 16px; color: var(--text); }
+    .lang-selector { display: flex; gap: 4px; }
+    .lang-btn {
+      padding: 6px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      font-family: var(--font-body);
+      font-size: 13px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .lang-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+    .lang-btn.active { background: var(--bg-elevated); color: var(--text); border-color: rgba(93,202,165,0.4); }
+    .cta-nav {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 18px;
+      background: var(--primary);
+      color: #080C10;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    .cta-nav:hover { background: #6de8be; }
+
+    /* ── Hero ── */
+    #hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      padding: 80px 24px;
+    }
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(93,202,165,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(93,202,165,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 40%, transparent 100%);
+    }
+    .hero-glow {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(93,202,165,0.08) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      pointer-events: none;
+    }
+    .hero-inner { position: relative; z-index: 1; max-width: 800px; }
+    .hero-logo { margin-bottom: 32px; }
+    .hero-logo img { width: 100px; height: 100px; }
+    .hero-version { margin-bottom: 24px; }
+    .hero-title {
+      font-family: var(--font-head);
+      font-size: clamp(32px, 5.5vw, 60px);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-subtitle {
+      font-size: clamp(16px, 2vw, 19px);
+      color: var(--text-muted);
+      max-width: 580px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+    .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 56px; }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      background: var(--primary);
+      color: #080C10;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+    .btn-primary:hover { background: #6de8be; transform: translateY(-1px); }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      padding: 14px 28px;
+      background: transparent;
+      color: var(--text);
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-weight: 500;
+      border: 1px solid rgba(255,255,255,0.15);
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+    .btn-secondary:hover { border-color: rgba(255,255,255,0.35); transform: translateY(-1px); }
+    .hero-stats { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .hero-stat {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .hero-stat .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); }
+
+    /* ── Section spacing ── */
+    section { padding: 100px 0; }
+    section:nth-child(even) { background: rgba(28,20,51,0.3); }
+
+    /* ── Problem ── */
+    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 48px; }
+    .compare-card {
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .compare-header {
+      padding: 14px 20px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+    .compare-header.bad { background: rgba(239,68,68,0.15); color: #f87171; }
+    .compare-header.good { background: rgba(93,202,165,0.15); color: var(--primary); }
+    .compare-code {
+      background: rgba(8,12,16,0.8);
+      padding: 24px 20px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.8;
+      min-height: 160px;
+    }
+    .compare-footer {
+      padding: 12px 20px;
+      font-size: 12px;
+      font-family: var(--font-mono);
+    }
+    .compare-footer.bad { background: rgba(239,68,68,0.08); color: #f87171; }
+    .compare-footer.good { background: rgba(93,202,165,0.08); color: var(--primary); }
+
+    /* ── Solution ── */
+    .flow-diagram {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin: 40px 0;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 2.2;
+      overflow-x: auto;
+    }
+    .flow-step { display: flex; align-items: center; gap: 16px; }
+    .flow-arrow { color: var(--secondary); font-size: 18px; }
+    .flow-label { color: var(--text-muted); }
+    .flow-highlight { color: var(--primary); font-weight: 500; }
+    .flow-result { color: var(--text); background: rgba(93,202,165,0.1); padding: 2px 8px; border-radius: 4px; }
+    .principles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
+    .principle-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: var(--transition);
+    }
+    .principle-card:hover { border-color: rgba(93,202,165,0.25); transform: translateY(-2px); }
+    .principle-icon { font-size: 28px; margin-bottom: 16px; }
+    .principle-title {
+      font-family: var(--font-head);
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .principle-text { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+
+    /* ── Demo ── */
+    .tabs-bar { display: flex; gap: 4px; margin-bottom: 0; overflow-x: auto; }
+    .tab-btn {
+      padding: 10px 20px;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: var(--font-body);
+      font-size: 14px;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+    .tab-btn:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+    .tab-btn.active { background: var(--bg-surface); color: var(--text); border-color: rgba(93,202,165,0.3); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .code-block {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 0 var(--radius) var(--radius) var(--radius);
+      overflow: hidden;
+    }
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(0,0,0,0.2);
+    }
+    .code-dots { display: flex; gap: 6px; }
+    .code-dots span { width: 10px; height: 10px; border-radius: 50%; }
+    .code-dots span:nth-child(1) { background: #ff5f57; }
+    .code-dots span:nth-child(2) { background: #ffbd2e; }
+    .code-dots span:nth-child(3) { background: #28ca42; }
+    .code-filename { font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); }
+    .copy-btn {
+      padding: 5px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .copy-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+    .code-body {
+      padding: 24px;
+      font-family: var(--font-mono);
+      font-size: 13.5px;
+      line-height: 1.85;
+      overflow-x: auto;
+    }
+    .code-body pre { margin: 0; white-space: pre; }
+
+    /* Syntax highlight colors */
+    .nx-orch  { color: #5DCAA5; }
+    .nx-op    { color: #AFA9EC; }
+    .nx-str   { color: #F0997B; }
+    .nx-cmt   { color: rgba(255,255,255,0.28); font-style: italic; }
+    .nx-kw    { color: #6EE7B7; }
+    .nx-dir   { color: #AFA9EC; }
+    .nx-num   { color: #F0997B; }
+
+    /* ── Versatility ── */
+    .primitives-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin: 40px 0 48px; }
+    .primitive-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+    }
+    .primitive-symbol {
+      font-family: var(--font-mono);
+      font-size: 26px;
+      color: var(--secondary);
+      margin-bottom: 14px;
+    }
+    .primitive-title { font-family: var(--font-head); font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .primitive-text { font-size: 14px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+    .primitive-examples { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tag {
+      padding: 3px 10px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 99px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+    .industries-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+    .industry-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .industry-icon { font-size: 22px; }
+
+    /* ── Protocol / Operators ── */
+    .operators-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 40px;
+      background: var(--bg-surface);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .operators-table th {
+      padding: 14px 20px;
+      text-align: left;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: rgba(0,0,0,0.2);
+      border-bottom: 1px solid var(--border);
+    }
+    .operators-table td {
+      padding: 12px 20px;
+      font-size: 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .operators-table tr:last-child td { border-bottom: none; }
+    .operators-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .op-symbol {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      color: var(--secondary);
+      white-space: nowrap;
+    }
+    .op-example {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* ── Docs ── */
+    .docs-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 20px; margin-top: 48px; }
+    .doc-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: var(--transition);
+    }
+    .doc-card:hover { border-color: rgba(93,202,165,0.3); transform: translateY(-2px); }
+    .doc-icon { font-size: 28px; margin-bottom: 14px; }
+    .doc-title { font-family: var(--font-head); font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .doc-text { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+    .doc-link { display: inline-flex; align-items: center; gap: 4px; margin-top: 14px; color: var(--primary); font-size: 13px; font-weight: 500; }
+
+    /* ── Ecosystem ── */
+    .ecosystem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 48px; }
+    .eco-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+    }
+    .eco-card.coming { opacity: 0.6; }
+    .eco-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+    .eco-logo { width: 48px; height: 48px; }
+    .eco-name { font-family: var(--font-head); font-size: 22px; font-weight: 700; }
+    .eco-version { margin-top: 4px; }
+    .eco-text { font-size: 15px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; }
+    .eco-cta {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 20px;
+      background: rgba(93,202,165,0.1);
+      border: 1px solid rgba(93,202,165,0.3);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--primary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .eco-cta:hover { background: rgba(93,202,165,0.2); }
+    .eco-cta.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+    .eco-footnote { text-align: center; margin-top: 32px; font-size: 14px; color: var(--text-muted); }
+    .eco-footnote a { color: var(--primary); text-decoration: none; }
+    .eco-footnote a:hover { text-decoration: underline; }
+
+    /* ── Install ── */
+    .install-steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 48px; }
+    .install-step {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .step-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(0,0,0,0.2);
+    }
+    .step-num {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .step-badge {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #080C10;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .step-code {
+      padding: 20px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+    .install-reqs {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 40px;
+    }
+    .req-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .req-item::before { content: ''; display: block; width: 6px; height: 6px; border-radius: 50%; background: var(--primary); }
+
+    /* ── Footer ── */
+    footer {
+      background: rgba(8,12,16,0.95);
+      border-top: 1px solid var(--border);
+      padding: 60px 0 40px;
+    }
+    .footer-inner { text-align: center; }
+    .footer-logo { margin-bottom: 24px; }
+    .footer-logo img { height: 40px; }
+    .footer-tagline { font-size: 13px; color: var(--text-muted); margin-bottom: 32px; }
+    .footer-links { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px; }
+    .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; transition: var(--transition); }
+    .footer-links a:hover { color: var(--text); }
+    .footer-quote {
+      max-width: 580px;
+      margin: 0 auto;
+      font-size: 15px;
+      font-style: italic;
+      color: rgba(255,255,255,0.35);
+      line-height: 1.7;
+    }
+    .footer-copy { margin-top: 32px; font-size: 12px; color: rgba(255,255,255,0.2); font-family: var(--font-mono); }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      nav { padding: 0 16px; }
+      .cta-nav { display: none; }
+      .compare-grid { grid-template-columns: 1fr; }
+      .principles-grid { grid-template-columns: 1fr; }
+      .primitives-grid { grid-template-columns: 1fr; }
+      .industries-grid { grid-template-columns: 1fr 1fr; }
+      .docs-grid { grid-template-columns: 1fr; }
+      .ecosystem-grid { grid-template-columns: 1fr; }
+      .install-steps { grid-template-columns: 1fr; }
+      .operators-table th:nth-child(3),
+      .operators-table td:nth-child(3) { display: none; }
+      section { padding: 64px 0; }
+      .flow-diagram { font-size: 12px; }
+    }
+    @media (max-width: 480px) {
+      .lang-btn { padding: 5px 10px; font-size: 12px; }
+      .industries-grid { grid-template-columns: 1fr; }
+      .hero-actions { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════ NAVBAR ═══════════════════════════════════════ -->
+<nav>
+  <a href="#hero" class="nav-logo">
+    <img src="./assets/nexus-logo.svg" alt="NEXUS" height="32">
+    <span>NEXUS</span>
+  </a>
+  <div class="lang-selector">
+    <button class="lang-btn active" data-lang="es">🇪🇸 ES</button>
+    <button class="lang-btn" data-lang="en">🇺🇸 EN</button>
+  </div>
+  <a href="#install" class="cta-nav">npm install nxlang</a>
+</nav>
+
+<!-- ═══════════════════════════════════════ HERO ═══════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div class="hero-logo">
+      <img src="./assets/nexus-logo.svg" alt="NEXUS Protocol">
+    </div>
+    <div class="hero-version">
+      <span class="badge badge-primary">v4.1.1 · MIT · Open Source</span>
+    </div>
+    <h1 class="hero-title"
+        data-es="El protocolo de comunicación universal entre Humanos e IA"
+        data-en="The universal communication protocol between Humans and AI">
+      El protocolo de comunicación universal entre Humanos e IA
+    </h1>
+    <p class="hero-subtitle"
+       data-es="Elimina la ambigüedad. Escribe intenciones precisas. La IA entiende exactamente qué construir."
+       data-en="Eliminate ambiguity. Write precise intentions. AI understands exactly what to build.">
+      Elimina la ambigüedad. Escribe intenciones precisas. La IA entiende exactamente qué construir.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-primary copy-btn" data-copy="npm install nxlang"
+              data-es="npm install nxlang" data-en="npm install nxlang">
+        npm install nxlang
+      </button>
+      <a href="#docs" class="btn-secondary"
+         data-es="Ver documentación" data-en="View documentation">
+        Ver documentación
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><span class="dot"></span>135 tests</div>
+      <div class="hero-stat"><span class="dot"></span>~1s suite</div>
+      <div class="hero-stat"><span class="dot"></span>MIT</div>
+      <div class="hero-stat"><span class="dot"></span>TypeScript</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ PROBLEM ═══════════════════════════════════════ -->
+<section id="problem">
+  <div class="container">
+    <p class="section-label" data-es="El Problema" data-en="The Problem">El Problema</p>
+    <h2 class="section-title"
+        data-es="El lenguaje natural es ambiguo por diseño"
+        data-en="Natural language is ambiguous by design">
+      El lenguaje natural es ambiguo por diseño
+    </h2>
+    <p class="section-subtitle"
+       data-es="Cada vez que describes un componente en lenguaje natural, introduces inconsistencias. NEXUS elimina esa brecha."
+       data-en="Every time you describe a component in natural language, you introduce inconsistencies. NEXUS eliminates that gap.">
+      Cada vez que describes un componente en lenguaje natural, introduces inconsistencias. NEXUS elimina esa brecha.
+    </p>
+    <div class="compare-grid">
+      <div class="compare-card">
+        <div class="compare-header bad" data-es="❌ Sin NEXUS" data-en="❌ Without NEXUS">❌ Sin NEXUS</div>
+        <div class="compare-code">
+          <span style="color:rgba(255,255,255,0.45)">"Create a modern dashboard with authentication,<br>
+analytics charts, user management, real-time<br>
+notifications, dark mode, responsive design,<br>
+and export to PDF functionality..."</span>
+        </div>
+        <div class="compare-footer bad" data-es="47 palabras · Alta ambigüedad · Resultado inconsistente" data-en="47 words · High ambiguity · Inconsistent result">47 palabras · Alta ambigüedad · Resultado inconsistente</div>
+      </div>
+      <div class="compare-card">
+        <div class="compare-header good" data-es="✅ Con NEXUS" data-en="✅ With NEXUS">✅ Con NEXUS</div>
+        <div class="compare-code">
+          <span class="nx-dir">@React</span> <span class="nx-dir">@Tailwind</span><br>
+          <span class="nx-orch">Page</span> Dashboard<br>
+          &nbsp;&nbsp;<span class="nx-dir">@Auth</span>[mode:jwt]<br>
+          &nbsp;&nbsp;<span class="nx-orch">Layout</span> SplitView<br>
+          &nbsp;&nbsp;<span class="nx-orch">Section</span> Analytics <span class="nx-kw">#glass</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="nx-orch">Chart</span> <span class="nx-op">&lt;</span> MetricsData [paginate:10]<br>
+          &nbsp;&nbsp;<span class="nx-orch">Section</span> Users<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="nx-orch">Table</span> <span class="nx-op">&lt;</span> User <span class="nx-kw">!bold</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="nx-kw">!error</span>:404 <span class="nx-op">-></span> /not-found
+        </div>
+        <div class="compare-footer good" data-es="8 líneas · Cero ambigüedad · Resultado determinista" data-en="8 lines · Zero ambiguity · Deterministic result">8 líneas · Cero ambigüedad · Resultado determinista</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ SOLUTION ═══════════════════════════════════════ -->
+<section id="solution">
+  <div class="container">
+    <p class="section-label" data-es="La Solución" data-en="The Solution">La Solución</p>
+    <h2 class="section-title"
+        data-es="NEXUS no es un lenguaje de programación"
+        data-en="NEXUS is not a programming language">
+      NEXUS no es un lenguaje de programación
+    </h2>
+    <p class="section-subtitle"
+       data-es="Es la capa de comunicación entre lo que el humano quiere y lo que la IA genera. No reemplaza JavaScript, Python ni ningún otro lenguaje. Estructura la intención antes de que el modelo la procese."
+       data-en="It's the communication layer between what the human wants and what AI generates. It doesn't replace JavaScript, Python or any other language. It structures intent before the model processes it.">
+      Es la capa de comunicación entre lo que el humano quiere y lo que la IA genera. No reemplaza JavaScript, Python ni ningún otro lenguaje. Estructura la intención antes de que el modelo la procese.
+    </p>
+    <div class="flow-diagram">
+      <div class="flow-step">
+        <span class="flow-highlight" data-es="Humano escribe NEXUS" data-en="Human writes NEXUS">Humano escribe NEXUS</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-label" data-es="nxlang valida & estructura" data-en="nxlang validates & structures">nxlang valida &amp; estructura</span>
+      </div>
+      <div style="margin-left:20px;color:var(--secondary)">↓</div>
+      <div class="flow-step">
+        <span class="flow-highlight" data-es="Intención estructurada" data-en="Structured intent">Intención estructurada</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-label" data-es="IA genera código" data-en="AI generates code">IA genera código</span>
+      </div>
+      <div style="margin-left:20px;color:var(--secondary)">↓</div>
+      <div class="flow-step">
+        <span class="flow-result" data-es="✓ Código de producción preciso y consistente" data-en="✓ Precise and consistent production code">✓ Código de producción preciso y consistente</span>
+      </div>
+    </div>
+    <div class="principles-grid">
+      <div class="principle-card">
+        <div class="principle-icon">🎯</div>
+        <div class="principle-title" data-es="Cero Ambigüedad" data-en="Zero Ambiguity">Cero Ambigüedad</div>
+        <p class="principle-text"
+           data-es="Sintaxis estricta que los modelos procesan con precisión total. Sin interpretaciones libres."
+           data-en="Strict syntax that models process with total precision. No free interpretations.">
+          Sintaxis estricta que los modelos procesan con precisión total. Sin interpretaciones libres.
+        </p>
+      </div>
+      <div class="principle-card">
+        <div class="principle-icon">⚡</div>
+        <div class="principle-title" data-es="10x Eficiencia" data-en="10x Efficiency">10x Eficiencia</div>
+        <p class="principle-text"
+           data-es="Di en 8 líneas lo que requeriría 80 líneas de lenguaje natural ambiguo."
+           data-en="Say in 8 lines what would take 80 lines of ambiguous natural language.">
+          Di en 8 líneas lo que requeriría 80 líneas de lenguaje natural ambiguo.
+        </p>
+      </div>
+      <div class="principle-card">
+        <div class="principle-icon">🔓</div>
+        <div class="principle-title">Open Standard</div>
+        <p class="principle-text"
+           data-es="Protocolo abierto. La comunidad lo expande. Tú lo adoptas."
+           data-en="Open protocol. The community expands it. You adopt it.">
+          Protocolo abierto. La comunidad lo expande. Tú lo adoptas.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ DEMO ═══════════════════════════════════════ -->
+<section id="demo">
+  <div class="container">
+    <p class="section-label" data-es="Demo Interactivo" data-en="Interactive Demo">Demo Interactivo</p>
+    <h2 class="section-title"
+        data-es="Un protocolo. Múltiples dominios."
+        data-en="One protocol. Multiple domains.">
+      Un protocolo. Múltiples dominios.
+    </h2>
+    <div class="tabs-bar" style="margin-top:40px;">
+      <button class="tab-btn active" data-tab="frontend">Frontend</button>
+      <button class="tab-btn" data-tab="backend">Backend</button>
+      <button class="tab-btn" data-tab="fullstack">Full Stack</button>
+      <button class="tab-btn" data-tab="other" data-es="Otras Industrias" data-en="Other Industries">Otras Industrias</button>
+    </div>
+
+    <!-- Frontend -->
+    <div class="tab-content active code-block" data-tab="frontend">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-filename">product-detail.nexus</span>
+        <button class="copy-btn" data-copy="@React @Tailwind&#10;Page ProductDetail&#10;  Layout Stack #gap-2&#10;  Section Hero&#10;    Image < product.thumbnail [ratio:16/9]&#10;    Text < product.name !bold !xl&#10;    Text < product.price #accent&#10;  Section Actions&#10;    ( product.inStock ) ->&#10;      Button &quot;Add to Cart&quot; => CartStore.add(product)&#10;    :&#10;      Badge &quot;Out of Stock&quot; #muted">Copiar</button>
+      </div>
+      <div class="code-body"><pre><span class="nx-dir">@React</span> <span class="nx-dir">@Tailwind</span>
+<span class="nx-orch">Page</span> ProductDetail
+  <span class="nx-orch">Layout</span> Stack <span class="nx-kw">#gap-2</span>
+  <span class="nx-orch">Section</span> Hero
+    <span class="nx-orch">Image</span> <span class="nx-op">&lt;</span> product.thumbnail [ratio:16/9]
+    <span class="nx-orch">Text</span> <span class="nx-op">&lt;</span> product.name <span class="nx-kw">!bold</span> <span class="nx-kw">!xl</span>
+    <span class="nx-orch">Text</span> <span class="nx-op">&lt;</span> product.price <span class="nx-kw">#accent</span>
+  <span class="nx-orch">Section</span> Actions
+    ( product.inStock ) <span class="nx-op">-&gt;</span>
+      <span class="nx-orch">Button</span> <span class="nx-str">"Add to Cart"</span> <span class="nx-op">=&gt;</span> CartStore.add(product)
+    :
+      <span class="nx-orch">Badge</span> <span class="nx-str">"Out of Stock"</span> <span class="nx-kw">#muted</span></pre></div>
+    </div>
+
+    <!-- Backend -->
+    <div class="tab-content code-block" data-tab="backend">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-filename">order.nexus</span>
+        <button class="copy-btn" data-copy="@NestJS @Prisma&#10;Model Order&#10;  Entity id !pk&#10;  Entity status default:pending&#10;  Entity user -> Model.User&#10;  Entity items -> Model.Product [many]">Copiar</button>
+      </div>
+      <div class="code-body"><pre><span class="nx-dir">@NestJS</span> <span class="nx-dir">@Prisma</span>
+<span class="nx-orch">Model</span> Order
+  <span class="nx-kw">Entity</span> id <span class="nx-kw">!pk</span>
+  <span class="nx-kw">Entity</span> status default:pending
+  <span class="nx-kw">Entity</span> user <span class="nx-op">-&gt;</span> Model.User
+  <span class="nx-kw">Entity</span> items <span class="nx-op">-&gt;</span> Model.Product [many]
+  Index status [type:hash]
+
+<span class="nx-orch">Controller</span> OrderController
+  policy: is-authenticated
+  <span class="nx-orch">Router</span> ApiV1
+    <span class="nx-kw">Endpoint</span> POST /orders <span class="nx-op">&lt;</span> Payload:OrderSchema <span class="nx-op">=&gt;</span> OrderService.create()
+    <span class="nx-kw">Endpoint</span> GET  /orders/:id <span class="nx-op">=&gt;</span> OrderService.findById()
+    <span class="nx-kw">Endpoint</span> PUT  /orders/:id/status <span class="nx-op">=&gt;</span> OrderService.updateStatus()
+      <span class="nx-kw">!error</span>:404 <span class="nx-op">-&gt;</span> /error/not-found
+      <span class="nx-kw">!error</span>:403 <span class="nx-op">-&gt;</span> /error/forbidden</pre></div>
+    </div>
+
+    <!-- Full Stack -->
+    <div class="tab-content code-block" data-tab="fullstack">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-filename">user-profile.nexus</span>
+        <button class="copy-btn" data-copy="@React @Node @MongoDB&#10;Page UserProfile&#10;  @Auth[role:user]&#10;  Layout Stack&#10;  Section Info #glass">Copiar</button>
+      </div>
+      <div class="code-body"><pre><span class="nx-dir">@React</span> <span class="nx-dir">@Node</span> <span class="nx-dir">@MongoDB</span>
+<span class="nx-orch">Page</span> UserProfile
+  <span class="nx-dir">@Auth</span>[role:user]
+  <span class="nx-orch">Layout</span> Stack
+  <span class="nx-orch">Section</span> Info <span class="nx-kw">#glass</span>
+    <span class="nx-orch">Text</span> <span class="nx-op">&lt;</span> user.name <span class="nx-kw">!bold</span>
+    <span class="nx-orch">Text</span> <span class="nx-op">&lt;</span> user.email <span class="nx-kw">#muted</span>
+  <span class="nx-orch">Section</span> Activity
+    <span class="nx-orch">Table</span> <span class="nx-op">&lt;</span> user.orders [paginate:10]
+
+<span class="nx-orch">Model</span> User
+  <span class="nx-kw">Entity</span> id <span class="nx-kw">!pk</span>
+  <span class="nx-kw">Entity</span> name [type:string]
+  <span class="nx-kw">Entity</span> email [type:string, unique]
+  <span class="nx-kw">Entity</span> orders <span class="nx-op">-&gt;</span> Model.Order [many]</pre></div>
+    </div>
+
+    <!-- Other Industries -->
+    <div class="tab-content code-block" data-tab="other">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-filename">beyond-code.nexus</span>
+        <button class="copy-btn" data-copy="// Diseño&#10;@Figma&#10;Page LandingProducto&#10;  Hero #dark">Copiar</button>
+      </div>
+      <div class="code-body"><pre><span class="nx-cmt">// Diseño</span>
+<span class="nx-dir">@Figma</span>
+<span class="nx-orch">Page</span> LandingProducto
+  Hero <span class="nx-kw">#dark</span>
+    <span class="nx-orch">Text</span> <span class="nx-str">"Título Principal"</span> <span class="nx-kw">!xl</span> <span class="nx-kw">!bold</span>
+    CTA <span class="nx-str">"Comprar"</span> <span class="nx-kw">#primary</span> <span class="nx-op">-&gt;</span> /checkout
+  <span class="nx-orch">Section</span> Beneficios * 3
+
+<span class="nx-cmt">// Marketing</span>
+<span class="nx-dir">@Email</span>
+Campaign Bienvenida
+  Segmento <span class="nx-op">&lt;</span> usuarios.nuevos [filter:registro&lt;7dias]
+  Secuencia * 3
+    Email [delay:2dias] <span class="nx-op">=&gt;</span> sendgrid.send()
+
+<span class="nx-cmt">// Procesos</span>
+<span class="nx-dir">@BPMN</span>
+Proceso AprobacionFactura
+  Paso Recepcion <span class="nx-op">-&gt;</span> Validacion
+  ( monto &gt; 10000 ) <span class="nx-op">-&gt;</span>
+    Paso AprobacionGerencia
+  :
+    Paso AprobacionAutomatica</pre></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ VERSATILITY ═══════════════════════════════════════ -->
+<section id="versatility">
+  <div class="container">
+    <p class="section-label" data-es="Versatilidad" data-en="Versatility">Versatilidad</p>
+    <h2 class="section-title"
+        data-es="Más allá del código"
+        data-en="Beyond code">
+      Más allá del código
+    </h2>
+    <p class="section-subtitle"
+       data-es="El problema que NEXUS resuelve — ambigüedad en la comunicación con IA — existe en todas las industrias. Los tres primitivos del protocolo son universales."
+       data-en="The problem NEXUS solves — ambiguity in AI communication — exists in every industry. The three protocol primitives are universal.">
+      El problema que NEXUS resuelve — ambigüedad en la comunicación con IA — existe en todas las industrias. Los tres primitivos del protocolo son universales.
+    </p>
+    <div class="primitives-grid">
+      <div class="primitive-card">
+        <div class="primitive-symbol">@</div>
+        <div class="primitive-title" data-es="Directivas" data-en="Directives">Directivas</div>
+        <p class="primitive-text"
+           data-es="Definen el contexto. Le dicen a la IA en qué mundo operar."
+           data-en="Define context. Tell the AI which world to operate in.">
+          Definen el contexto. Le dicen a la IA en qué mundo operar.
+        </p>
+        <div class="primitive-examples">
+          <span class="tag">@React</span>
+          <span class="tag">@Legal</span>
+          <span class="tag">@Científico</span>
+          <span class="tag">@Enterprise</span>
+        </div>
+      </div>
+      <div class="primitive-card">
+        <div class="primitive-symbol">#</div>
+        <div class="primitive-title" data-es="Tokens" data-en="Tokens">Tokens</div>
+        <p class="primitive-text"
+           data-es="Definen etiquetas y estilos. Universales en cualquier dominio."
+           data-en="Define labels and styles. Universal across any domain.">
+          Definen etiquetas y estilos. Universales en cualquier dominio.
+        </p>
+        <div class="primitive-examples">
+          <span class="tag">#urgente</span>
+          <span class="tag">#primary</span>
+          <span class="tag">#confidencial</span>
+          <span class="tag">#fase-1</span>
+        </div>
+      </div>
+      <div class="primitive-card">
+        <div class="primitive-symbol">→ ⇒</div>
+        <div class="primitive-title" data-es="Relaciones" data-en="Relations">Relaciones</div>
+        <p class="primitive-text"
+           data-es="Definen flujos y acciones. A lleva a B. A ejecuta C."
+           data-en="Define flows and actions. A leads to B. A executes C.">
+          Definen flujos y acciones. A lleva a B. A ejecuta C.
+        </p>
+        <div class="primitive-examples">
+          <span class="tag">Paso1 -> Paso2</span>
+          <span class="tag">Click => enviar()</span>
+        </div>
+      </div>
+    </div>
+    <div class="industries-grid">
+      <div class="industry-card"><span class="industry-icon">💻</span> <span data-es="Desarrollo de Software" data-en="Software Development">Desarrollo de Software</span></div>
+      <div class="industry-card"><span class="industry-icon">🎨</span> <span data-es="Diseño UI/UX" data-en="UI/UX Design">Diseño UI/UX</span></div>
+      <div class="industry-card"><span class="industry-icon">📧</span> <span data-es="Marketing Digital" data-en="Digital Marketing">Marketing Digital</span></div>
+      <div class="industry-card"><span class="industry-icon">⚖️</span> <span data-es="Legal y Contratos" data-en="Legal & Contracts">Legal y Contratos</span></div>
+      <div class="industry-card"><span class="industry-icon">🏭</span> <span data-es="Procesos Empresariales" data-en="Business Processes">Procesos Empresariales</span></div>
+      <div class="industry-card"><span class="industry-icon">🔬</span> <span data-es="Investigación y Ciencia" data-en="Research & Science">Investigación y Ciencia</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ PROTOCOL / OPERATORS ═══════════════════════════════════════ -->
+<section id="protocol">
+  <div class="container">
+    <p class="section-label" data-es="Referencia" data-en="Reference">Referencia</p>
+    <h2 class="section-title"
+        data-es="El diccionario semántico"
+        data-en="The semantic dictionary">
+      El diccionario semántico
+    </h2>
+    <table class="operators-table">
+      <thead>
+        <tr>
+          <th data-es="Operador" data-en="Operator">Operador</th>
+          <th data-es="Nombre" data-en="Name">Nombre</th>
+          <th data-es="Ejemplo" data-en="Example">Ejemplo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="op-symbol">@</td><td data-es="Directiva" data-en="Directive">Directiva</td><td class="op-example">@React @Tailwind</td></tr>
+        <tr><td class="op-symbol">#</td><td data-es="Estilo / Token" data-en="Style / Token">Estilo / Token</td><td class="op-example">Card #glass #primary</td></tr>
+        <tr><td class="op-symbol">$</td><td data-es="Variable ADN" data-en="DNA Variable">Variable ADN</td><td class="op-example">$brand: "NEXUS"</td></tr>
+        <tr><td class="op-symbol">~</td><td data-es="Estado Local" data-en="Local State">Estado Local</td><td class="op-example">~isOpen: false</td></tr>
+        <tr><td class="op-symbol">* N</td><td data-es="Multiplicador" data-en="Multiplier">Multiplicador</td><td class="op-example">Card * 3</td></tr>
+        <tr><td class="op-symbol">?</td><td data-es="Estado UI" data-en="UI State">Estado UI</td><td class="op-example">?loading ?error</td></tr>
+        <tr><td class="op-symbol">!</td><td data-es="Prioridad" data-en="Priority">Prioridad</td><td class="op-example">Text !bold !xl</td></tr>
+        <tr><td class="op-symbol">-></td><td data-es="Flujo / Navegación" data-en="Flow / Navigation">Flujo / Navegación</td><td class="op-example">Button -> /dashboard</td></tr>
+        <tr><td class="op-symbol">=></td><td data-es="Lógica / Acción" data-en="Logic / Action">Lógica / Acción</td><td class="op-example">Button => save()</td></tr>
+        <tr><td class="op-symbol">&lt;</td><td data-es="Data Binding" data-en="Data Binding">Data Binding</td><td class="op-example">Table &lt; UserData</td></tr>
+        <tr><td class="op-symbol">!error</td><td data-es="Manejo de Errores" data-en="Error Handler">Manejo de Errores</td><td class="op-example">!error:404 -> /not-found</td></tr>
+        <tr><td class="op-symbol">[paginate]</td><td data-es="Paginación" data-en="Pagination">Paginación</td><td class="op-example">Table &lt; Data [paginate:20]</td></tr>
+        <tr><td class="op-symbol">->Model</td><td data-es="Relación BD" data-en="DB Relation">Relación BD</td><td class="op-example">Entity user -> Model.User</td></tr>
+        <tr><td class="op-symbol">@Auth</td><td data-es="Seguridad" data-en="Security">Seguridad</td><td class="op-example">@Auth[mode:jwt]</td></tr>
+        <tr><td class="op-symbol">??</td><td data-es="Consulta IA" data-en="AI Query">Consulta IA</td><td class="op-example">?? "¿Por qué este hook?"</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ DOCS ═══════════════════════════════════════ -->
+<section id="docs">
+  <div class="container">
+    <p class="section-label" data-es="Documentación" data-en="Documentation">Documentación</p>
+    <h2 class="section-title"
+        data-es="Todo lo que necesitas para aprender el protocolo"
+        data-en="Everything you need to learn the protocol">
+      Todo lo que necesitas para aprender el protocolo
+    </h2>
+    <div class="docs-grid">
+      <a class="doc-card" href="../docs/es/gramatica.md" id="doc-grammar">
+        <div class="doc-icon">📖</div>
+        <div class="doc-title" data-es="Gramática Completa" data-en="Full Grammar">Gramática Completa</div>
+        <p class="doc-text"
+           data-es="Todos los orquestadores, operadores y reglas semánticas del protocolo."
+           data-en="All orchestrators, operators and semantic rules of the protocol.">
+          Todos los orquestadores, operadores y reglas semánticas del protocolo.
+        </p>
+        <span class="doc-link" data-es="Leer documentación →" data-en="Read docs →">Leer documentación →</span>
+      </a>
+      <a class="doc-card" href="../docs/es/operadores.md" id="doc-ops">
+        <div class="doc-icon">⚡</div>
+        <div class="doc-title" data-es="Operadores" data-en="Operators">Operadores</div>
+        <p class="doc-text"
+           data-es="Diccionario completo con ejemplos y casos de uso reales."
+           data-en="Complete dictionary with examples and real use cases.">
+          Diccionario completo con ejemplos y casos de uso reales.
+        </p>
+        <span class="doc-link" data-es="Leer documentación →" data-en="Read docs →">Leer documentación →</span>
+      </a>
+      <a class="doc-card" href="../docs/es/ejemplos.md" id="doc-examples">
+        <div class="doc-icon">💡</div>
+        <div class="doc-title" data-es="Ejemplos Reales" data-en="Real Examples">Ejemplos Reales</div>
+        <p class="doc-text"
+           data-es="Frontend, backend, full stack y otras industrias."
+           data-en="Frontend, backend, full stack and other industries.">
+          Frontend, backend, full stack y otras industrias.
+        </p>
+        <span class="doc-link" data-es="Ver ejemplos →" data-en="See examples →">Ver ejemplos →</span>
+      </a>
+      <a class="doc-card" href="../docs/es/roadmap.md" id="doc-roadmap">
+        <div class="doc-icon">🗺️</div>
+        <div class="doc-title">Roadmap</div>
+        <p class="doc-text"
+           data-es="Hacia dónde va el protocolo. Próximas funcionalidades y visión."
+           data-en="Where the protocol is heading. Upcoming features and vision.">
+          Hacia dónde va el protocolo. Próximas funcionalidades y visión.
+        </p>
+        <span class="doc-link" data-es="Ver roadmap →" data-en="See roadmap →">Ver roadmap →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ ECOSYSTEM ═══════════════════════════════════════ -->
+<section id="ecosystem">
+  <div class="container">
+    <p class="section-label" data-es="Ecosistema" data-en="Ecosystem">Ecosistema</p>
+    <h2 class="section-title"
+        data-es="Construido sobre NEXUS"
+        data-en="Built on NEXUS">
+      Construido sobre NEXUS
+    </h2>
+    <div class="ecosystem-grid">
+      <!-- nxlang -->
+      <div class="eco-card">
+        <div class="eco-header">
+          <img src="./assets/nexus-logo.svg" alt="nxlang" class="eco-logo">
+          <div>
+            <div class="eco-name">nxlang</div>
+            <div class="eco-version"><span class="badge badge-primary">v4.1.1 · npm</span></div>
+          </div>
+        </div>
+        <p class="eco-text"
+           data-es="La librería oficial. El intérprete del protocolo. Valida, construye y exporta contexto NEXUS para cualquier modelo de IA."
+           data-en="The official library. The protocol interpreter. Validates, builds and exports NEXUS context for any AI model.">
+          La librería oficial. El intérprete del protocolo. Valida, construye y exporta contexto NEXUS para cualquier modelo de IA.
+        </p>
+        <button class="eco-cta copy-btn" data-copy="npm install nxlang">npm install nxlang</button>
+      </div>
+      <!-- Prism -->
+      <div class="eco-card coming">
+        <div class="eco-header">
+          <img src="./assets/prism-icon.svg" alt="Prism" class="eco-logo">
+          <div>
+            <div class="eco-name">Prism</div>
+            <div class="eco-version"><span class="badge badge-muted">Coming Soon</span></div>
+          </div>
+        </div>
+        <p class="eco-text"
+           data-es="Editor de código AI-native powered by nxlang. Syntax highlighting, autocompletado y validación en tiempo real para archivos .nexus."
+           data-en="AI-native code editor powered by nxlang. Syntax highlighting, autocomplete and real-time validation for .nexus files.">
+          Editor de código AI-native powered by nxlang. Syntax highlighting, autocompletado y validación en tiempo real para archivos .nexus.
+        </p>
+        <button class="eco-cta disabled" data-es="Próximamente" data-en="Coming Soon">Próximamente</button>
+      </div>
+    </div>
+    <p class="eco-footnote">
+      <span data-es="¿Construyes algo con NEXUS? " data-en="Building something with NEXUS? ">¿Construyes algo con NEXUS? </span>
+      <a href="https://github.com/open-souse/Nexus/issues" target="_blank" rel="noopener" data-es="Abre un issue y lo agregamos aquí." data-en="Open an issue and we'll add it here.">Abre un issue y lo agregamos aquí.</a>
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ INSTALL ═══════════════════════════════════════ -->
+<section id="install">
+  <div class="container">
+    <p class="section-label" data-es="Instalación" data-en="Installation">Instalación</p>
+    <h2 class="section-title"
+        data-es="Empieza en 30 segundos"
+        data-en="Start in 30 seconds">
+      Empieza en 30 segundos
+    </h2>
+    <div class="install-steps">
+      <div class="install-step">
+        <div class="step-header">
+          <div class="step-num"><div class="step-badge">1</div> <span data-es="Instalar" data-en="Install">Instalar</span></div>
+          <button class="copy-btn" data-copy="npm install -g nxlang">Copiar</button>
+        </div>
+        <div class="step-code"><span class="nx-dir" style="opacity:0.5">$</span> npm install <span class="nx-kw">-g</span> nxlang</div>
+      </div>
+      <div class="install-step">
+        <div class="step-header">
+          <div class="step-num"><div class="step-badge">2</div> <span data-es="Inicializar" data-en="Initialize">Inicializar</span></div>
+          <button class="copy-btn" data-copy="nexus init">Copiar</button>
+        </div>
+        <div class="step-code"><span class="nx-dir" style="opacity:0.5">$</span> nexus init</div>
+      </div>
+      <div class="install-step">
+        <div class="step-header">
+          <div class="step-num"><div class="step-badge">3</div> <span data-es="Escribir NEXUS" data-en="Write NEXUS">Escribir NEXUS</span></div>
+          <button class="copy-btn" data-copy="@React @Tailwind&#10;Page MiPagina&#10;  Layout Stack&#10;  Section Hero #glass&#10;    Text &quot;Hola NEXUS&quot; !bold&#10;    Button &quot;Empezar&quot; => api.start()">Copiar</button>
+        </div>
+        <div class="step-code"><pre><span class="nx-dir">@React</span> <span class="nx-dir">@Tailwind</span>
+<span class="nx-orch">Page</span> MiPagina
+  <span class="nx-orch">Layout</span> Stack
+  <span class="nx-orch">Section</span> Hero <span class="nx-kw">#glass</span>
+    <span class="nx-orch">Text</span> <span class="nx-str">"Hola NEXUS"</span> <span class="nx-kw">!bold</span>
+    <span class="nx-orch">Button</span> <span class="nx-str">"Empezar"</span> <span class="nx-op">=&gt;</span> api.start()</pre></div>
+      </div>
+    </div>
+    <div class="install-reqs">
+      <span class="req-item">Node.js ≥ 18.0.0</span>
+      <span class="req-item">TypeScript</span>
+      <span class="req-item">MIT License</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ FOOTER ═══════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="./assets/nexus-logo.svg" alt="NEXUS">
+      </div>
+      <p class="footer-tagline">NEXUS Protocol · MIT License · Open Source</p>
+      <div class="footer-links">
+        <a href="https://github.com/open-souse/Nexus" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.npmjs.com/package/nxlang" target="_blank" rel="noopener">npm</a>
+        <a href="../docs/es/gramatica.md" data-es="Documentación ES" data-en="Docs ES">Documentación ES</a>
+        <a href="../docs/en/grammar.md" data-es="Documentation EN" data-en="Documentation EN">Documentation EN</a>
+        <a href="../docs/es/rfcs/RFC-0001-plantilla.md" data-es="RFC Process" data-en="RFC Process">RFC Process</a>
+        <a href="../CONTRIBUTING.es.md" data-es="Contribuir" data-en="Contribute">Contribuir</a>
+      </div>
+      <p class="footer-quote"
+         data-es='"El futuro de la comunicación con IA no es escribir mejores prompts. Es tener un protocolo."'
+         data-en='"The future of AI communication is not writing better prompts. It&apos;s having a protocol."'>
+        "El futuro de la comunicación con IA no es escribir mejores prompts. Es tener un protocolo."
+      </p>
+      <p class="footer-copy">© 2026 Ventures SAS · nxlang v4.1.1</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── Language selector ──────────────────────────────────────────────────
+  function applyLang(lang) {
+    document.querySelectorAll('[data-es]').forEach(el => {
+      const val = el.dataset[lang]
+      if (!val) return
+      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+        el.placeholder = val
+      } else if (el.tagName === 'META') {
+        el.setAttribute('content', val)
+      } else {
+        el.innerHTML = val
+      }
+    })
+    // Update doc links for EN
+    if (lang === 'en') {
+      const grammar = document.getElementById('doc-grammar')
+      const ops = document.getElementById('doc-ops')
+      const examples = document.getElementById('doc-examples')
+      const roadmap = document.getElementById('doc-roadmap')
+      if (grammar) grammar.href = '../docs/en/grammar.md'
+      if (ops) ops.href = '../docs/en/operators.md'
+      if (examples) examples.href = '../docs/en/examples.md'
+      if (roadmap) roadmap.href = '../docs/en/roadmap.md'
+    } else {
+      const grammar = document.getElementById('doc-grammar')
+      const ops = document.getElementById('doc-ops')
+      const examples = document.getElementById('doc-examples')
+      const roadmap = document.getElementById('doc-roadmap')
+      if (grammar) grammar.href = '../docs/es/gramatica.md'
+      if (ops) ops.href = '../docs/es/operadores.md'
+      if (examples) examples.href = '../docs/es/ejemplos.md'
+      if (roadmap) roadmap.href = '../docs/es/roadmap.md'
+    }
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === lang)
+    )
+    document.documentElement.lang = lang
+    localStorage.setItem('nx_lang', lang)
+  }
+
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => applyLang(btn.dataset.lang))
+  })
+
+  // Apply saved language on load
+  const savedLang = localStorage.getItem('nx_lang') || 'es'
+  if (savedLang !== 'es') applyLang(savedLang)
+
+  // ── Copy to clipboard ──────────────────────────────────────────────────
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const text = btn.dataset.copy
+      if (!text) return
+      navigator.clipboard.writeText(text).then(() => {
+        const lang = localStorage.getItem('nx_lang') || 'es'
+        const original = btn.innerHTML
+        btn.innerHTML = lang === 'es' ? '✓ Copiado' : '✓ Copied'
+        btn.style.color = '#5DCAA5'
+        btn.style.borderColor = 'rgba(93,202,165,0.4)'
+        setTimeout(() => {
+          btn.innerHTML = original
+          btn.style.color = ''
+          btn.style.borderColor = ''
+        }, 2000)
+      }).catch(() => {
+        // Fallback for older browsers
+        const ta = document.createElement('textarea')
+        ta.value = text
+        ta.style.position = 'fixed'
+        ta.style.opacity = '0'
+        document.body.appendChild(ta)
+        ta.select()
+        document.execCommand('copy')
+        document.body.removeChild(ta)
+      })
+    })
+  })
+
+  // ── Demo tabs ──────────────────────────────────────────────────────────
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab
+      document.querySelectorAll('.tab-content').forEach(c =>
+        c.classList.toggle('active', c.dataset.tab === tab)
+      )
+      document.querySelectorAll('.tab-btn').forEach(b =>
+        b.classList.toggle('active', b === btn)
+      )
+    })
+  })
+
+  // ── Smooth scroll ──────────────────────────────────────────────────────
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'))
+      if (!target) return
+      e.preventDefault()
+      target.scrollIntoView({ behavior: 'smooth' })
+    })
+  })
+
+  // ── Navbar scroll shadow ───────────────────────────────────────────────
+  const nav = document.querySelector('nav')
+  window.addEventListener('scroll', () => {
+    nav.style.boxShadow = window.scrollY > 10
+      ? '0 4px 24px rgba(0,0,0,0.4)'
+      : 'none'
+  }, { passive: true })
+
+  // ── Intersection Observer — fade-in sections ───────────────────────────
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1'
+        e.target.style.transform = 'translateY(0)'
+        observer.unobserve(e.target)
+      }
+    })
+  }, { threshold: 0.08 })
+
+  document.querySelectorAll('.card, .principle-card, .doc-card, .eco-card, .install-step, .primitive-card, .industry-card, .compare-card').forEach(el => {
+    el.style.opacity = '0'
+    el.style.transform = 'translateY(16px)'
+    el.style.transition = 'opacity 0.45s ease, transform 0.45s ease, border-color 0.2s ease'
+    observer.observe(el)
+  })
+</script>
+</body>
+</html>

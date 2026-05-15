@@ -1,0 +1,52 @@
+name: RFC — Propuesta de extensión del protocolo
+description: Proponer una nueva funcionalidad o cambio en la gramática NEXUS
+title: "[RFC] "
+labels: ["RFC", "needs-discussion"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Las propuestas de extensión del protocolo siguen un proceso formal de 14 días mínimo de discusión.
+        Lee la plantilla completa en [docs/es/rfcs/RFC-0001-plantilla.md](./docs/es/rfcs/RFC-0001-plantilla.md)
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Resumen (una línea)
+      description: Una sola oración explicando qué propones agregar o cambiar
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivación — ¿Qué problema real resuelve?
+      description: ¿Por qué la sintaxis actual no lo resuelve? ¿Quién se beneficia?
+    validations:
+      required: true
+
+  - type: textarea
+    id: syntax
+    attributes:
+      label: Sintaxis propuesta
+      description: Muestra cómo se vería el nuevo operador o funcionalidad
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impacto — ¿Rompe compatibilidad hacia atrás?
+      description: ¿Afecta el validador, el system prompt o la gramática?
+    validations:
+      required: true
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Casos de uso reales (mínimo 2)
+      description: Ejemplos concretos que justifican la propuesta
+    validations:
+      required: true

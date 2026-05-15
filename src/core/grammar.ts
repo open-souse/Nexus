@@ -25,9 +25,17 @@ export interface NexusBlueprint {
 }
 
 export const NEXUS_ORCHESTRATORS = [
+  // Structure
   'Page', 'Layout', 'Section', 'Store', 'Type', 'Create',
-  'Test', 'Suite', 'Model', 'Controller', 'Router', 'Middleware', 'Service', 'Endpoint',
-  'Worker', 'Queue', 'CronJob'
+  // Backend
+  'Model', 'Controller', 'Router', 'Middleware', 'Service', 'Endpoint',
+  'Worker', 'Queue', 'CronJob',
+  // Testing
+  'Test', 'Suite',
+  // UI components
+  'Card', 'Button', 'Text', 'Image', 'Input', 'Badge', 'Nav', 'Navbar',
+  'Header', 'Grid', 'List', 'Form', 'Table', 'Chart', 'Modal', 'Select',
+  'Skeleton', 'Stack', 'Field'
 ] as const
 
 export const NEXUS_KEYWORDS = [
@@ -63,6 +71,9 @@ export const NEXUS_OPERATORS: NexusOperator[] = [
   { symbol: '!pk', name: 'Primary Key', description: 'Database primary key constraint', example: 'Entity id type:uuid !pk' },
   { symbol: '@Auth', name: 'Authentication', description: 'Require authentication for endpoint', example: '@Auth[mode:jwt]' },
   { symbol: '@RateLimit', name: 'Rate Limiting', description: 'Limit requests', example: '@RateLimit[100/min]' },
+  { symbol: '!error:', name: 'Error Handler', description: 'Error handler — catches specific HTTP errors or timeouts and redirects', example: '!error:400 -> /error' },
+  { symbol: '[paginate:]', name: 'Pagination', description: 'Native pagination — generates paginated data fetching with UI controls', example: 'Table < User [paginate:20]' },
+  { symbol: '-> Model.', name: 'Model Relation', description: 'Defines a typed relation between database models', example: 'Entity items -> Model.Product [many]' },
 ]
 
 export const NEXUS_MODULES: NexusModule[] = [

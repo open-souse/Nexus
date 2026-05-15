@@ -6,13 +6,17 @@
   <img src="./assets/nexus-logo.svg" alt="NEXUS Logo" width="100"/>
 </p>
 
+<p align="center">
+  <strong>🇪🇸 Español</strong> · <a href="./README.en.md">🇺🇸 English</a>
+</p>
+
 # 🌌 Protocolo NEXUS — nxlang
 
 > **Deja de escribir prompts. Empieza a escribir intenciones.**
 
 [![npm version](https://img.shields.io/npm/v/nxlang.svg?style=flat-square)](https://www.npmjs.com/package/nxlang)
 [![Licencia: MIT](https://img.shields.io/badge/Licencia-MIT-blue.svg?style=flat-square)](./LICENSE)
-[![Tests](https://img.shields.io/badge/tests-90%20pasando-brightgreen?style=flat-square)]()
+[![Tests](https://img.shields.io/badge/tests-121%20pasando-brightgreen?style=flat-square)]()
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue?style=flat-square)]()
 
 **NEXUS** es un protocolo de lenguaje minimalista Humano-IA que comprime arquitecturas de software complejas en fragmentos precisos y sin ambigüedad. Construido como núcleo library-first — diseñado para potenciar editores de código, herramientas de IA y flujos de trabajo de desarrollo.
@@ -65,7 +69,7 @@ Un bloque. Cero ambigüedad. La IA sabe exactamente qué construir.
 
 ## Arquitectura
 
-NEXUS v4.0.0 está construido **library-first**. El núcleo es un módulo TypeScript puro sin dependencias del CLI — diseñado para ser embebido en editores, IDEs y herramientas potenciadas por IA.
+NEXUS v4.0.1 está construido **library-first**. El núcleo es un módulo TypeScript puro sin dependencias del CLI — diseñado para ser embebido en editores, IDEs y herramientas potenciadas por IA.
 
 ```
 nxlang/
@@ -166,6 +170,9 @@ Controller PedidoController
 | `$var: valor` | Declaración de variable |
 | `@Auth[rol]` | Guard de autenticación |
 | `* N` | Repetir N veces |
+| `!error:código -> ruta` | Manejo de errores — captura errores HTTP y redirige |
+| `[paginate:N]` | Paginación nativa — genera paginación automática |
+| `-> Model.Nombre` | Relación entre modelos — define relaciones de base de datos |
 
 [→ Referencia Completa de Gramática](./NEXUS-Grammar.md)
 
@@ -222,7 +229,7 @@ const config = createDefaultConfig({ project: 'mi-editor', modules: ['frontend']
 
 ## Seguridad
 
-NEXUS v4.0.0 incluye validación defensiva de inputs:
+NEXUS v4.0.1 incluye validación defensiva de inputs:
 
 - **Límite de 500 KB por archivo** — rechaza archivos demasiado grandes antes de procesarlos
 - **Límite de 2000 líneas** — previene ejecución no acotada
@@ -248,6 +255,7 @@ El editor no necesita entender NEXUS — solo necesita llamar a `validateNexus()
 ## Roadmap
 
 - [x] **v4.0** — Núcleo modular, arquitectura Library-First, seguridad defensiva, 90 tests
+- [x] **v4.0.1** — Manejo de errores (`!error`), paginación nativa (`[paginate]`), relaciones entre modelos
 - [ ] **v4.5** — Módulo SDD, Motor Semántico (detección de arquitecturas imposibles), CLI Doctor
 - [ ] **v5.0** — NEXUS Language Server Protocol (LSP) para integración nativa con editores
 
