@@ -30,6 +30,14 @@ export function validateNexus(content: string): ValidationError[] {
   if (normalized.includes('\0')) {
     return [{ line: 0, message: 'File contains null bytes (\\0). Only plain text is allowed.' }]
   }
+  // Reject control characters U+0001–U+001F (tab \x09 and newline \x0A are legitimate)
+  const controlChars = normalized.split('').filter(c => {
+    const code = c.charCodeAt(0)
+    return code < 32 && code !== 9 && code !== 10
+  })
+  if (controlChars.length > 0) {
+    return [{ line: 0, message: 'File contains control characters (U+0001–U+001F). Only plain text is allowed.' }]
+  }
 
   const lines = normalized.split('\n')
 
@@ -37,10 +45,13 @@ export function validateNexus(content: string): ValidationError[] {
     return [{ line: 0, message: `File exceeds maximum of ${MAX_LINES} lines (found ${lines.length}).` }]
   }
 
-  // Global depth counters for braces and brackets
+  // Global depth counters for braces { } — they span multiple lines (Type User { ... })
   let braceDepth = 0
-  let bracketDepth = 0
   let braceOpenLine = 0
+
+  // Global depth counter for brackets [ ] used in data-binding arrays: < [ ... ]
+  // Attribute brackets [attr:val] must be closed on the same line (checked per-line below)
+  let bracketDepth = 0
   let bracketOpenLine = 0
 
   // Conditional block state: ( cond ) -> ... : ...
@@ -301,18 +312,29 @@ export function validateNexus(content: string): ValidationError[] {
       }
     }
 
-    // [ ] — cumulative balance across the entire file
-    for (const ch of trimmed) {
-      if (ch === '[') {
-        if (bracketDepth === 0) bracketOpenLine = lineNumber
-        bracketDepth++
-      } else if (ch === ']') {
-        bracketDepth--
-        if (bracketDepth < 0) {
-          errors.push({ line: lineNumber, message: '"]" without matching "[".' })
-          bracketDepth = 0
-        }
+    // [ ] — attribute brackets must be closed on the same line.
+    // Exception: data-binding arrays opened with "< [" may span multiple lines and
+    // are tracked via the global bracketDepth counter.
+    const openBrackets = (trimmed.match(/\[/g) ?? []).length
+    const closeBrackets = (trimmed.match(/\]/g) ?? []).length
+
+    if (bracketDepth > 0) {
+      // Inside a multi-line data array — track balance globally
+      bracketDepth += openBrackets - closeBrackets
+      if (bracketDepth < 0) {
+        errors.push({ line: lineNumber, message: '"]" without matching "[".' })
+        bracketDepth = 0
       }
+    } else if (openBrackets > closeBrackets) {
+      // More opening brackets than closing on this line — allow only for "< [" data arrays
+      if (/(?:^|[^a-zA-Z0-9_])<\s*\[/.test(trimmed)) {
+        bracketDepth = openBrackets - closeBrackets
+        bracketOpenLine = lineNumber
+      } else {
+        errors.push({ line: lineNumber, message: '"[" unclosed on this line. Brackets must open and close on the same line.' })
+      }
+    } else if (closeBrackets > openBrackets) {
+      errors.push({ line: lineNumber, message: '"]" without matching "[" on this line.' })
     }
 
     // @Auth — must be standalone or @Auth[key:value]; reject @Auth(...), @Auth123, etc.

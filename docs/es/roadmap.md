@@ -97,3 +97,28 @@ Estas funcionalidades **NO** están en el roadmap de `nxlang`:
 5. Si se aprueba, se implementa en la siguiente versión minor
 
 → [Ver proceso completo de RFC](./rfcs/RFC-0001-plantilla.md)
+
+---
+
+## El Siguiente Salto — SDD (Software Design by Declaration)
+
+### ¿Qué es SDD?
+
+SDD es la evolución natural del protocolo NEXUS. Mientras la versión actual permite describir componentes, endpoints y flujos con precisión, SDD extiende esa capacidad hacia algo más ambicioso: describir decisiones de diseño de software completas.
+
+La idea central es que un developer pueda expresar no solo *qué construir*, sino *cómo debe estar diseñado* — arquitectura, patrones, contratos entre sistemas, reglas de consistencia — de una forma que la IA pueda implementar con coherencia total a lo largo de todo el proyecto.
+
+### El problema que resuelve
+
+Hoy, incluso con NEXUS, cada sesión con la IA empieza desde cero en términos de decisiones arquitectónicas. SDD propone que esas decisiones se declaren una vez y se respeten siempre.
+
+### Estado actual
+
+En investigación. No hay sintaxis definida todavía — esa es una decisión que tomaremos junto a la comunidad cuando llegue el momento.
+
+### Cómo participar
+
+Si tienes ideas sobre cómo podría verse SDD, abre un RFC:
+→ [Plantilla RFC](./rfcs/RFC-0001-plantilla.md)
+
+El protocolo crece con la comunidad.

@@ -182,4 +182,15 @@ Model Pedido
 ```
 
 ---
+
+## Visión a Futuro — SDD (Software Design by Declaration)
+
+SDD es la próxima evolución planificada del protocolo. La idea es extender NEXUS más allá de la descripción de componentes hacia la declaración de decisiones de diseño completas — arquitectura, patrones y contratos entre sistemas.
+
+La sintaxis de SDD aún no está definida. Cuando llegue el momento, será diseñada junto a la comunidad a través del proceso RFC.
+
+→ [Ver roadmap completo](./docs/es/roadmap.md)
+→ [Proponer ideas via RFC](./docs/es/rfcs/RFC-0001-plantilla.md)
+
+---
 *Nexus: Menos palabras, más intención.*

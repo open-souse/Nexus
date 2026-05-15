@@ -112,9 +112,13 @@ const config = createDefaultConfig({ project: 'mi-app', modules: ['frontend'] })
 
 [Ver roadmap completo](./docs/es/roadmap.md)
 
-- [x] **v4.0.0** — Núcleo modular, Library-First, 121 tests, seguridad defensiva
-- [x] **v4.1.0** — `!error` handler, `[paginate]`, relaciones entre modelos, documentación completa
-- [ ] **v4.5.0** — Motor semántico, CLI Doctor (cuando la comunidad lo pida)
+- [x] v4.0.0 — Núcleo modular, Library-First, 90 tests, seguridad defensiva
+- [x] v4.1.0 — !error handler, [paginate], relaciones entre modelos, documentación completa bilingüe
+- [x] v4.1.1 — Calidad: validación de orquestadores, deep merge, API consistency
+- [x] v4.1.2 — Seguridad: caracteres de control, validación de brackets por línea
+- [ ] v4.2.0 — Límites adicionales, tokens hex, mejoras de DX (cuando la comunidad lo pida)
+- [ ] v4.5.0 — Motor semántico, CLI Doctor (cuando haya demanda real)
+- [ ] SDD — Software Design by Declaration (investigación activa, RFC abierto)
 
 ## Contribuir
 

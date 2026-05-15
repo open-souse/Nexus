@@ -13,6 +13,14 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [4.1.2] — 2026-05-15
+
+### Security
+- Block control characters U+0001–U+001F from being processed. Tab (`\x09`) and newline (`\x0A`) remain legitimate. Affected content now returns an early error at line 0 before any parsing occurs.
+- Fix bracket balance validation — brackets must open and close on the same line. Previously a `[` on line N could be silently "closed" by `]` on line N+k, causing malformed NEXUS to pass validation undetected.
+
+---
+
 ## [4.1.1] — 2026-05-14
 
 ### Fixed
