@@ -1,7 +1,7 @@
 // NEXUS grammar as structured data — used by NEXUS Studio for syntax highlighting,
 // autocomplete, validation, and documentation.
 
-export const NEXUS_VERSION = '4.0'
+export const NEXUS_VERSION = '4.1.2'
 
 export interface NexusOperator {
   symbol: string
