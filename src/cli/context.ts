@@ -48,14 +48,9 @@ export function contextCommand(): Command {
         const nexusMdPath = path.join(cwd, 'NEXUS.md')
         await fs.writeFile(nexusMdPath, nexusMd, 'utf8')
 
-        // Register /nexus slash command for mid-session refresh
-        const slashDir = path.join(cwd, '.claude', 'commands')
-        await fs.ensureDir(slashDir)
-        await fs.writeFile(path.join(slashDir, 'nexus.md'), SLASH_COMMAND_CONTENT, 'utf8')
-
         spinner.succeed(chalk.green('NEXUS notation reference written to NEXUS.md'))
         console.log(chalk.cyan('\nYour AI context is ready in NEXUS.md.'))
-        console.log(chalk.cyan('Use /nexus inside Claude Code to refresh context mid-session.\n'))
+        console.log(chalk.cyan('Attach NEXUS.md to your AI session to load the protocol reference.\n'))
 
       } catch (error: unknown) {
         const msg = error instanceof Error ? error.message : String(error)
