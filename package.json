@@ -29,7 +29,7 @@
     "test:coverage": "vitest run --coverage",
     "lint": "eslint src",
     "prepare": "npm run build",
-    "prepublishOnly": "echo skip"
+    "prepublishOnly": "npm run build && npm run test"
   },
   "keywords": [
     "nexus",
