@@ -39,7 +39,7 @@
   <rect x="110" y="116" width="68" height="18" rx="4" fill="#3C3489"/>
   <text x="144" y="129" text-anchor="middle"
     font-family="ui-monospace, monospace"
-    font-size="10" fill="#CECBF6">v4.0.0</text>
+    font-size="10" fill="#CECBF6">v4.2.0</text>
 
   <!-- Separator vertical -->
   <rect x="380" y="56" width="1" height="90" fill="#3C3489"/>
@@ -55,7 +55,7 @@
   <!-- Mini stats -->
   <rect x="408" y="120" width="110" height="26" rx="5" fill="#26215C"/>
   <text x="463" y="137" text-anchor="middle"
-    font-family="ui-monospace, monospace" font-size="11" fill="#AFA9EC">✓ 90 tests</text>
+    font-family="ui-monospace, monospace" font-size="11" fill="#AFA9EC">✓ 154 tests</text>
 
   <rect x="530" y="120" width="130" height="26" rx="5" fill="#04342C"/>
   <text x="595" y="137" text-anchor="middle"
