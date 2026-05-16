@@ -40,7 +40,7 @@ describe('createDefaultConfig', () => {
 describe('buildSystemPrompt', () => {
   const config = createDefaultConfig()
 
-  it('includes NEXUS header for default claude provider', () => {
+  it('includes NEXUS header for default provider', () => {
     const prompt = buildSystemPrompt(config)
     expect(prompt).toContain('NEXUS NOTATION')
     expect(prompt).toContain(`v${NEXUS_VERSION}`)

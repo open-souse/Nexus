@@ -1,10 +1,10 @@
 import type { NexusConfig } from '../types/nexus.js'
 import { NEXUS_MODULES, NEXUS_VERSION } from '../core/grammar.js'
 
-export type NexusProvider = 'claude' | 'gpt' | 'gemini'
+export type NexusProvider = 'llm' | 'gpt' | 'gemini'
 
 const PROVIDER_HEADERS: Record<NexusProvider, string> = {
-  claude: 'You are a coding assistant. The user writes requests in NEXUS notation — a structured shorthand for UI, logic, and project structure. Parse NEXUS input and generate the implementation.',
+  llm: 'You are a coding assistant. The user writes requests in NEXUS notation — a structured shorthand for UI, logic, and project structure. Parse NEXUS input and generate the implementation.',
   gpt: 'You are a precise coding assistant. The user communicates using NEXUS notation, a structured DSL for describing UI components, logic, and project structure. Interpret NEXUS syntax and generate the corresponding implementation.',
   gemini: 'You are a coding assistant that understands NEXUS notation — a shorthand language for describing UI, logic, and code structure. When the user writes NEXUS, generate the implementation code.'
 }
@@ -165,7 +165,7 @@ HOW TO HANDLE MY NEXUS INPUT:
 @modify [preserve:all] rule:
 Only apply the explicit change I describe. Do not reinterpret the design, move other elements, or change colors.
 
-Create / Test rule (filesystem tools like Claude Code, Cursor, Copilot):
+Create / Test rule (filesystem tools like Cursor, Copilot, or any AI code editor):
 - Create → write the files and folders directly to disk, don't just show the code.
   - [type:component] → <path>/<Name>/index.<ext>
   - [type:page] → <path>/<name>/page.<ext> (Next.js) | <path>/<name>.<ext> (React)
@@ -218,7 +218,7 @@ ${JSON.stringify(config, null, 2)}
   `.trim()
 }
 
-export function buildSystemPrompt(config: Partial<NexusConfig>, provider: NexusProvider = 'claude'): string {
+export function buildSystemPrompt(config: Partial<NexusConfig>, provider: NexusProvider = 'llm'): string {
   const header = PROVIDER_HEADERS[provider]
   const grammar = buildPrompt(config)
   return `${header}\n\n${grammar}`

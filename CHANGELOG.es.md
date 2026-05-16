@@ -95,7 +95,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
   - Detección de null bytes
   - Tokenizador consciente de strings
 - API pública: `validateNexus()`, `buildSystemPrompt()`, `createDefaultConfig()`
-- Soporte multi-provider: Claude, GPT, Gemini
+- Soporte multi-provider: GPT, Gemini y los principales LLMs
 - CLI: `nexus init`, `nexus validate`
 - Soporte completo de Backend: `Model`, `Controller`, `Service`, `Middleware`, `Worker`, `Queue`, `CronJob`
 - 90 tests, suite en ~1 segundo

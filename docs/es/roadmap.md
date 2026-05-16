@@ -30,7 +30,7 @@ Lanzado: mayo 2026
 - Seguridad defensiva: límite 500KB, 2000 líneas, null bytes, tokenizador consciente de strings
 - 90 tests, suite en ~1 segundo
 - API pública: `validateNexus()`, `buildSystemPrompt()`, `createDefaultConfig()`
-- Soporte multi-provider: Claude, GPT, Gemini
+- Soporte multi-provider: GPT, Gemini y los principales LLMs
 - CLI: `nexus init`, `nexus validate`
 
 ### v4.1.0 — Extensiones de Protocolo ✅
