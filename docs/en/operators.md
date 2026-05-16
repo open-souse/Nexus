@@ -232,6 +232,78 @@ Button "Pay" => PaymentService.process()
 
 ---
 
+## `!!` — Assertion (Precondition)
+
+**Purpose:** Declares explicit preconditions that must be met before executing a `=>` action. If any fails, the action is NOT executed.
+
+**Syntax:**
+```nexus
+!! "description"
+!! expression
+```
+
+**Forms:**
+
+| Form | Generated behavior |
+|---|---|
+| `!! "message"` | Semantic guard: generates a validation check with that message as the error text |
+| `!! expression` | Logical guard: generates `if (!expression) { ... }` with appropriate error handling |
+
+**Examples:**
+```nexus
+Endpoint POST /checkout
+  !! "Cart cannot be empty"
+  !! stock.available > 0
+  !! user.authenticated
+  => OrderService.create()
+```
+
+```nexus
+Form Payment
+  !! "All fields are required"
+  !! card.valid
+  => PaymentService.process()
+    !error:400 -> /error/validation
+    !error:timeout -> /retry
+```
+
+**Rules:**
+- Always appears before the `=>` line it protects
+- Multiple `!!` are evaluated strictly top-to-bottom — first failure stops execution
+- Content is required: `!!` without text generates a validation error
+- `!!` NEVER appears as a literal comment in generated code — it becomes executable guard logic
+
+**Generated code (React/Next.js):**
+```typescript
+if (cart.isEmpty()) {
+  setError('Cart cannot be empty')
+  return
+}
+if (stock.available <= 0) {
+  setError('Insufficient stock')
+  return
+}
+if (!user.authenticated) {
+  setError('User not authenticated')
+  return
+}
+return await OrderService.create(...)
+```
+
+**Generated code (NestJS/Express):**
+```typescript
+if (cart.isEmpty()) throw new BadRequestException('Cart cannot be empty')
+if (stock.available <= 0) throw new BadRequestException('Insufficient stock')
+if (!user.authenticated) throw new UnauthorizedException()
+return await OrderService.create(...)
+```
+
+**Common errors:**
+- `!!` without content → error: `"!!" requires content`
+- `!!   ` (spaces only) → error: `"!!" requires content`
+
+---
+
 ## `@Auth` — Authentication
 
 **Purpose:** Requires authentication for an endpoint or resource.

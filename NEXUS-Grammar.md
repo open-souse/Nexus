@@ -1,4 +1,4 @@
-# 📖 Referencia de Gramática NEXUS (v4.0.1)
+# 📖 Referencia de Gramática NEXUS (v4.2.0)
 
 NEXUS es el lenguaje de alto nivel diseñado para una comunicación exacta y fluida entre Humanos e IAs. Elimina la ambigüedad del lenguaje natural y permite orquestar aplicaciones full-stack completas a través de intenciones estructuradas.
 
@@ -26,6 +26,7 @@ NEXUS se basa en la indentación (2 espacios). Cada línea representa un **Orque
 | `?` | **Estado UI** | Variantes visuales/lógicas (loading/error). | `?loading:Skeleton` |
 | `!` | **Prioridad** | Peso visual o importancia crítica. | `Text "Título" !bold` |
 | `!pk` | **Primary Key** | Restricción de clave primaria de DB. | `Entity id !pk` |
+| `!!` | **Aserción** | Precondición explícita antes de una acción `=>`. | `!! "Carrito no vacío"` |
 | `@Auth` | **Seguridad** | Requisitos de autenticación. | `@Auth[mode:jwt]` |
 | `??` | **Consulta** | Pregunta rápida a la IA dentro del código. | `?? "¿Por qué este hook?"` |
 | `->` | **Flujo** | Navegación, rutas o relaciones. | `PageA -> PageB` |
@@ -179,6 +180,35 @@ Model Pedido
   Entity items -> Model.Producto [many]
   Entity categoria -> Model.Categoria [optional]
   Entity facturas -> Model.Factura [many, cascade]
+```
+
+---
+
+### 5.4 Operador de Aserción — `!!`
+
+Declara precondiciones explícitas que deben cumplirse antes de ejecutar una acción `=>`. Si alguna falla, la IA genera lógica de guardia que bloquea la acción y muestra el error apropiado.
+
+**Sintaxis:**
+```nexus
+!! "descripción"
+!! expresión
+```
+
+**Reglas:**
+- Siempre antes de la línea `=>` que protege
+- Múltiples `!!` se evalúan de arriba a abajo — el primer fallo detiene la ejecución
+- El contenido es obligatorio (error si `!!` está vacío)
+- Nunca aparece como comentario en el código generado — se convierte en lógica ejecutable
+
+**Ejemplo:**
+```nexus
+Endpoint POST /checkout
+  !! "El carrito no puede estar vacío"
+  !! stock.disponible > 0
+  !! user.authenticated
+  => OrderService.crear()
+    !error:400 -> /error/validacion
+    !error:* -> /error/general
 ```
 
 ---

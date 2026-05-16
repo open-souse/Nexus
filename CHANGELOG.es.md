@@ -13,6 +13,20 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ---
 
+## [4.2.0] — 2026-05-16
+
+### Añadido
+- **Operador de aserción `!!`** — Nuevo operador que declara precondiciones explícitas antes de acciones `=>`. Dos formas: `!! "descripción"` (guard semántico) y `!! expresión` (guard lógico). Múltiples `!!` se evalúan estrictamente de arriba a abajo; el primer fallo detiene la ejecución.
+- **`grammar.ts`**: Añadida entrada `!!` al array `NEXUS_OPERATORS`.
+- **`validator.ts`**: Añadido bloque de validación de aserciones antes del handler `!error:`. `!!` vacío emite error `'"!!" requires content'`. También se relaxó la comprobación de padre de `!error` a `>=` (permite `!error` al mismo nivel de indentación que `=>`).
+- **`builder.ts`**: Añadida línea `!! "precondición"` a la referencia de gramática y sección completa `ASSERTION OPERATOR (!!)` al system prompt con reglas de generación de código y ejemplos.
+- **`tests/assertions.test.ts`**: 8 nuevos tests cubriendo todos los casos del operador de aserción.
+- **`docs/en/operators.md`** y **`docs/es/operadores.md`**: Documentación completa del operador `!!` con ejemplos de código generado.
+- **`docs/en/examples.md`** y **`docs/es/ejemplos.md`**: Ejemplo de API de pagos con aserciones `!!`.
+- **`NEXUS-Grammar.md`**: Añadido `!!` a la tabla de operadores y nueva sección `§5.4`.
+
+---
+
 ## [4.1.2] — 2026-05-15
 
 ### Seguridad

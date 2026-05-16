@@ -171,6 +171,7 @@ Controller PedidoController
 | `@Auth[rol]` | Guard de autenticación |
 | `* N` | Repetir N veces |
 | `!error:código -> ruta` | Manejo de errores — captura errores HTTP y redirige |
+| `!! "precondición"` | Aserción — precondición explícita antes de una acción `=>` |
 | `[paginate:N]` | Paginación nativa — genera paginación automática |
 | `-> Model.Nombre` | Relación entre modelos — define relaciones de base de datos |
 
@@ -258,7 +259,7 @@ El editor no necesita entender NEXUS — solo necesita llamar a `validateNexus()
 - [x] v4.1.0 — !error handler, [paginate], relaciones entre modelos, documentación completa bilingüe
 - [x] v4.1.1 — Calidad: validación de orquestadores, deep merge, API consistency
 - [x] v4.1.2 — Seguridad: caracteres de control, validación de brackets por línea
-- [ ] v4.2.0 — Límites adicionales, tokens hex, mejoras de DX (cuando la comunidad lo pida)
+- [x] v4.2.0 — Operador de aserción (`!!`) — precondiciones explícitas para acciones `=>`
 - [ ] v4.5.0 — Motor semántico, CLI Doctor (cuando haya demanda real)
 - [ ] SDD — Software Design by Declaration (investigación activa, RFC abierto)
 

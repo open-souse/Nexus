@@ -116,7 +116,7 @@ const config = createDefaultConfig({ project: 'my-app', modules: ['frontend'] })
 - [x] v4.1.0 — !error handler, [paginate], model relations, complete bilingual documentation
 - [x] v4.1.1 — Quality: orchestrator validation, deep merge, API consistency
 - [x] v4.1.2 — Security: control characters, per-line bracket validation
-- [ ] v4.2.0 — Additional limits, hex tokens, DX improvements (when the community asks)
+- [x] v4.2.0 — Assertion operator (`!!`) — explicit preconditions for `=>` actions
 - [ ] v4.5.0 — Semantic engine, CLI Doctor (when there's real demand)
 - [ ] SDD — Software Design by Declaration (active research, RFC open)
 
