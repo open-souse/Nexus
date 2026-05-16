@@ -311,4 +311,51 @@ Suite "UserStore — Unit Tests"
 
 ---
 
+---
+
+## 7. Payment API with Assertions (`!!`)
+
+Checkout endpoint with explicit preconditions that guarantee integrity before processing payment.
+
+```nexus
+@NestJS @Prisma @PostgreSQL
+
+Controller PaymentController [route:/api/payments]
+  Guard AuthGuard [mode:jwt]
+  @RateLimit[10/min]
+
+  Endpoint POST /checkout
+    !! "Cart cannot be empty"
+    !! stock.available > 0
+    !! user.authenticated
+    => OrderService.create()
+      !error:400 -> /error/validation
+      !error:401 -> /login
+      !error:500 -> /error/server
+      !error:timeout -> /retry
+      !error:* -> /error/general
+
+  Endpoint POST /refund/:id
+    !! "Only the owner can request a refund"
+    !! order.status === "completed"
+    !! daysSincePurchase <= 30
+    => RefundService.request(id)
+      !error:403 -> /error/forbidden
+      !error:404 -> /error/not-found
+```
+
+**Generated code (NestJS handler excerpt):**
+```typescript
+@Post('/checkout')
+@UseGuards(AuthGuard)
+async checkout(@Body() dto: CheckoutDto, @Request() req) {
+  if (cart.isEmpty()) throw new BadRequestException('Cart cannot be empty')
+  if (stock.available <= 0) throw new BadRequestException('Insufficient stock')
+  if (!req.user.authenticated) throw new UnauthorizedException()
+  return await this.orderService.create(dto)
+}
+```
+
+---
+
 *[← Back to grammar](./grammar.md) · [See operators](./operators.md)*

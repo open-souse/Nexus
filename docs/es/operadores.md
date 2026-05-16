@@ -247,6 +247,78 @@ Button "Pagar" => PagoService.procesar()
 
 ---
 
+## `!!` — Aserción (Precondición)
+
+**Propósito:** Declara precondiciones explícitas que deben cumplirse antes de ejecutar una acción `=>`. Si alguna falla, la acción NO se ejecuta.
+
+**Sintaxis:**
+```nexus
+!! "descripción"
+!! expresión
+```
+
+**Formas:**
+
+| Forma | Comportamiento generado |
+|---|---|
+| `!! "mensaje"` | Guard semántico: genera una validación con ese mensaje como texto de error |
+| `!! expresión` | Guard lógico: genera `if (!expresión) { ... }` con manejo de error apropiado |
+
+**Ejemplos:**
+```nexus
+Endpoint POST /checkout
+  !! "El carrito no puede estar vacío"
+  !! stock.disponible > 0
+  !! user.authenticated
+  => OrderService.crear()
+```
+
+```nexus
+Form Pago
+  !! "Todos los campos son requeridos"
+  !! tarjeta.valida
+  => PagoService.procesar()
+    !error:400 -> /error/validacion
+    !error:timeout -> /reintentar
+```
+
+**Reglas:**
+- Siempre aparece antes de la línea `=>` a la que protege
+- Múltiples `!!` se evalúan estrictamente de arriba a abajo — el primer fallo detiene la ejecución
+- El contenido es obligatorio: `!!` sin texto genera un error de validación
+- `!!` NUNCA aparece como comentario literal en el código generado — se convierte en lógica ejecutable de guardia
+
+**Código generado (React/Next.js):**
+```typescript
+if (cart.isEmpty()) {
+  setError('El carrito no puede estar vacío')
+  return
+}
+if (stock.disponible <= 0) {
+  setError('Stock insuficiente')
+  return
+}
+if (!user.authenticated) {
+  setError('Usuario no autenticado')
+  return
+}
+return await OrderService.crear(...)
+```
+
+**Código generado (NestJS/Express):**
+```typescript
+if (cart.isEmpty()) throw new BadRequestException('El carrito no puede estar vacío')
+if (stock.disponible <= 0) throw new BadRequestException('Stock insuficiente')
+if (!user.authenticated) throw new UnauthorizedException()
+return await OrderService.crear(...)
+```
+
+**Errores comunes:**
+- `!!` sin contenido → error: `"!!" requires content`
+- `!!   ` (solo espacios) → error: `"!!" requires content`
+
+---
+
 ## `@Auth` — Autenticación
 
 **Propósito:** Requiere autenticación para un endpoint o recurso.

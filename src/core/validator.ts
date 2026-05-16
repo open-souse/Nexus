@@ -95,10 +95,22 @@ export function validateNexus(content: string): ValidationError[] {
       }
     }
 
+    // ── !! assertion operator ────────────────────────────────────────────────
+    if (trimmed.startsWith('!!')) {
+      const assertionContent = trimmed.slice(2).trim()
+      if (!assertionContent) {
+        errors.push({
+          line: lineNumber,
+          message: '"!!" requires content. Expected: !! "description" or !! expression'
+        })
+      }
+      return
+    }
+
     // ── !error: handler ──────────────────────────────────────────────────────
     if (trimmed.startsWith('!error:')) {
       // Must be indented under a => action line
-      if (!(leadingSpaces > lastActionIndent && lastActionIndent >= 0)) {
+      if (!(leadingSpaces >= lastActionIndent && lastActionIndent >= 0)) {
         errors.push({ line: lineNumber, message: "!error must be nested under a '=>' action" })
       }
       const errorMatch = trimmed.match(/^!error:(\S+?)(?:\s*->\s*(\S+))?$/)

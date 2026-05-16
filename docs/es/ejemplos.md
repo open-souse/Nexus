@@ -311,4 +311,51 @@ Suite "UsuarioStore — Tests Unitarios"
 
 ---
 
+---
+
+## 7. API de Pagos con Aserciones (`!!`)
+
+Endpoint de checkout con precondiciones explícitas que garantizan la integridad antes de procesar el pago.
+
+```nexus
+@NestJS @Prisma @PostgreSQL
+
+Controller PagoController [route:/api/pagos]
+  Guard AuthGuard [mode:jwt]
+  @RateLimit[10/min]
+
+  Endpoint POST /checkout
+    !! "El carrito no puede estar vacío"
+    !! stock.disponible > 0
+    !! user.authenticated
+    => OrderService.crear()
+      !error:400 -> /error/validacion
+      !error:401 -> /login
+      !error:500 -> /error/servidor
+      !error:timeout -> /reintentar
+      !error:* -> /error/general
+
+  Endpoint POST /reembolso/:id
+    !! "Solo el propietario puede solicitar el reembolso"
+    !! pedido.estado === "completado"
+    !! diasDesdeCompra <= 30
+    => ReembolsoService.solicitar(id)
+      !error:403 -> /error/permiso
+      !error:404 -> /error/no-encontrado
+```
+
+**Código generado (fragmento del handler NestJS):**
+```typescript
+@Post('/checkout')
+@UseGuards(AuthGuard)
+async checkout(@Body() dto: CheckoutDto, @Request() req) {
+  if (cart.isEmpty()) throw new BadRequestException('El carrito no puede estar vacío')
+  if (stock.disponible <= 0) throw new BadRequestException('Stock insuficiente')
+  if (!req.user.authenticated) throw new UnauthorizedException()
+  return await this.orderService.crear(dto)
+}
+```
+
+---
+
 *[← Volver a la gramática](./gramatica.md) · [Ver operadores](./operadores.md)*

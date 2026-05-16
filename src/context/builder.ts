@@ -136,6 +136,7 @@ NEXUS SYNTAX REFERENCE (v${NEXUS_VERSION}):
 - < : Data binding / types.
 - { path } : Inject existing code or file.
 - !error:code -> dest : Nested under =>; catches HTTP errors, timeout, network, or * (wildcard).
+- !! "precondition" : Assertion — explicit precondition before a => action. String or logical expression. Multiple !! evaluated top-to-bottom.
 - [paginate:N] : On a < bound element; generates paginated fetch + UI controls (N items/page, max 500).
 - -> Model.Name [mod] : Inside Entity; defines typed DB relation. Modifiers: [many] [optional] [cascade].
 - ${orchList} : Structure orchestrators.
@@ -212,6 +213,31 @@ When you see -> Model.Name inside an Entity definition:
   PostgreSQL/Prisma → use @relation with proper foreign keys
   MySQL → use foreign key constraints
 - Always generate the inverse relation on the referenced model
+
+ASSERTION OPERATOR (!!):
+When you see !! lines before a => action, generate runtime precondition checks BEFORE executing that action.
+
+Two forms:
+  !! "description" → semantic guard: generate a runtime check with that message as the error/validation text
+  !! expression    → logical guard: generate if (!expression) { ... } block with appropriate error handling
+
+Code generation rules:
+- Evaluate ALL !! conditions before calling the => action
+- If any !! fails: block the action, show a validation error, or throw — NEVER silently skip
+- Multiple !! are evaluated strictly top-to-bottom — first failure stops execution
+- In React/Next.js components: early return with setError() or toast before the async call
+- In NestJS/Express handlers: guard clauses at the top of the handler method
+- !! never appears as a literal comment in generated code — it becomes executable guard logic
+
+Example:
+  Endpoint POST /checkout
+    !! "El carrito no puede estar vacío"
+    !! stock.disponible > 0
+    => OrderService.crear()
+  Generates:
+    if (cart.isEmpty()) throw new BadRequestException('El carrito no puede estar vacío')
+    if (stock.disponible <= 0) throw new BadRequestException('Stock insuficiente')
+    return await OrderService.crear(...)
 
 PROJECT DNA:
 ${JSON.stringify(config, null, 2)}
