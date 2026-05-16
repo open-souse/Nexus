@@ -16,7 +16,7 @@
 
 [![npm version](https://img.shields.io/npm/v/nxlang.svg?style=flat-square)](https://www.npmjs.com/package/nxlang)
 [![Licencia: MIT](https://img.shields.io/badge/Licencia-MIT-blue.svg?style=flat-square)](./LICENSE)
-[![Tests](https://img.shields.io/badge/tests-121%20pasando-brightgreen?style=flat-square)]()
+[![Tests](https://img.shields.io/badge/tests-154%20pasando-brightgreen?style=flat-square)]()
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue?style=flat-square)]()
 
 **NEXUS** es un protocolo de lenguaje minimalista Humano-IA que comprime arquitecturas de software complejas en fragmentos precisos y sin ambigüedad. Construido como núcleo library-first — diseñado para potenciar editores de código, herramientas de IA y flujos de trabajo de desarrollo.

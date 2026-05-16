@@ -12,7 +12,7 @@
 
 | Versión | Soporte |
 |---|---|
-| 4.1.x | ✅ Activa |
+| 4.2.x | ✅ Activa |
 | 4.0.x | ✅ Correcciones de seguridad |
 | < 4.0 | ❌ Sin soporte |
 

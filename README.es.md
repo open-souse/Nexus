@@ -12,7 +12,7 @@
 
 [![npm version](https://img.shields.io/npm/v/nxlang.svg?style=flat-square)](https://www.npmjs.com/package/nxlang)
 [![Licencia: MIT](https://img.shields.io/badge/Licencia-MIT-blue.svg?style=flat-square)](./LICENSE)
-[![Tests](https://img.shields.io/badge/tests-121%20pasando-brightgreen?style=flat-square)]()
+[![Tests](https://img.shields.io/badge/tests-154%20pasando-brightgreen?style=flat-square)]()
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue?style=flat-square)]()
 
 ## El Problema
