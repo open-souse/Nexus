@@ -12,7 +12,7 @@
 
 | Version | Support |
 |---|---|
-| 4.1.x | ✅ Active |
+| 4.2.x | ✅ Active |
 | 4.0.x | ✅ Security fixes |
 | < 4.0 | ❌ No support |
 
