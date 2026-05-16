@@ -6,18 +6,6 @@ import ora from 'ora'
 import type { NexusConfig } from '../types/nexus.js'
 import { buildPrompt } from '../context/builder.js'
 
-const SLASH_COMMAND_CONTENT = `# NEXUS Context Refresh
-
-Regenerate and reload the NEXUS notation reference for this session.
-
-\`\`\`bash
-npx nexus context
-\`\`\`
-
-After running, the NEXUS grammar and project DNA are reloaded from \`nexus.config.json\`.
-Use this command whenever the AI seems to have forgotten NEXUS syntax.
-`
-
 export function contextCommand(): Command {
   return new Command('context')
     .description('Generate NEXUS.md with the NEXUS notation reference for AI context induction')
