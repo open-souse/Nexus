@@ -79,7 +79,7 @@ describe('nexus install — JIT syntax dependency extractor', () => {
         Test LoginForm [type:unit] Frontend vitest
         Test AuthService [type:unit] Backend jest
     `
-    const { prodDeps, devDeps } = extractDependenciesFromContent(content, true)
+    const { devDeps } = extractDependenciesFromContent(content, true)
 
     expect(devDeps).toContain('vitest')
     expect(devDeps).toContain('jest')
