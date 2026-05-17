@@ -77,11 +77,28 @@ npm install nxlang
 # Inicializa NEXUS en tu proyecto
 nexus init
 
-# Valida tus archivos .nexus
+# Valida tus archivos .nexus — sin efectos secundarios
 nexus validate ./mi-componente.nexus
 
-# Instala las dependencias declaradas en tu configuración de DNA (nexus.config.json)
+# Valida + instala dependencias si la validación pasa (opt-in)
+nexus validate ./mi-componente.nexus --install
+
+# Ver qué se instalaría sin instalar nada
+nexus install --dry-run
+
+# Instalar dependencias de un archivo .nexus
+nexus install archivo.nexus
+
+# Instalar todas las dependencias detectadas en el directorio
 nexus install
+```
+
+### Declaración explícita en el archivo
+
+```nexus
+@install lodash
+@install-dev typescript
+@install -D eslint
 ```
 
 ## La Gramática

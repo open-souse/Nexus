@@ -136,6 +136,35 @@ export function validateNexus(content: string): ValidationError[] {
       return
     }
 
+    // ── @install-dev / @install -D — explicit dev dependency declaration ────
+    if (trimmed.startsWith('@install-dev') || trimmed.match(/^@install\s+-D/)) {
+      let pkg: string
+      if (trimmed.startsWith('@install-dev')) {
+        pkg = trimmed.slice(12).trim()
+      } else {
+        pkg = trimmed.replace(/^@install\s+-D\s*/, '').trim()
+      }
+      if (!pkg) {
+        errors.push({
+          line: lineNumber,
+          message: '"@install-dev" requires a package name. Expected: @install-dev typescript'
+        })
+      }
+      return
+    }
+
+    // ── @install — explicit production dependency declaration ────────────────
+    if (trimmed.startsWith('@install')) {
+      const pkg = trimmed.slice(8).trim()
+      if (!pkg || pkg.startsWith('-')) {
+        errors.push({
+          line: lineNumber,
+          message: '"@install" requires a package name. Expected: @install lodash'
+        })
+      }
+      return
+    }
+
     // @ directives: must match @[A-Za-z] (e.g. @React, @modify)
     if (trimmed.startsWith('@')) {
       const directive = trimmed.split(/[\s[]/)[0]
