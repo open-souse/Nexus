@@ -75,6 +75,7 @@ export const NEXUS_OPERATORS: NexusOperator[] = [
   { symbol: '!!', name: 'Assertion', description: 'Explicit precondition before a => action. Evaluated top-to-bottom before executing the action. String or logical expression.', example: '!! "El carrito no puede estar vacío"' },
   { symbol: '[paginate:]', name: 'Pagination', description: 'Native pagination — generates paginated data fetching with UI controls', example: 'Table < User [paginate:20]' },
   { symbol: '-> Model.', name: 'Model Relation', description: 'Defines a typed relation between database models', example: 'Entity items -> Model.Product [many]' },
+  { symbol: '@install', name: 'JIT Installer', description: 'Direct syntax-declared on-demand package installer (e.g. @install lodash, @install-dev jest)', example: '@install lodash' }
 ]
 
 export const NEXUS_MODULES: NexusModule[] = [

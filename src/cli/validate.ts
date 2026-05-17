@@ -2,12 +2,13 @@ import { Command } from 'commander'
 import fs from 'fs-extra'
 import chalk from 'chalk'
 import { validateNexus } from '../core/validator.js'
+import { installDependencies } from './install.js'
 
 export function validateCommand(): Command {
   return new Command('validate')
     .description('Validate the syntax of a .nexus file')
     .argument('<file>', '.nexus file to validate')
-    .action((file: string) => {
+    .action(async (file: string) => {
       if (!fs.existsSync(file)) {
         console.log(chalk.red(`File not found: ${file}`))
         process.exit(1)
@@ -22,6 +23,8 @@ export function validateCommand(): Command {
 
       if (errors.length === 0) {
         console.log(chalk.green(`✓ ${file} — valid syntax`))
+        // Automatically JIT-install syntax declared dependencies if they are missing
+        await installDependencies(file, { silentIfAllInstalled: true })
       } else {
         console.log(chalk.red(`✗ ${file} — ${errors.length} error(s) found:\n`))
         for (const error of errors) {

@@ -79,6 +79,9 @@ nexus init
 
 # Validate your .nexus files
 nexus validate ./my-component.nexus
+
+# Install dependencies declared in your DNA configuration (nexus.config.json)
+nexus install
 ```
 
 ## The Grammar

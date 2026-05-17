@@ -79,6 +79,9 @@ nexus init
 
 # Valida tus archivos .nexus
 nexus validate ./mi-componente.nexus
+
+# Instala las dependencias declaradas en tu configuración de DNA (nexus.config.json)
+nexus install
 ```
 
 ## La Gramática

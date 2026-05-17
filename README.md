@@ -117,6 +117,10 @@ nexus init
 # Valida tus archivos .nexus
 # Escaneo profundo con reporte de errores preciso por línea
 nexus validate ./src/components/dashboard.nexus
+
+# Instala las dependencias declaradas en tu DNA (nexus.config.json)
+# Detecta automáticamente npm, yarn o pnpm e instala los paquetes necesarios
+nexus install
 ```
 
 ---
