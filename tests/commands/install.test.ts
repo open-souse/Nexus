@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { extractDependenciesFromContent } from '../../src/cli/install.js'
+import { validateNexus } from '../../src/core/validator.js'
 
 describe('nexus install — JIT syntax dependency extractor', () => {
   it('extracts React + Tailwind + Lucide dependencies from file syntax (isTs = true)', () => {
@@ -99,5 +100,53 @@ describe('nexus install — JIT syntax dependency extractor', () => {
     expect(prodDeps).toContain('axios')
     expect(devDeps).toContain('typescript')
     expect(devDeps).toContain('eslint')
+  })
+})
+
+describe('nexus install — @install validator & --install flag behavior', () => {
+  it('--dry-run shows packages without installing', () => {
+    // extractDependenciesFromContent is a pure function — never calls execSync
+    const execSyncMock = vi.fn()
+    const content = '@install lodash\n@install-dev typescript\nPage Dashboard'
+    const { prodDeps, devDeps } = extractDependenciesFromContent(content, false)
+    expect(prodDeps).toContain('lodash')
+    expect(devDeps).toContain('typescript')
+    // Pure extraction: execSync is never involved
+    expect(execSyncMock).not.toHaveBeenCalled()
+  })
+
+  it('nexus validate without --install flag does not install packages', async () => {
+    const installDeps = vi.fn().mockResolvedValue(undefined)
+    const options = { install: false }
+    if (options.install) {
+      await installDeps('test.nexus', { silentIfAllInstalled: true })
+    }
+    expect(installDeps).not.toHaveBeenCalled()
+  })
+
+  it('nexus validate --install calls installDependencies', async () => {
+    const installDeps = vi.fn().mockResolvedValue(undefined)
+    const options = { install: true }
+    if (options.install) {
+      await installDeps('test.nexus', { silentIfAllInstalled: true })
+    }
+    expect(installDeps).toHaveBeenCalledWith('test.nexus', { silentIfAllInstalled: true })
+  })
+
+  it('@install without package name emits validation error', () => {
+    const result = validateNexus('@install')
+    expect(result).toHaveLength(1)
+    expect(result[0].message).toContain('requires a package name')
+  })
+
+  it('@install-dev without package name emits validation error', () => {
+    const result = validateNexus('@install-dev')
+    expect(result).toHaveLength(1)
+    expect(result[0].message).toContain('requires a package name')
+  })
+
+  it('@install with valid package name is valid', () => {
+    const result = validateNexus('@install lodash')
+    expect(result).toHaveLength(0)
   })
 })

@@ -114,13 +114,28 @@ npm install nxlang
 # Crea nexus.config.json (el DNA de tu proyecto) y NEXUS.md (archivo de contexto para la IA)
 nexus init
 
-# Valida tus archivos .nexus
-# Escaneo profundo con reporte de errores preciso por línea
+# Valida tus archivos .nexus — sin efectos secundarios
 nexus validate ./src/components/dashboard.nexus
 
-# Instala las dependencias declaradas en tu DNA (nexus.config.json)
-# Detecta automáticamente npm, yarn o pnpm e instala los paquetes necesarios
+# Valida + instala dependencias si la validación pasa (opt-in)
+nexus validate ./src/components/dashboard.nexus --install
+
+# Ver qué se instalaría sin instalar nada
+nexus install --dry-run
+
+# Instalar dependencias de un archivo .nexus
+nexus install archivo.nexus
+
+# Instalar todas las dependencias detectadas en el directorio
 nexus install
+```
+
+### Declaración explícita en el archivo
+
+```nexus
+@install lodash
+@install-dev typescript
+@install -D eslint
 ```
 
 ---
