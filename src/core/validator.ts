@@ -58,8 +58,9 @@ export function validateNexus(content: string): ValidationError[] {
   let conditionalDepth = 0
   let conditionalOpenLine = 0
 
-  // Track indentation of the last line with a complete => action (for !error parent check)
+  // Track indentation of the last line with a complete => action or < data binding (for !error parent check)
   let lastActionIndent = -1
+  let lastBindingIndent = -1
 
   lines.forEach((raw, index) => {
     const lineNumber = index + 1
@@ -78,9 +79,12 @@ export function validateNexus(content: string): ValidationError[] {
 
     const trimmed = line.trim()
 
-    // Track lines that have a complete => action (used to validate !error parent)
+    // Track lines that have a complete => action or < data binding (used to validate !error parent)
     if (/=>\s*\S+/.test(trimmed)) {
       lastActionIndent = leadingSpaces
+    }
+    if (/<\s+\S/.test(trimmed)) {
+      lastBindingIndent = leadingSpaces
     }
 
     // Orchestrator validation: PascalCase word followed by an identifier
@@ -109,9 +113,11 @@ export function validateNexus(content: string): ValidationError[] {
 
     // ── !error: handler ──────────────────────────────────────────────────────
     if (trimmed.startsWith('!error:')) {
-      // Must be indented under a => action line
-      if (!(leadingSpaces >= lastActionIndent && lastActionIndent >= 0)) {
-        errors.push({ line: lineNumber, message: "!error must be nested under a '=>' action" })
+      // Must be indented under a => action or < data binding line
+      const underAction = lastActionIndent >= 0 && leadingSpaces >= lastActionIndent
+      const underBinding = lastBindingIndent >= 0 && leadingSpaces >= lastBindingIndent
+      if (!underAction && !underBinding) {
+        errors.push({ line: lineNumber, message: "!error must be nested under a '=>' action or '<' data binding" })
       }
       const errorMatch = trimmed.match(/^!error:(\S+?)(?:\s*->\s*(\S+))?$/)
       if (!errorMatch) {

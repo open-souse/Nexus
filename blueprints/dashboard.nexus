@@ -1,40 +1,13 @@
-@React @CleanArchitecture @LucideIcons
+@React @Tailwind
 Page Dashboard
-  // Definición del Flujo de la App
-  $appTitle: "Nexus Pro Console"
-
-  // Estructura de Layout Compleja
-  Layout SidebarMain
-    Sidebar #dark [ ~collapsed: false ] | [ hidden: ?collapsed ]
-      Button "Toggle" => ~collapsed: !~collapsed
-        !error:* -> /error
-      NavGroup "MAIN"
-        NavItem "Overview" #active -> /dash
-        NavItem "Analytics" -> /dash/stats
-        NavItem "Settings" -> /dash/settings
-    
-    MainContent #bg-slate-50 | #w-full
-      Header #white #shadow-sm
-        Breadcrumbs "Home > Dashboard"
-        UserMenu < { ./components/UserMenu.tsx }
-      
-      // Contenido Dinámico con Condicionales
-      Container #p-4 | #p-8
-        ( ?loading ) -> SkeletonDashboard : GridStats
-        
-        GridStats [cols:1 | cols:4] #gap-6
-          StatCard #elevated * 4 < [
-            "Users: 1,240 | +12%",
-            "Revenue: $12.5k | +5%",
-            "Uptime: 99.9% | stable",
-            "Errors: 0 | perfect"
-          ]
-        
-        Section "Recent Activity" #mt-10
-          Table < ActivityLogs [paginate:10]
-            !error:500 -> /error/servidor
-            !error:network -> /sin-conexion
-            Col "User" -> user.name
-            Col "Action" -> action.type
-            Col "Date" -> format(date)
-            Action "View Details" #ghost => openModal(id)
+  @Auth[mode:jwt]
+  Layout SplitView
+  Section Analytics #glass
+    Chart < MetricsData [paginate:10]
+    Text "Ingresos totales" !bold #accent
+  Section Users
+    Table < User [paginate:20]
+      !error:404 -> /error/not-found
+  Section Actions
+    Button "Exportar" => DashboardService.export()
+    Button "Actualizar" => DashboardService.refresh()
