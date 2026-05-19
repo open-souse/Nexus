@@ -1,36 +1,15 @@
-@React @Tailwind @FramerMotion
-Page LandingPage
-  // Configuración de Layout Maestro
-  @Layout centered-max-w-6xl
-
-  // Componente de Navegación
-  Navigate #glass #sticky
-    Logo "NEXUS" #bold -> /
-    Link "Features" -> #features
-    Link "Pricing" -> #pricing
-    Button "Get Started" #primary -> /auth/signup
-
-  // Sección Hero con Orquestación
-  Section Hero #py-20
-    Container #grid-cols-2
-      Stack #gap-6
-        Text heading "Communicate with AI like a Pro" !bold #text-5xl
-        Text "NEXUS is the abstraction layer between human thought and machine execution." #text-lg #text-gray-400
-        Group #flex #gap-4
-          Button "Try Now" #primary size:lg
-          Button "View Demo" #secondary size:lg
-      Image "/hero-illustration.svg" [alt: "Nexus Illustration"]
-
-  // Grid de Características con Multiplicador
-  Section Features #id:features #bg-gray-50
-    Text subheading "Why NEXUS?" #center
-    Grid [cols:3] #gap-8
-      FeatureCard * 3 < [
-        { icon: "Zap", title: "Speed", desc: "Reduce prompt length by 80%" },
-        { icon: "Shield", title: "Precision", desc: "Eliminate AI hallucinations" },
-        { icon: "Code", title: "Standard", desc: "Version your intentions in Git" }
-      ]
-
-  // Footer Simple
-  Footer #py-10 #border-t
-    Text "© 2026 Ventures SAS. All rights reserved." #center #text-sm
+@React @Tailwind
+Page Landing
+  @Auth[public]
+  Layout Stack
+  Section Hero #glass
+    Text "El protocolo Humano-IA" !bold !xl
+    Text "Elimina la ambigüedad. Escribe intenciones precisas." #muted
+    Button "Empezar gratis" => router.push('/register')
+    Button "Ver ejemplos" -> /#ejemplos
+  Section Features
+    List < features [paginate:6]
+      Card * 3 #glass
+  Section CTA
+    Text "¿Listo para empezar?" !bold
+    Button "Crear cuenta" #primary => router.push('/register')

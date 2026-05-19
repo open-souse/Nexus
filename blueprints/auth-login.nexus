@@ -1,41 +1,11 @@
 @React @Tailwind
-Page AuthLogin
-  ~email: ""
-  ~password: ""
-  ~showPassword: false
-
-  Layout #min-h-screen #flex #items-center #justify-center #bg-gray-50
-    Card #white #shadow-lg #rounded-xl #p-8 [width: 400px]
-      Logo "NEXUS" #center #mb-6 -> /
-
-      Text heading "Bienvenido" #center !bold
-      Text "Inicia sesión en tu cuenta" #center #text-gray-500 #mb-6
-
-      Form "login"
-        Field email type:email placeholder:"tu@email.com" required
-          [label: "Correo electrónico"]
-        Field password type:password placeholder:"••••••••" required
-          [label: "Contraseña"] [toggle: ~showPassword]
-
-        ( ?error ) -> Text $errorMsg !danger : null
-
-        Button "Iniciar sesión" #primary #w-full ?loading
-          !! "El correo no puede estar vacío"
-          !! "La contraseña debe tener al menos 8 caracteres"
-          => API.post(/auth/login) -> /dashboard
-            !error:401 -> /auth/login?error=credenciales
-            !error:403 -> /cuenta-bloqueada
-            !error:429 -> /auth/login?error=demasiados-intentos
-            !error:network -> /auth/login?error=sin-conexion
-            !error:* -> /auth/login?error=general
-
-        Link "¿Olvidaste tu contraseña?" #center #text-sm #mt-2 -> /auth/reset
-
-      Divider "o continúa con" #my-4
-
-      Group #flex #gap-3
-        Button #outline #w-full [icon: "Google"]  => OAuth.google()
-        Button #outline #w-full [icon: "GitHub"]  => OAuth.github()
-
-      Text "¿No tienes cuenta?" #center #text-sm #mt-4
-        Link "Regístrate gratis" #primary -> /auth/register
+Page Login
+  @Auth[public]
+  Layout Center #glass
+  Form LoginForm
+    !! "Las credenciales deben ser válidas"
+    Input email [type:email] !required
+    Input password [type:password] !required
+    Button "Iniciar sesión" => AuthService.login()
+    !error:401 -> /login?error=invalid
+    !error:500 -> /error/server
