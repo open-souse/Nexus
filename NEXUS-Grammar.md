@@ -1,4 +1,4 @@
-# 📖 Referencia de Gramática NEXUS (v4.2.0)
+# 📖 Referencia de Gramática NEXUS (v4.3.0)
 
 NEXUS es el lenguaje de alto nivel diseñado para una comunicación exacta y fluida entre Humanos e IAs. Elimina la ambigüedad del lenguaje natural y permite orquestar aplicaciones full-stack completas a través de intenciones estructuradas.
 
@@ -18,35 +18,72 @@ NEXUS se basa en la indentación (2 espacios). Cada línea representa un **Orque
 |:---:|:---:|:---|:---|
 | `@` | **Directiva** | Define el entorno o modo de pensamiento. | `@React @CleanCode` |
 | `@modify` | **Edición Segura** | Solo modifica el elemento especificado. | `@modify [preserve:all]` |
+| `@Auth` | **Seguridad** | Requisitos de autenticación. | `@Auth[mode:jwt]` |
+| `@RateLimit` | **Rate Limiting** | Limita peticiones por ventana de tiempo. | `@RateLimit[100/min]` |
+| `@install` | **Instalador JIT** | Instala una dependencia al declararla. | `@install axios` |
 | `#` | **Estilo** | Tokens de diseño del DNA del proyecto. | `#glass #primary` |
 | `$` | **Var DNA** | Constantes globales o valores de config. | `$primary-color` |
 | `~` | **Estado Local** | Variables reactivas (useState/Signals). | `~isOpen:false` |
-| `|` | **Responsivo** | Variaciones para móvil/escritorio. | `|mobile:hide` |
+| `\|` | **Responsivo** | Variaciones para móvil/escritorio. | `Grid [cols:1 \| cols:3]` |
 | `* N` | **Multiplicador** | Repetición de estructuras. | `Card * 5` |
 | `?` | **Estado UI** | Variantes visuales/lógicas (loading/error). | `?loading:Skeleton` |
 | `!` | **Prioridad** | Peso visual o importancia crítica. | `Text "Título" !bold` |
 | `!pk` | **Primary Key** | Restricción de clave primaria de DB. | `Entity id !pk` |
 | `!!` | **Aserción** | Precondición explícita antes de una acción `=>`. | `!! "Carrito no vacío"` |
-| `@Auth` | **Seguridad** | Requisitos de autenticación. | `@Auth[mode:jwt]` |
+| `!error:código` | **Manejo de Errores** | Captura errores de `=>` y redirige. | `!error:400 -> /error` |
 | `??` | **Consulta** | Pregunta rápida a la IA dentro del código. | `?? "¿Por qué este hook?"` |
 | `->` | **Flujo** | Navegación, rutas o relaciones. | `PageA -> PageB` |
+| `-> Model.` | **Relación de Modelo** | Relación tipada entre entidades de BD. | `Entity items -> Model.Producto [many]` |
 | `=>` | **Lógica** | Efectos secundarios, APIs o manejadores. | `Click => guardar()` |
 | `<` | **Binding** | Fuentes de datos o tipos de datos. | `Table < UserData` |
 | `{ ruta }` | **Inyección** | Inyecta archivos o contexto existente. | `{ ./utils.ts }` |
+| `( cond ) -> A : B` | **Condicional** | Renderizado condicional. | `( ?auth ) -> Home : Login` |
+| `[paginate:N]` | **Paginación** | Paginación nativa en elementos con `<`. | `Table < User [paginate:20]` |
+| `[new]` | **Nuevo** | Marca un elemento recién añadido. | `Button [new]` |
+| `[locked]` | **Protegido** | No modificar ni regenerar. | `Navbar [locked]` |
+| `[animate:]` | **Animación** | Animación de entrada/salida. | `[animate: fade-in, duration: 200ms]` |
+| `[hover:]` | **Hover** | Estilos en hover o foco. | `[hover: scale-105]` |
+| `[a11y:]` | **Accesibilidad** | Atributos ARIA. | `[a11y: aria-label="Cerrar"]` |
+| `[inherit:siblings]` | **Herencia** | Hereda estilo de los hermanos. | `Button [new, inherit:siblings]` |
+| `[cascade:children]` | **Cascada** | Aplica estilos del padre a los hijos. | `Section [cascade:children]` |
+| `[position:move-to:N]` | **Mover** | Mueve el elemento a la posición N. | `[position:move-to:1]` |
 
 ---
 
 ## 3. Orquestadores
 
-### 🎨 Frontend
+### 🎨 Frontend — Estructura
 - `Page`: Una pantalla o vista completa.
 - `Layout`: Envoltorio estructural reutilizable.
 - `Section`: Un bloque temático dentro de una página.
 - `Store`: Estado global (Zustand/Redux/Pinia).
 - `Type`: Interfaces o tipos de TypeScript.
+- `Create`: Crea archivos en disco.
+
+### 🎨 Frontend — Componentes UI
+- `Card`: Contenedor de información.
+- `Button`: Elemento interactivo.
+- `Text`: Contenido textual.
+- `Image`: Elemento visual.
+- `Input`: Campo de entrada.
+- `Badge`: Etiqueta de estado.
+- `Nav` / `Navbar`: Navegación.
+- `Header`: Cabecera de página.
+- `Grid`: Layout en cuadrícula.
+- `List`: Lista de elementos.
+- `Form`: Formulario interactivo.
+- `Table`: Tabla de datos.
+- `Chart`: Visualización de datos.
+- `Modal`: Diálogo modal.
+- `Select`: Selector desplegable.
+- `Skeleton`: Placeholder de carga.
+- `Stack`: Apilamiento vertical/horizontal.
+- `Field`: Campo de formulario con label.
 
 ### ⚙️ Backend
 - `Model`: Definición de entidad de base de datos.
+- `Entity`: Campo de un modelo.
+- `Index`: Índice de base de datos.
 - `Controller`: Agrupación de recursos de API.
 - `Router`: Organización de rutas anidadas.
 - `Endpoint`: Ruta de API específica.
@@ -76,7 +113,7 @@ Controller CuentaController
 
 ---
 
-## 5. Operadores v4.0.1 — Nuevos en esta versión
+## 5. Extensiones del Protocolo — Referencia Detallada
 
 ### 5.1 Manejo de Errores — `!error:`
 

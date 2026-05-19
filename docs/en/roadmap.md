@@ -28,10 +28,10 @@ Released: May 2026
 
 - Library-First architecture (`core/`, `context/`, `cli/`)
 - Defensive security: 500KB limit, 2000 lines, null bytes, string-aware tokenizer
-- 90 tests, suite in ~1 second
+- 159 tests, suite in ~1 second
 - Public API: `validateNexus()`, `buildSystemPrompt()`, `createDefaultConfig()`
 - Multi-provider support: GPT, Gemini, and major LLMs
-- CLI: `nexus init`, `nexus validate`
+- CLI: `nexus init`
 
 ### v4.1.0 — Protocol Extensions ✅
 
@@ -44,18 +44,43 @@ Released: May 2026
 - `docs/` folder with grammar, operators, examples, roadmap, RFC template
 - `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `CHANGELOG.md`
 
+### v4.1.1 — Quality ✅
+
+Released: May 2026
+
+- PascalCase orchestrator validation against the full known set
+- UI orchestrator expansion (`Card`, `Button`, `Text`, `Image`, `Input`, etc.)
+- Deep merge in `createDefaultConfig` — partial overrides don't lose sibling defaults
+- `NEXUS_VERSION` as single source of truth in `grammar.ts`
+- Escaped quotes in strings (`\"`, `\'`) without false positives
+
+### v4.1.2 — Security ✅
+
+Released: May 2026
+
+- Block control characters U+0001–U+001F before processing
+- Per-line bracket balance validation (must open and close on the same line)
+
+### v4.2.0 — Assertion Operator ✅
+
+Released: May 2026
+
+- `!!` operator for declaring explicit preconditions before `=>` actions
+- Two forms: `!! "description"` (semantic guard) and `!! expression` (logical guard)
+- 8 new tests covering all assertion operator cases
+
+### v4.3.0 — Unified `nexus init` ✅
+
+Released: May 2026
+
+- `nexus init` redesigned — asks which AI the developer uses, generates two files automatically
+- Skills architecture: `skills/base/` (neutral grammar) + `skills/{ai}/` (AI-specific complement)
+- Compatible with Claude Code, Cursor, ChatGPT, Gemini, and any AI
+- Removed commands: `nexus validate`, `nexus install`, `nexus context`
+
 ---
 
 ## Upcoming Versions
-
-### v4.2.0 — Community Driven
-
-No fixed date — released when enough approved RFCs accumulate.
-
-Possible inclusions (subject to RFC approval):
-- Protocol extensions proposed by the community
-- Support for new industries based on real adoption
-- Validator improvements based on reported errors
 
 ### v4.5.0 — Semantic Engine
 

@@ -52,6 +52,10 @@ Drawer #right ~open:CartStore.isOpen
         Button "Finalizar compra" #primary #w-full
           [animate: pulse, trigger: hover]
           [a11y: aria-label="Proceder al checkout"]
+          !! CartStore.isEmpty === false
           => API.post(/orders) -> /checkout
+            !error:401 -> /auth/login
+            !error:422 -> /checkout?error=validacion
+            !error:* -> /checkout?error=general
         Button "Vaciar carrito" #ghost #w-full #mt-2
           => CartStore.clearCart()
