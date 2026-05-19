@@ -21,6 +21,7 @@ NEXUS se basa en la indentación (2 espacios). Cada línea representa un **Orque
 | `@Auth` | **Seguridad** | Requisitos de autenticación. | `@Auth[mode:jwt]` |
 | `@RateLimit` | **Rate Limiting** | Limita peticiones por ventana de tiempo. | `@RateLimit[100/min]` |
 | `@install` | **Instalador JIT** | Instala una dependencia al declararla. | `@install axios` |
+| `@install-dev` | **Dependencia Dev JIT** | Instala una dependencia de desarrollo. | `@install-dev typescript` |
 | `#` | **Estilo** | Tokens de diseño del DNA del proyecto. | `#glass #primary` |
 | `$` | **Var DNA** | Constantes globales o valores de config. | `$primary-color` |
 | `~` | **Estado Local** | Variables reactivas (useState/Signals). | `~isOpen:false` |
@@ -113,7 +114,7 @@ Controller CuentaController
 
 ---
 
-## 5. Extensiones del Protocolo — Referencia Detallada
+## 5. Operadores v4.3.0
 
 ### 5.1 Manejo de Errores — `!error:`
 
