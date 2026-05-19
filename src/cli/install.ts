@@ -4,6 +4,10 @@ import chalk from 'chalk'
 import ora from 'ora'
 import { execSync } from 'child_process'
 import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 export function detectPackageManager(cwd: string): 'npm' | 'yarn' | 'pnpm' {
   if (fs.existsSync(path.join(cwd, 'pnpm-lock.yaml'))) return 'pnpm'
@@ -228,13 +232,33 @@ export async function installDependencies(file: string, options: { dryRun?: bool
   }
 }
 
+export function installSkill(skillName: string): void {
+  const skillSource = path.join(__dirname, '../../skills', skillName, 'SKILL.md')
+  const skillDest = path.join(process.cwd(), '.claude', 'skills', 'nexus', 'SKILL.md')
+
+  if (!fs.existsSync(skillSource)) {
+    console.error(chalk.red(`✗ Skill "${skillName}" not found`))
+    process.exit(1)
+  }
+
+  fs.mkdirSync(path.dirname(skillDest), { recursive: true })
+  fs.copyFileSync(skillSource, skillDest)
+  console.log(chalk.green(`✓ Skill "${skillName}" installed at ${skillDest}`))
+}
+
 export function installCommand(): Command {
   return new Command('install')
     .description('Install dependencies required by a specific .nexus file or scan the workspace JIT')
     .argument('[file]', '.nexus file to parse and install dependencies for (optional)')
     .option('--dry-run', 'List dependencies that would be installed without installing them')
+    .option('--skill <name>', 'Install a NEXUS skill for an AI editor (e.g. claude-code)')
     .action(async (file: string | undefined, options) => {
       const cwd = process.cwd()
+
+      if (options.skill) {
+        installSkill(options.skill)
+        return
+      }
 
       if (file) {
         await installDependencies(file, options)

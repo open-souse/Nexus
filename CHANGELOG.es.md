@@ -13,6 +13,16 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ---
 
+## [4.3.0] — 2026-05-19
+
+### Añadido
+- **Skill oficial para Claude Code** — `skills/claude-code/SKILL.md` enseña a Claude Code el protocolo NEXUS completo: gramática, todos los operadores incluyendo `!!`, ejemplos completos y reglas de flujo de trabajo. Desarrollo blueprint-first enforced.
+- **`nexus install --skill <nombre>`** — nuevo flag que instala una skill de NEXUS en `.claude/skills/nexus/SKILL.md` dentro del proyecto actual. Uso: `nexus install --skill claude-code`.
+- **Función `installSkill()`** exportada desde `src/cli/install.ts` para instalación programática de skills.
+- **Directorio `skills/`** añadido al array `files` del paquete npm — los archivos de skill se distribuyen con el paquete.
+
+---
+
 ## [4.2.0] — 2026-05-16
 
 ### Añadido

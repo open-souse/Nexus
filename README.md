@@ -272,6 +272,20 @@ El editor no necesita entender NEXUS — solo necesita llamar a `validateNexus()
 
 ---
 
+## Skills para IA
+
+### Claude Code
+
+```bash
+nexus install --skill claude-code
+```
+
+Instala la skill oficial de NEXUS en Claude Code. A partir de ese momento Claude Code genera blueprints NEXUS antes de cualquier código.
+
+El archivo se instala en `.claude/skills/nexus/SKILL.md` dentro de tu proyecto. Claude Code lo carga automáticamente en cada sesión y aplica el flujo blueprint-first: genera el blueprint, lo valida con `npx nxlang validate`, y solo entonces genera el código.
+
+---
+
 ## Roadmap
 
 - [x] v4.0.0 — Núcleo modular, Library-First, 90 tests, seguridad defensiva
@@ -279,6 +293,7 @@ El editor no necesita entender NEXUS — solo necesita llamar a `validateNexus()
 - [x] v4.1.1 — Calidad: validación de orquestadores, deep merge, API consistency
 - [x] v4.1.2 — Seguridad: caracteres de control, validación de brackets por línea
 - [x] v4.2.0 — Operador de aserción (`!!`) — precondiciones explícitas para acciones `=>`
+- [x] v4.3.0 — Skill oficial para Claude Code — `nexus install --skill claude-code`
 - [ ] v4.5.0 — Motor semántico, CLI Doctor (cuando haya demanda real)
 - [ ] SDD — Software Design by Declaration (investigación activa, RFC abierto)
 

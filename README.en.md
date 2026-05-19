@@ -128,6 +128,18 @@ const config = createDefaultConfig({ project: 'my-app', modules: ['frontend'] })
 |---|---|
 | [Prism](https://github.com/open-souse/prism) | AI-native code editor powered by nxlang |
 
+## AI Skills
+
+### Claude Code
+
+```bash
+nexus install --skill claude-code
+```
+
+Installs the official NEXUS skill into Claude Code. From that point on, Claude Code generates NEXUS blueprints before any code.
+
+The file is installed at `.claude/skills/nexus/SKILL.md` inside your project. Claude Code loads it automatically each session and applies the blueprint-first workflow: generate the blueprint, validate it with `npx nxlang validate`, then generate the code.
+
 ## Roadmap
 
 [See full roadmap](./docs/en/roadmap.md)
@@ -137,6 +149,7 @@ const config = createDefaultConfig({ project: 'my-app', modules: ['frontend'] })
 - [x] v4.1.1 — Quality: orchestrator validation, deep merge, API consistency
 - [x] v4.1.2 — Security: control characters, per-line bracket validation
 - [x] v4.2.0 — Assertion operator (`!!`) — explicit preconditions for `=>` actions
+- [x] v4.3.0 — Official Claude Code skill — `nexus install --skill claude-code`
 - [ ] v4.5.0 — Semantic engine, CLI Doctor (when there's real demand)
 - [ ] SDD — Software Design by Declaration (active research, RFC open)
 
