@@ -5,7 +5,7 @@ import path from 'path'
 import chalk from 'chalk'
 import { buildPrompt } from '../context/builder.js'
 
-export function buildAIComplement(aiName: string): string {
+export function buildAIComplement(_aiName: string): string {
   return `# NEXUS Protocol — Instrucciones para el Asistente
 
 ## Rol
