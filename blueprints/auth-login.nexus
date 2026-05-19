@@ -20,7 +20,14 @@ Page AuthLogin
         ( ?error ) -> Text $errorMsg !danger : null
 
         Button "Iniciar sesión" #primary #w-full ?loading
+          !! "El correo no puede estar vacío"
+          !! "La contraseña debe tener al menos 8 caracteres"
           => API.post(/auth/login) -> /dashboard
+            !error:401 -> /auth/login?error=credenciales
+            !error:403 -> /cuenta-bloqueada
+            !error:429 -> /auth/login?error=demasiados-intentos
+            !error:network -> /auth/login?error=sin-conexion
+            !error:* -> /auth/login?error=general
 
         Link "¿Olvidaste tu contraseña?" #center #text-sm #mt-2 -> /auth/reset
 

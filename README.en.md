@@ -12,7 +12,7 @@
 
 [![npm version](https://img.shields.io/npm/v/nxlang.svg?style=flat-square)](https://www.npmjs.com/package/nxlang)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](./LICENSE)
-[![Tests](https://img.shields.io/badge/tests-154%20passing-brightgreen?style=flat-square)]()
+[![Tests](https://img.shields.io/badge/tests-159%20passing-brightgreen?style=flat-square)]()
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue?style=flat-square)]()
 
 ## The Problem
@@ -115,15 +115,17 @@ const config = createDefaultConfig({ project: 'my-app', modules: ['frontend'] })
 
 ## AI Skills
 
-### Claude Code
+Run `nexus init` to configure NEXUS for your AI tool. It generates two files automatically:
+- `NEXUS.md` — complete protocol grammar reference
+- The AI-specific complement for your tool
 
-```bash
-nexus install --skill claude-code
-```
-
-Installs the official NEXUS skill into Claude Code. From that point on, Claude Code generates NEXUS blueprints before any code.
-
-The file is installed at `.claude/skills/nexus/SKILL.md` inside your project. Claude Code loads it automatically each session and applies the blueprint-first workflow: generate the blueprint, validate it with `npx nxlang validate`, then generate the code.
+| AI | Generated file |
+|---|---|
+| Claude Code | `.claude/skills/nexus/SKILL.md` |
+| Cursor | `.cursorrules` |
+| ChatGPT | `custom-instructions.md` |
+| Gemini | `gemini-context.md` |
+| Other | `AI-INSTRUCTIONS.md` |
 
 ## Roadmap
 

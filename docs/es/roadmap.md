@@ -28,10 +28,10 @@ Lanzado: mayo 2026
 
 - Arquitectura Library-First (`core/`, `context/`, `cli/`)
 - Seguridad defensiva: límite 500KB, 2000 líneas, null bytes, tokenizador consciente de strings
-- 90 tests, suite en ~1 segundo
+- 159 tests, suite en ~1 segundo
 - API pública: `validateNexus()`, `buildSystemPrompt()`, `createDefaultConfig()`
 - Soporte multi-provider: GPT, Gemini y los principales LLMs
-- CLI: `nexus init`, `nexus validate`
+- CLI: `nexus init`
 
 ### v4.1.0 — Extensiones de Protocolo ✅
 
@@ -44,18 +44,43 @@ Lanzado: mayo 2026
 - Carpeta `docs/` con gramática, operadores, ejemplos, roadmap, plantilla RFC
 - `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `CHANGELOG.md`
 
+### v4.1.1 — Calidad ✅
+
+Lanzado: mayo 2026
+
+- Validación de orquestadores PascalCase contra el conjunto completo conocido
+- Expansión de orquestadores UI (`Card`, `Button`, `Text`, `Image`, `Input`, etc.)
+- Merge profundo en `createDefaultConfig` — sobrescrituras parciales no pierden defaults
+- `NEXUS_VERSION` como fuente única de verdad en `grammar.ts`
+- Comillas escapadas en strings (`\"`, `\'`) sin falsos positivos
+
+### v4.1.2 — Seguridad ✅
+
+Lanzado: mayo 2026
+
+- Bloqueo de caracteres de control U+0001–U+001F antes del procesamiento
+- Validación de balance de brackets por línea (abre y cierra en la misma línea)
+
+### v4.2.0 — Operador de Aserción ✅
+
+Lanzado: mayo 2026
+
+- Operador `!!` para declarar precondiciones explícitas antes de acciones `=>`
+- Dos formas: `!! "descripción"` (guard semántico) y `!! expresión` (guard lógico)
+- 8 nuevos tests cubriendo todos los casos del operador
+
+### v4.3.0 — `nexus init` Unificado ✅
+
+Lanzado: mayo 2026
+
+- `nexus init` rediseñado — pregunta qué IA usa el developer y genera dos archivos automáticamente
+- Arquitectura de skills: `skills/base/` (gramática neutra) + `skills/{ai}/` (complemento específico)
+- Compatible con Claude Code, Cursor, ChatGPT, Gemini y cualquier IA
+- Comandos eliminados: `nexus validate`, `nexus install`, `nexus context`
+
 ---
 
 ## Próximas Versiones
-
-### v4.2.0 — Guiado por la Comunidad
-
-Sin fecha fija — se lanza cuando haya suficientes propuestas RFC aprobadas.
-
-Posibles includes (sujeto a aprobación RFC):
-- Extensiones de protocolo propuestas por la comunidad
-- Soporte para nuevas industrias según adopción real
-- Mejoras al validador basadas en errores reportados
 
 ### v4.5.0 — Motor Semántico
 

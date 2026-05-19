@@ -7,6 +7,7 @@ Page Dashboard
   Layout SidebarMain
     Sidebar #dark [ ~collapsed: false ] | [ hidden: ?collapsed ]
       Button "Toggle" => ~collapsed: !~collapsed
+        !error:* -> /error
       NavGroup "MAIN"
         NavItem "Overview" #active -> /dash
         NavItem "Analytics" -> /dash/stats
@@ -30,7 +31,9 @@ Page Dashboard
           ]
         
         Section "Recent Activity" #mt-10
-          Table < ActivityLogs [limit:10]
+          Table < ActivityLogs [paginate:10]
+            !error:500 -> /error/servidor
+            !error:network -> /sin-conexion
             Col "User" -> user.name
             Col "Action" -> action.type
             Col "Date" -> format(date)

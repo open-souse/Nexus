@@ -5,7 +5,53 @@ import path from 'path'
 import chalk from 'chalk'
 import { buildPrompt } from '../context/builder.js'
 
-export function buildAIComplement(_aiName: string): string {
+export function buildAIComplement(lang: 'es' | 'en' = 'es'): string {
+  if (lang === 'en') {
+    return `# NEXUS Protocol — Assistant Instructions
+
+## Role
+
+The assistant is a software architect that uses the NEXUS protocol
+to communicate precisely with the developer. It is not a natural language
+instruction executor — it is an architect that understands structured
+intentions and converts them into production code.
+
+## Required workflow
+
+When the developer writes a NEXUS blueprint, the assistant must:
+
+1. Read the complete blueprint
+2. Identify the declared stack (@React, @NestJS, etc.)
+3. Process preconditions (!!) before any action
+4. Generate the exact code that the blueprint describes
+5. If there is @install, include the dependency installation in the output
+6. Do not improvise — only build what the blueprint declares
+
+## Rules
+
+ALWAYS:
+- Generate code that exactly matches the blueprint
+- Respect !! preconditions as executable guards
+- Handle declared errors with !error:code
+- Use the stack declared with @ — do not suggest alternatives
+- If the blueprint is ambiguous, ask before generating
+
+NEVER:
+- Generate code without a NEXUS blueprint as the base
+- Ignore !! preconditions
+- Change the declared stack out of personal preference
+- Add dependencies not declared in the blueprint
+- Modify parts of the code not included in the blueprint
+
+## The protocol is the source of truth
+
+The NEXUS blueprint is the contract between the developer and the assistant.
+What is in the blueprint gets built. What is not in it, does not get touched.
+
+---
+*NEXUS Protocol v4.3.0 — nexuslang.dev*`
+  }
+
   return `# NEXUS Protocol — Instrucciones para el Asistente
 
 ## Rol
@@ -51,12 +97,12 @@ Lo que está en el blueprint se construye. Lo que no está, no se toca.
 *NEXUS Protocol v4.3.0 — nexuslang.dev*`
 }
 
-export function generateNexusMd(): string {
-  return buildPrompt({ modules: ['frontend', 'backend', 'testing'], lang: 'es' })
+export function generateNexusMd(lang: 'es' | 'en' = 'es'): string {
+  return buildPrompt({ modules: ['frontend', 'backend', 'testing'], lang })
 }
 
-function generateAIComplement(aiTool: string, aiName: string, cwd: string): void {
-  const content = buildAIComplement(aiName)
+function generateAIComplement(aiTool: string, aiName: string, cwd: string, lang: 'es' | 'en' = 'es'): void {
+  const content = buildAIComplement(lang)
 
   switch (aiTool) {
     case 'claude-code': {
@@ -108,16 +154,26 @@ export const initCommand = new Command('init')
       }
     }
 
+    const { lang } = await inquirer.prompt([{
+      type: 'list',
+      name: 'lang',
+      message: 'Language / Idioma:',
+      choices: [
+        { name: 'Español', value: 'es' },
+        { name: 'English', value: 'en' }
+      ]
+    }])
+
     const { aiTool } = await inquirer.prompt([{
       type: 'list',
       name: 'aiTool',
-      message: '¿Qué IA usas para programar?',
+      message: lang === 'en' ? 'Which AI do you use for coding?' : '¿Qué IA usas para programar?',
       choices: [
         { name: 'Claude Code', value: 'claude-code' },
         { name: 'Cursor', value: 'cursor' },
         { name: 'ChatGPT / Codex', value: 'chatgpt' },
         { name: 'Gemini', value: 'gemini' },
-        { name: 'Otra', value: 'other' }
+        { name: lang === 'en' ? 'Other' : 'Otra', value: 'other' }
       ]
     }])
 
@@ -126,13 +182,13 @@ export const initCommand = new Command('init')
       const { customName } = await inquirer.prompt([{
         type: 'input',
         name: 'customName',
-        message: '¿Cómo se llama tu IA?',
-        default: 'Mi IA'
+        message: lang === 'en' ? 'What is your AI called?' : '¿Cómo se llama tu IA?',
+        default: lang === 'en' ? 'My AI' : 'Mi IA'
       }])
       aiName = customName
     }
 
-    const nexusMdContent = generateNexusMd()
+    const nexusMdContent = generateNexusMd(lang)
     fs.writeFileSync(
       path.join(process.cwd(), 'NEXUS.md'),
       nexusMdContent,
@@ -140,9 +196,15 @@ export const initCommand = new Command('init')
     )
     console.log(chalk.green('✓ NEXUS.md generado — gramática completa del protocolo'))
 
-    generateAIComplement(aiTool, aiName, process.cwd())
+    generateAIComplement(aiTool, aiName, process.cwd(), lang)
 
-    console.log(chalk.cyan('\n⬡ NEXUS listo. Tu IA ahora entiende el protocolo.\n'))
-    console.log(chalk.white('Próximo paso: escribe tu primer blueprint .nexus'))
-    console.log(chalk.dim('  Ejemplo: @React @Tailwind\n  Page Dashboard\n    Section Hero #glass\n'))
+    if (lang === 'en') {
+      console.log(chalk.cyan('\n⬡ NEXUS ready. Your AI now understands the protocol.\n'))
+      console.log(chalk.white('Next step: write your first .nexus blueprint'))
+      console.log(chalk.dim('  Example: @React @Tailwind\n  Page Dashboard\n    Section Hero #glass\n'))
+    } else {
+      console.log(chalk.cyan('\n⬡ NEXUS listo. Tu IA ahora entiende el protocolo.\n'))
+      console.log(chalk.white('Próximo paso: escribe tu primer blueprint .nexus'))
+      console.log(chalk.dim('  Ejemplo: @React @Tailwind\n  Page Dashboard\n    Section Hero #glass\n'))
+    }
   })
