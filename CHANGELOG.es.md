@@ -16,10 +16,19 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 ## [4.3.0] — 2026-05-19
 
 ### Añadido
-- **Skill oficial para Claude Code** — `skills/claude-code/SKILL.md` enseña a Claude Code el protocolo NEXUS completo: gramática, todos los operadores incluyendo `!!`, ejemplos completos y reglas de flujo de trabajo. Desarrollo blueprint-first enforced.
-- **`nexus install --skill <nombre>`** — nuevo flag que instala una skill de NEXUS en `.claude/skills/nexus/SKILL.md` dentro del proyecto actual. Uso: `nexus install --skill claude-code`.
-- **Función `installSkill()`** exportada desde `src/cli/install.ts` para instalación programática de skills.
-- **Directorio `skills/`** añadido al array `files` del paquete npm — los archivos de skill se distribuyen con el paquete.
+- **Directorio `skills/`** — distribuido con el paquete npm. Estructura: `skills/base/` (gramática neutral), `skills/claude-code/`, `skills/cursor/`, `skills/chatgpt/`.
+- **`buildAIComplement(aiName)`** — función pura exportada que genera el conjunto de instrucciones neutras para cualquier asistente IA.
+- **`generateNexusMd()`** — función exportada que produce la referencia completa de gramática con todos los módulos activos.
+
+### Cambiado
+- **`nexus init` rediseñado** — ahora pregunta qué IA usa el developer y genera dos archivos automáticamente: `NEXUS.md` (gramática completa del protocolo, neutral) y el complemento específico para la IA (`.claude/skills/nexus/SKILL.md` para Claude Code, `.cursorrules` para Cursor, `custom-instructions.md` para ChatGPT, `gemini-context.md` para Gemini, `AI-INSTRUCTIONS.md` para otras).
+- **`skills/claude-code/SKILL.md` corregido** — añadidos los 13 operadores faltantes (`@modify`, `??`, `{ }`, `|`, `@RateLimit`, `[animate:]`, `[hover:]`, `[a11y:]`, `[locked]`, `[new]`, `[inherit:siblings]`, `[cascade:children]`, `[position:move-to:N]`); añadidos orquestadores faltantes (`Store`, `Type`, `Create`); referencias a IAs específicas reemplazadas por "El asistente"; comando inexistente `nexus grammar` eliminado.
+- **Arquitectura de skills** — dividida en gramática base neutral (`skills/base/SKILL.md`) + complemento específico por herramienta IA.
+
+### Eliminado
+- **`nexus validate`** — eliminado; la función `validateNexus()` permanece en `src/core/validator.ts` con cobertura de tests completa.
+- **`nexus install`** — eliminado; las declaraciones `@install` en el blueprint son suficientes.
+- **`nexus context`** — fusionado en `nexus init`.
 
 ---
 

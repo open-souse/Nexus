@@ -1,51 +1,57 @@
-import { describe, it, expect, afterEach } from 'vitest'
-import { existsSync, unlinkSync, writeFileSync } from 'fs'
-import fs from 'fs-extra'
+import { describe, it, expect } from 'vitest'
+import { buildAIComplement, generateNexusMd } from '../../src/cli/init.js'
 
-describe('nexus init', () => {
-  const configPath = './nexus.config.json'
-
-  afterEach(() => {
-    if (existsSync(configPath)) unlinkSync(configPath)
+describe('nexus init — NEXUS.md generation', () => {
+  it('generates valid NEXUS notation reference', () => {
+    const content = generateNexusMd()
+    expect(content).toContain('NEXUS NOTATION')
+    expect(content).toContain('NEXUS SYNTAX REFERENCE')
   })
 
-  it('does not overwrite nexus.config.json if it already exists', () => {
-    const original = { lang: 'en', framework: 'vue-ts' }
-    writeFileSync(configPath, JSON.stringify(original))
-
-    // File already exists — init should not overwrite it
-    const content = fs.readJsonSync(configPath)
-    expect(content.framework).toBe('vue-ts')
+  it('includes all three modules in generated content', () => {
+    const content = generateNexusMd()
+    expect(content).toContain('EXAMPLES')
+    expect(content).toContain('Test')
+    expect(content).toContain('Model')
+    expect(content).toContain('Card #glass')
   })
 
-  it('generated config has the correct structure (v4.0 Full-Stack)', () => {
-    const config = {
-      lang: 'en',
-      modules: ['frontend', 'backend'],
-      framework: 'react-ts',
-      styling: 'tailwind',
-      output: './src/components',
-      backend: {
-        framework: 'nestjs',
-        database: 'postgresql',
-        orm: 'prisma'
-      },
-      tokens: {
-        primary: '#2563eb',
-        secondary: '#64748b',
-        danger: '#ef4444',
-        success: '#22c55e',
-        radius: '8px',
-        font: "'Inter', sans-serif"
-      },
-      icons: { library: 'lucide-react' }
-    }
-    writeFileSync(configPath, JSON.stringify(config, null, 2))
-    const loaded = fs.readJsonSync(configPath)
-    expect(loaded.lang).toBe('en')
-    expect(loaded.modules).toContain('backend')
-    expect(loaded.backend.framework).toBe('nestjs')
-    expect(loaded.tokens.primary).toBe('#2563eb')
-    expect(loaded.icons.library).toBe('lucide-react')
+  it('includes grammar operators in generated content', () => {
+    const content = generateNexusMd()
+    expect(content).toContain('=>')
+    expect(content).toContain('->')
+    expect(content).toContain('!!')
+    expect(content).toContain('!error:')
+    expect(content).toContain('[paginate:')
+  })
+})
+
+describe('nexus init — AI complement generation', () => {
+  it('does not mention any specific AI by name', () => {
+    const content = buildAIComplement('Gemini')
+    expect(content).not.toContain('Claude Code')
+    expect(content).not.toContain('Cursor')
+    expect(content).not.toContain('ChatGPT')
+  })
+
+  it('contains required behavioral rules', () => {
+    const content = buildAIComplement('TestAI')
+    expect(content).toContain('SIEMPRE')
+    expect(content).toContain('NUNCA')
+    expect(content).toContain('!!')
+    expect(content).toContain('!error')
+  })
+
+  it('mentions the protocol as source of truth', () => {
+    const content = buildAIComplement('TestAI')
+    expect(content).toContain('fuente de verdad')
+    expect(content).toContain('nexuslang.dev')
+  })
+
+  it('enforces blueprint-first workflow in rules', () => {
+    const content = buildAIComplement('TestAI')
+    expect(content).toContain('blueprint NEXUS')
+    expect(content).toContain('@install')
+    expect(content).toContain('@React')
   })
 })

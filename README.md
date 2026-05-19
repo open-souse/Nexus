@@ -107,36 +107,20 @@ npm install nxlang
 
 ---
 
-## Comandos del CLI
+## CLI
 
 ```bash
-# Inicializa NEXUS en tu proyecto
-# Crea nexus.config.json (el DNA de tu proyecto) y NEXUS.md (archivo de contexto para la IA)
+npm install -g nxlang
 nexus init
-
-# Valida tus archivos .nexus — sin efectos secundarios
-nexus validate ./src/components/dashboard.nexus
-
-# Valida + instala dependencias si la validación pasa (opt-in)
-nexus validate ./src/components/dashboard.nexus --install
-
-# Ver qué se instalaría sin instalar nada
-nexus install --dry-run
-
-# Instalar dependencias de un archivo .nexus
-nexus install archivo.nexus
-
-# Instalar todas las dependencias detectadas en el directorio
-nexus install
 ```
 
-### Declaración explícita en el archivo
+Un solo comando configura NEXUS para tu proyecto y tu IA.
 
-```nexus
-@install lodash
-@install-dev typescript
-@install -D eslint
-```
+`nexus init` genera dos archivos automáticamente:
+- `NEXUS.md` — gramática completa del protocolo
+- El archivo complementario para tu IA (skill, .cursorrules, custom instructions, etc.)
+
+Compatible con **Claude Code**, **Cursor**, **ChatGPT**, **Gemini** y cualquier IA.
 
 ---
 
@@ -198,28 +182,9 @@ Controller PedidoController
 
 ---
 
-## DNA del Proyecto — nexus.config.json
+## NEXUS.md — El contexto de tu IA
 
-`nexus init` crea el archivo DNA de tu proyecto — una configuración que le dice a la IA exactamente qué stack estás usando antes de leer una sola línea de NEXUS.
-
-```json
-{
-  "project": "mi-app",
-  "modules": ["frontend", "backend"],
-  "frontend": {
-    "framework": "React",
-    "styling": "Tailwind",
-    "stateManager": "Zustand"
-  },
-  "backend": {
-    "framework": "Express",
-    "database": "MongoDB",
-    "auth": "JWT"
-  }
-}
-```
-
-A partir de esta configuración, NEXUS genera `NEXUS.md` — el archivo de contexto que adjuntas a cualquier sesión de IA. El modelo ahora conoce tu stack sin que tengas que explicarlo.
+`nexus init` genera `NEXUS.md` — la referencia completa del protocolo que adjuntas a cualquier sesión de IA. El modelo ahora conoce el lenguaje sin que tengas que explicarlo.
 
 ---
 
@@ -274,15 +239,15 @@ El editor no necesita entender NEXUS — solo necesita llamar a `validateNexus()
 
 ## Skills para IA
 
-### Claude Code
+`nexus init` detecta tu herramienta y genera el archivo correcto:
 
-```bash
-nexus install --skill claude-code
-```
-
-Instala la skill oficial de NEXUS en Claude Code. A partir de ese momento Claude Code genera blueprints NEXUS antes de cualquier código.
-
-El archivo se instala en `.claude/skills/nexus/SKILL.md` dentro de tu proyecto. Claude Code lo carga automáticamente en cada sesión y aplica el flujo blueprint-first: genera el blueprint, lo valida con `npx nxlang validate`, y solo entonces genera el código.
+| IA | Archivo generado |
+|---|---|
+| Claude Code | `.claude/skills/nexus/SKILL.md` |
+| Cursor | `.cursorrules` |
+| ChatGPT | `custom-instructions.md` |
+| Gemini | `gemini-context.md` |
+| Otra | `AI-INSTRUCTIONS.md` |
 
 ---
 
@@ -293,7 +258,7 @@ El archivo se instala en `.claude/skills/nexus/SKILL.md` dentro de tu proyecto. 
 - [x] v4.1.1 — Calidad: validación de orquestadores, deep merge, API consistency
 - [x] v4.1.2 — Seguridad: caracteres de control, validación de brackets por línea
 - [x] v4.2.0 — Operador de aserción (`!!`) — precondiciones explícitas para acciones `=>`
-- [x] v4.3.0 — Skill oficial para Claude Code — `nexus install --skill claude-code`
+- [x] v4.3.0 — `nexus init` unificado — configura NEXUS para cualquier IA en un comando
 - [ ] v4.5.0 — Motor semántico, CLI Doctor (cuando haya demanda real)
 - [ ] SDD — Software Design by Declaration (investigación activa, RFC abierto)
 

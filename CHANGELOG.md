@@ -16,10 +16,19 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [4.3.0] — 2026-05-19
 
 ### Added
-- **Official Claude Code skill** — `skills/claude-code/SKILL.md` teaches Claude Code the full NEXUS protocol: grammar, all operators including `!!`, complete examples, and workflow rules. Blueprint-first development enforced.
-- **`nexus install --skill <name>`** — new flag that installs a NEXUS skill into `.claude/skills/nexus/SKILL.md` in the current project. Usage: `nexus install --skill claude-code`.
-- **`installSkill()`** exported function in `src/cli/install.ts` for programmatic skill installation.
-- **`skills/`** directory added to npm package `files` array — skill files ship with the package.
+- **`skills/` directory** — ships with the npm package. Structure: `skills/base/` (neutral grammar), `skills/claude-code/`, `skills/cursor/`, `skills/chatgpt/`.
+- **`buildAIComplement(aiName)`** — exported pure function that generates the AI-neutral instruction set for any assistant.
+- **`generateNexusMd()`** — exported function that produces the full grammar reference from all active modules.
+
+### Changed
+- **`nexus init` redesigned** — now asks which AI the developer uses and generates two files automatically: `NEXUS.md` (full protocol grammar, AI-neutral) and the AI-specific complement (`.claude/skills/nexus/SKILL.md` for Claude Code, `.cursorrules` for Cursor, `custom-instructions.md` for ChatGPT, `gemini-context.md` for Gemini, `AI-INSTRUCTIONS.md` for others).
+- **`skills/claude-code/SKILL.md` fixed** — all 13 missing operators added (`@modify`, `??`, `{ }`, `|`, `@RateLimit`, `[animate:]`, `[hover:]`, `[a11y:]`, `[locked]`, `[new]`, `[inherit:siblings]`, `[cascade:children]`, `[position:move-to:N]`); missing orchestrators added (`Store`, `Type`, `Create`); references to specific AI names replaced with neutral "El asistente"; non-existent `nexus grammar` command removed.
+- **Skills architecture** — split into base neutral grammar (`skills/base/SKILL.md`) + AI-specific complement per tool.
+
+### Removed
+- **`nexus validate`** — eliminated; the core `validateNexus()` function remains in `src/core/validator.ts` and is fully tested.
+- **`nexus install`** — eliminated; `@install` declarations in the blueprint are sufficient.
+- **`nexus context`** — merged into `nexus init`.
 
 ---
 
