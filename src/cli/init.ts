@@ -1,196 +1,148 @@
 import { Command } from 'commander'
-import fs from 'fs-extra'
-import chalk from 'chalk'
 import inquirer from 'inquirer'
+import fs from 'fs'
+import path from 'path'
+import chalk from 'chalk'
+import { buildPrompt } from '../context/builder.js'
 
-function isValidHex(value: string): boolean {
-  return /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(value)
+export function buildAIComplement(aiName: string): string {
+  return `# NEXUS Protocol — Instrucciones para el Asistente
+
+## Rol
+
+El asistente es un arquitecto de software que usa el protocolo NEXUS
+para comunicarse con precisión con el developer. No es un ejecutor de
+instrucciones en lenguaje natural — es un arquitecto que entiende
+intenciones estructuradas y las convierte en código de producción.
+
+## Flujo obligatorio
+
+Cuando el developer escriba un blueprint NEXUS, el asistente debe:
+
+1. Leer el blueprint completo
+2. Identificar el stack declarado (@React, @NestJS, etc.)
+3. Procesar las precondiciones (!!) antes de cualquier acción
+4. Generar el código exacto que describe el blueprint
+5. Si hay @install, incluir la instalación de esa dependencia en el output
+6. No improvisar — solo construir lo que el blueprint declara
+
+## Reglas
+
+SIEMPRE:
+- Generar código que corresponda exactamente al blueprint
+- Respetar las precondiciones !! como guards ejecutables
+- Manejar los errores declarados con !error:código
+- Usar el stack declarado con @ — no sugerir alternativas
+- Si el blueprint es ambiguo, preguntar antes de generar
+
+NUNCA:
+- Generar código sin un blueprint NEXUS como base
+- Ignorar las precondiciones !!
+- Cambiar el stack declarado por preferencia propia
+- Agregar dependencias no declaradas en el blueprint
+- Modificar partes del código no incluidas en el blueprint
+
+## El protocolo es la fuente de verdad
+
+El blueprint NEXUS es el contrato entre el developer y el asistente.
+Lo que está en el blueprint se construye. Lo que no está, no se toca.
+
+---
+*NEXUS Protocol v4.3.0 — nexuslang.dev*`
 }
 
-async function runInit(lang: 'es' | 'en') {
-  const t = lang === 'es' ? {
-    welcome: '\nBienvenido a NEXUS — Configuremos el DNA de tu proyecto\n',
-    framework: '¿Qué framework usas?',
-    styling: '¿Qué sistema de estilos usas?',
-    primary: 'Color primario (ej: #2563eb):',
-    secondary: 'Color secundario:',
-    danger: 'Color de peligro/error:',
-    icons: '¿Qué librería de iconos usas?',
-    output: '¿Dónde guardar los componentes generados?',
-    success: '\nnexus.config.json creado exitosamente',
-    hint: 'Puedes editarlo en cualquier momento para ajustar tu DNA',
-    next: '\nSiguiente paso: ejecuta '
-  } : {
-    welcome: '\nWelcome to NEXUS — Let\'s configure your project DNA\n',
-    framework: 'Which framework do you use?',
-    styling: 'Which styling system do you use?',
-    primary: 'Primary color (e.g. #2563eb):',
-    secondary: 'Secondary color:',
-    danger: 'Danger/error color:',
-    icons: 'Which icon library do you use?',
-    output: 'Where should generated components be saved?',
-    success: '\nnexus.config.json created successfully',
-    hint: 'You can edit it anytime to adjust your DNA',
-    next: '\nNext step: run '
-  }
+export function generateNexusMd(): string {
+  return buildPrompt({ modules: ['frontend', 'backend', 'testing'], lang: 'es' })
+}
 
-  console.log(chalk.cyan(t.welcome))
+function generateAIComplement(aiTool: string, aiName: string, cwd: string): void {
+  const content = buildAIComplement(aiName)
 
-  const answers = await inquirer.prompt([
-    {
-      type: 'list',
-      name: 'lang',
-      message: lang === 'es' ? '¿En qué idioma quieres que NEXUS te hable?' : 'Which language should NEXUS use?',
-      choices: [{ name: 'Español', value: 'es' }, { name: 'English', value: 'en' }],
-      default: lang
-    },
-    {
-      type: 'checkbox',
-      name: 'modules',
-      message: lang === 'es' ? '¿Qué módulos deseas activar?' : 'Which modules do you want to activate?',
-      choices: [
-        { name: 'Frontend (React/Vue/Next)', value: 'frontend', checked: true },
-        { name: 'Backend (API/DB)', value: 'backend' },
-        { name: 'Testing (Vitest/Jest/Cypress)', value: 'testing' },
-        { name: lang === 'es' ? 'Diseño (System Tokens)' : 'Design (System Tokens)', value: 'design' }
-      ]
-    },
-    {
-      type: 'list',
-      name: 'framework',
-      message: t.framework,
-      choices: ['react-ts', 'react-js', 'vue-ts', 'vue-js', 'svelte', 'next-ts', 'next-js'],
-      when: (a) => a.modules.includes('frontend')
-    },
-    {
-      type: 'list',
-      name: 'styling',
-      message: t.styling,
-      choices: ['tailwind', 'css-modules', 'styled-components', 'sass', 'none'],
-      when: (a) => a.modules.includes('frontend')
-    },
-    {
-      type: 'list',
-      name: 'backendFramework',
-      message: lang === 'es' ? '¿Qué framework de backend usas?' : 'Which backend framework do you use?',
-      choices: ['express', 'nestjs', 'fastify', 'hono', 'none'],
-      when: (a) => a.modules.includes('backend')
-    },
-    {
-      type: 'list',
-      name: 'database',
-      message: lang === 'es' ? '¿Qué base de datos usas?' : 'Which database do you use?',
-      choices: ['postgresql', 'mongodb', 'mysql', 'sqlite', 'none'],
-      when: (a) => a.modules.includes('backend')
-    },
-    {
-      type: 'list',
-      name: 'orm',
-      message: lang === 'es' ? '¿Qué ORM/ODM usas?' : 'Which ORM/ODM do you use?',
-      choices: ['prisma', 'typeorm', 'drizzle', 'mongoose', 'none'],
-      when: (a) => a.modules.includes('backend')
-    },
-    {
-      type: 'input',
-      name: 'primary',
-      message: t.primary,
-      default: '#2563eb',
-      validate: (input: string) => isValidHex(input) || 'Invalid hex color. Use format #RGB or #RRGGBB (e.g. #6EE7B7)'
-    },
-    {
-      type: 'input',
-      name: 'secondary',
-      message: t.secondary,
-      default: '#64748b',
-      validate: (input: string) => isValidHex(input) || 'Invalid hex color. Use format #RGB or #RRGGBB (e.g. #6EE7B7)'
-    },
-    {
-      type: 'input',
-      name: 'danger',
-      message: t.danger,
-      default: '#ef4444',
-      validate: (input: string) => isValidHex(input) || 'Invalid hex color. Use format #RGB or #RRGGBB (e.g. #6EE7B7)'
-    },
-    {
-      type: 'list',
-      name: 'icons',
-      message: t.icons,
-      choices: ['lucide-react', 'heroicons', 'react-icons', 'none'],
-      when: (a) => a.modules.includes('frontend')
-    },
-    {
-      type: 'list',
-      name: 'testingScope',
-      message: lang === 'es' ? '¿Cuál es el alcance principal de tus tests?' : 'What is the main scope of your tests?',
-      choices: [
-        { name: lang === 'es' ? 'Frontend (UI/Components)' : 'Frontend (UI/Components)', value: 'frontend' },
-        { name: lang === 'es' ? 'Backend (API/Logic)' : 'Backend (API/Logic)', value: 'backend' },
-        { name: lang === 'es' ? 'Full-Stack (Ambos)' : 'Full-Stack (Both)', value: 'full-stack' }
-      ],
-      when: (a) => a.modules.includes('testing')
-    },
-    {
-      type: 'input',
-      name: 'output',
-      message: t.output,
-      default: './src/components'
+  switch (aiTool) {
+    case 'claude-code': {
+      const claudeDir = path.join(cwd, '.claude', 'skills', 'nexus')
+      fs.mkdirSync(claudeDir, { recursive: true })
+      fs.writeFileSync(path.join(claudeDir, 'SKILL.md'), content, 'utf-8')
+      console.log(chalk.green('✓ .claude/skills/nexus/SKILL.md generado — skill para Claude Code'))
+      break
     }
-  ])
-
-  const config = {
-    lang: answers.lang,
-    modules: answers.modules,
-    framework: answers.framework || 'none',
-    styling: answers.styling || 'none',
-    output: answers.output,
-    backend: answers.modules.includes('backend') ? {
-      framework: answers.backendFramework || 'none',
-      database: answers.database || 'none',
-      orm: answers.orm || 'none'
-    } : undefined,
-    testing: answers.modules.includes('testing') ? {
-      scope: answers.testingScope || 'full-stack'
-    } : undefined,
-    tokens: {
-      primary: answers.primary,
-      secondary: answers.secondary,
-      danger: answers.danger,
-      success: '#22c55e',
-      radius: '8px',
-      font: "'Inter', sans-serif"
-    },
-    icons: {
-      library: answers.icons || 'none'
-    },
-    standards: ["Clean Code", "Modular Architecture"]
+    case 'cursor':
+      fs.writeFileSync(path.join(cwd, '.cursorrules'), content, 'utf-8')
+      console.log(chalk.green('✓ .cursorrules generado — reglas para Cursor'))
+      break
+    case 'chatgpt':
+      fs.writeFileSync(path.join(cwd, 'custom-instructions.md'), content, 'utf-8')
+      console.log(chalk.green('✓ custom-instructions.md generado — instrucciones para ChatGPT'))
+      console.log(chalk.dim('  Copia el contenido en Settings → Custom Instructions de ChatGPT'))
+      break
+    case 'gemini':
+      fs.writeFileSync(path.join(cwd, 'gemini-context.md'), content, 'utf-8')
+      console.log(chalk.green('✓ gemini-context.md generado — contexto para Gemini'))
+      console.log(chalk.dim('  Adjunta este archivo al inicio de tu sesión en Gemini'))
+      break
+    default:
+      fs.writeFileSync(path.join(cwd, 'AI-INSTRUCTIONS.md'), content, 'utf-8')
+      console.log(chalk.green(`✓ AI-INSTRUCTIONS.md generado — instrucciones para ${aiName}`))
+      console.log(chalk.dim('  Adjunta este archivo al inicio de tu sesión de IA'))
+      break
   }
-
-  fs.writeFileSync('./nexus.config.json', JSON.stringify(config, null, 2))
-  console.log(chalk.green(t.success))
-  console.log(chalk.gray(t.hint))
-  console.log(chalk.cyan(t.next + chalk.bold('nexus context') + '\n'))
 }
 
-export function initCommand(): Command {
-  return new Command('init')
-    .description('Initialize NEXUS in your project')
-    .option('--reset', 'Regenerate nexus.config.json even if it already exists')
-    .option('--lang <lang>', 'Interface language: es | en', 'en')
-    .action(async (options) => {
-      const configPath = './nexus.config.json'
-      const lang = options.lang === 'es' ? 'es' : 'en'
+export const initCommand = new Command('init')
+  .description('Configure NEXUS for your project and your AI tool')
+  .action(async () => {
+    console.log(chalk.cyan('\n⬡ NEXUS Protocol — Setup\n'))
 
-      if (fs.existsSync(configPath) && !options.reset) {
-        console.log(chalk.yellow('nexus.config.json already exists'))
-        console.log(chalk.gray('Use nexus init --reset to regenerate it'))
-        return
+    const nexusMdExists = fs.existsSync(path.join(process.cwd(), 'NEXUS.md'))
+
+    if (nexusMdExists) {
+      const { update } = await inquirer.prompt([{
+        type: 'confirm',
+        name: 'update',
+        message: 'Ya tienes NEXUS configurado. ¿Deseas actualizar la configuración?',
+        default: false
+      }])
+      if (!update) {
+        console.log(chalk.yellow('Configuración sin cambios.'))
+        process.exit(0)
       }
+    }
 
-      if (options.reset && fs.existsSync(configPath)) {
-        fs.removeSync(configPath)
-        console.log(chalk.gray('Previous config removed\n'))
-      }
+    const { aiTool } = await inquirer.prompt([{
+      type: 'list',
+      name: 'aiTool',
+      message: '¿Qué IA usas para programar?',
+      choices: [
+        { name: 'Claude Code', value: 'claude-code' },
+        { name: 'Cursor', value: 'cursor' },
+        { name: 'ChatGPT / Codex', value: 'chatgpt' },
+        { name: 'Gemini', value: 'gemini' },
+        { name: 'Otra', value: 'other' }
+      ]
+    }])
 
-      await runInit(lang)
-    })
-}
+    let aiName = aiTool
+    if (aiTool === 'other') {
+      const { customName } = await inquirer.prompt([{
+        type: 'input',
+        name: 'customName',
+        message: '¿Cómo se llama tu IA?',
+        default: 'Mi IA'
+      }])
+      aiName = customName
+    }
+
+    const nexusMdContent = generateNexusMd()
+    fs.writeFileSync(
+      path.join(process.cwd(), 'NEXUS.md'),
+      nexusMdContent,
+      'utf-8'
+    )
+    console.log(chalk.green('✓ NEXUS.md generado — gramática completa del protocolo'))
+
+    generateAIComplement(aiTool, aiName, process.cwd())
+
+    console.log(chalk.cyan('\n⬡ NEXUS listo. Tu IA ahora entiende el protocolo.\n'))
+    console.log(chalk.white('Próximo paso: escribe tu primer blueprint .nexus'))
+    console.log(chalk.dim('  Ejemplo: @React @Tailwind\n  Page Dashboard\n    Section Hero #glass\n'))
+  })

@@ -1,14 +1,17 @@
-# NEXUS Protocol — Claude Code Skill
+# NEXUS Protocol — Instrucciones para el Asistente
 
-## Qué es NEXUS
+## Rol
 
-NEXUS es un protocolo minimalista de comunicación Humano-IA. En vez de describir componentes en lenguaje natural, declaras la intención en una sintaxis estructurada que elimina la ambigüedad.
+El asistente es un arquitecto de software que usa el protocolo NEXUS
+para comunicarse con precisión con el developer. No es un ejecutor de
+instrucciones en lenguaje natural — es un arquitecto que entiende
+intenciones estructuradas y las convierte en código de producción.
 
-Cuando esta skill está activa, Claude Code debe:
+Cuando esta skill está activa, el asistente debe:
 1. Leer el requerimiento del usuario
 2. Generar primero un blueprint NEXUS
-3. Validar el blueprint con `npx nxlang validate`
-4. Generar el código a partir del blueprint validado
+3. Validar la sintaxis mentalmente antes de generar código
+4. Generar el código a partir del blueprint
 
 **Nunca generar código sin antes escribir el blueprint NEXUS correspondiente.**
 
@@ -25,7 +28,6 @@ OrchestratorName Identificador
 ```
 
 ### Directivas de Stack (@)
-Definen el contexto tecnológico. Van al inicio del archivo.
 
 ```nexus
 @React @Tailwind          // Frontend React con Tailwind
@@ -37,11 +39,12 @@ Definen el contexto tecnológico. Van al inicio del archivo.
 
 ### Orquestadores válidos
 
-**Frontend:**
+**Frontend / Estructura:**
 ```
-Page, Layout, Section, Form, Table, Chart, Card, Button, 
-Text, Image, Input, Badge, Nav, Navbar, Header, Grid, 
-List, Modal, Select, Skeleton, Stack, Field
+Page, Layout, Section, Store, Type, Create,
+Card, Button, Text, Image, Input, Badge, Nav, Navbar,
+Header, Grid, List, Form, Table, Chart, Modal, Select,
+Skeleton, Stack, Field
 ```
 
 **Backend:**
@@ -59,7 +62,7 @@ status, body, db
 
 **Especiales:**
 ```
-Action, Selector, Method, Auth, Response, Frontend, 
+Action, Selector, Method, Auth, Response, Frontend,
 Backend, components, hooks, types
 ```
 
@@ -72,9 +75,16 @@ Backend, components, hooks, types
 @React @Tailwind @Prisma
 ```
 
+### @modify — Safe Edit
+Solo aplica el cambio explícito. No reinterpreta, no mueve otros elementos.
+```nexus
+@modify [preserve:all]
+Button "Guardar" #primary   // solo cambia el color, nada más
+```
+
 ### # — Token de diseño/etiqueta
 ```nexus
-Section Hero #glass        // aplica estilo glassmorphism
+Section Hero #glass        // glassmorphism
 Button "Enviar" #primary   // botón primario
 Text "Error" #danger       // texto de error
 ```
@@ -83,13 +93,20 @@ Text "Error" #danger       // texto de error
 ```nexus
 $DATABASE_URL
 $JWT_SECRET
+$brand: "Nexus"
 ```
 
 ### ~ — Estado reactivo
 ```nexus
 ~loading
 ~userList
-~currentPage
+~currentPage: 1
+```
+
+### | — Variante responsive
+```nexus
+Grid [cols:1 | cols:3]
+Section [padding:sm | padding:lg]
 ```
 
 ### ` ` — Clase directa
@@ -102,21 +119,22 @@ Section Hero `min-h-screen flex items-center`
 Card * 6    // genera 6 cards
 ```
 
-### ? — Opcional/Condicional
+### ? — Estado UI condicional
 ```nexus
-Input description ?    // campo opcional
+?loading
+?error
+?empty
 ```
 
 ### ! — Modificador
 ```nexus
-Text < product.name !bold !xl    // negrita y grande
-Input email !required            // campo requerido
-Entity id !pk                    // primary key
-Entity email [unique]            // campo único
+Text < product.name !bold !xl
+Input email !required
+Entity id !pk
 ```
 
 ### !! — Aserción (precondición explícita)
-Hace explícitas las condiciones que deben cumplirse ANTES de ejecutar una acción.
+Condiciones que deben cumplirse ANTES de ejecutar una acción `=>`.
 ```nexus
 Endpoint POST /checkout
   !! "El carrito no puede estar vacío"
@@ -126,7 +144,7 @@ Endpoint POST /checkout
   !error:400 -> /error/validacion
 ```
 
-La IA genera guards ejecutables, no comentarios:
+El asistente genera guards ejecutables, no comentarios:
 ```typescript
 if (carrito.items.length === 0) throw new BadRequestException('El carrito no puede estar vacío')
 if (!usuario.autenticado) throw new UnauthorizedException()
@@ -138,6 +156,8 @@ return await OrderService.crear(payload)
 !error:404 -> /not-found
 !error:401 -> /login
 !error:500 -> /error/server
+!error:timeout -> /error/timeout
+!error:* -> /error/general
 ```
 
 ### -> — Relación/Navegación
@@ -155,14 +175,36 @@ Endpoint POST /users => UserService.create()
 
 ### < — Data binding
 ```nexus
-Table < Usuario              // tabla con datos de Usuario
-Text < product.nombre        // texto con dato del producto
-Image < user.avatar          // imagen con dato
+Table < Usuario
+Text < product.nombre
+Image < user.avatar
+```
+
+### { } — Inject
+Inyecta código o archivo existente sin regenerarlo.
+```nexus
+Section Header { ./Navbar.tsx }
+Card { ./ProductCard.tsx }
+```
+
+### ?? — Query
+Pregunta sin salir del modo NEXUS. El asistente responde brevemente y continúa.
+```nexus
+?? "¿Debería usar Zustand o Context para este store?"
+```
+
+### ( condicion ) -> / : — Condicional
+```nexus
+( usuario.activo ) ->
+  Button "Ver perfil" => router.push('/perfil')
+:
+  Badge "Inactivo" #muted
 ```
 
 ### [paginate:N] — Paginación
 ```nexus
 Table < Producto [paginate:20]
+Grid < Articulo [paginate:12, layout:grid, cols:3]
 ```
 
 ### [type:X] — Tipo de dato
@@ -176,6 +218,7 @@ Input edad [type:number]
 ```nexus
 Entity usuario -> Model.Usuario
 Entity productos -> Model.Producto [many]
+Entity direccion -> Model.Direccion [optional]
 ```
 
 ### @Auth — Autenticación
@@ -185,23 +228,36 @@ Entity productos -> Model.Producto [many]
 @Auth[public]
 ```
 
+### @RateLimit — Rate limiting
+```nexus
+@RateLimit[100/min]
+@RateLimit[10/sec]
+```
+
 ### @install / @install-dev — Dependencias JIT
 ```nexus
 @install axios
 @install-dev typescript
 ```
 
-### [paginate:N, layout:grid] — Opciones múltiples
+### [new] / [locked] — Control de cambios
 ```nexus
-Grid < Producto [paginate:12, layout:grid, cols:3]
+Button "Nuevo" [new]         // elemento recién añadido
+Navbar [locked]              // no modificar ni regenerar
 ```
 
-### ( condicion ) -> / : — Condicional
+### [animate:] / [hover:] / [a11y:] — UI avanzada
 ```nexus
-( usuario.activo ) ->
-  Button "Ver perfil" => router.push('/perfil')
-:
-  Badge "Inactivo" #muted
+Modal [animate: fade-in, duration: 200ms]
+Card [hover: scale-105]
+Button "×" [a11y: aria-label="Cerrar modal"]
+```
+
+### [inherit:siblings] / [cascade:children] / [position:move-to:N]
+```nexus
+Button [new, inherit:siblings]       // hereda estilo de botones hermanos
+Section [cascade:children]          // propaga estilos a hijos
+Card [position:move-to:1]           // mueve a la primera posición
 ```
 
 ---
@@ -241,6 +297,7 @@ Model Orden
 
 Controller OrdenController
   @Auth[mode:jwt]
+  @RateLimit[100/min]
   Router ApiV1
     Endpoint POST /ordenes
       !! "El carrito no puede estar vacío"
@@ -297,6 +354,17 @@ Controller AuthController
       !error:401 -> /error/token-invalido
 ```
 
+### Store global
+```nexus
+Store CartStore {
+  ~items: []
+  ~total: 0
+  Action agregar => ~items: [...items, producto]
+  Action limpiar => ~items: []
+  Selector isEmpty: ~items.length === 0
+}
+```
+
 ---
 
 ## Reglas de uso
@@ -307,30 +375,28 @@ Controller AuthController
 3. Usar !! para precondiciones en endpoints con acciones
 4. Usar !error: para manejo de errores en endpoints
 5. Usar < para data binding en componentes con datos
-6. Validar el blueprint antes de generar código:
-```bash
-npx nxlang validate archivo.nexus
-```
+6. Respetar [locked] — nunca modificar esos elementos
 
 ### NUNCA hacer esto:
 1. Generar código sin el blueprint NEXUS previo
 2. Usar orquestadores inventados (solo los de la lista)
 3. Omitir las precondiciones !! en operaciones críticas
 4. Usar lenguaje natural donde va sintaxis NEXUS
+5. Ignorar @modify [preserve:all] — solo cambia lo declarado
 
 ---
 
 ## Flujo de trabajo con esta skill
 
 ```
-Usuario pide: "Crea una tienda de productos con carrito"
+Developer pide: "Crea una tienda de productos con carrito"
       ↓
-Claude Code genera el blueprint NEXUS completo
+El asistente genera el blueprint NEXUS completo
       ↓
-Claude Code valida: npx nxlang validate tienda.nexus
+El asistente verifica la sintaxis internamente
       ↓
 Si válido: genera el código
-Si inválido: corrige el blueprint y revalida
+Si hay ambigüedad: pregunta con ??
       ↓
 Entrega el código organizado por archivos
 ```
@@ -343,32 +409,8 @@ Entrega el código organizado por archivos
 # Instalar globalmente
 npm install -g nxlang
 
-# Inicializar proyecto NEXUS
+# Configurar NEXUS en tu proyecto (un solo comando)
 nexus init
-
-# Validar un archivo
-nexus validate archivo.nexus
-
-# Instalar dependencias declaradas en el blueprint
-nexus install archivo.nexus
-
-# Generar contexto para la IA
-nexus context
-
-# Ver la gramática completa
-nexus grammar
-```
-
----
-
-## Instalación de esta skill
-
-```bash
-# Copiar a tu carpeta de skills de Claude Code
-nexus install --skill claude-code
-
-# O manualmente:
-cp skills/claude-code/SKILL.md /ruta/a/tus/skills/nexus/SKILL.md
 ```
 
 ---

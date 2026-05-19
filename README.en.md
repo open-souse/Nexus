@@ -71,35 +71,20 @@ npm install nxlang
 
 **Requirements:** Node.js ≥ 20.0.0
 
-## CLI Commands
+## CLI
 
 ```bash
-# Initialize NEXUS in your project
+npm install -g nxlang
 nexus init
-
-# Validate your .nexus files — no side effects
-nexus validate ./my-component.nexus
-
-# Validate + install dependencies if validation passes (opt-in)
-nexus validate ./my-component.nexus --install
-
-# Preview what would be installed without installing
-nexus install --dry-run
-
-# Install dependencies from a .nexus file
-nexus install my-component.nexus
-
-# Install all dependencies detected in the directory
-nexus install
 ```
 
-### Explicit declaration in your file
+One command configures NEXUS for your project and your AI tool.
 
-```nexus
-@install lodash
-@install-dev typescript
-@install -D eslint
-```
+`nexus init` generates two files automatically:
+- `NEXUS.md` — complete protocol grammar reference
+- The AI-specific complement file (skill, .cursorrules, custom instructions, etc.)
+
+Compatible with **Claude Code**, **Cursor**, **ChatGPT**, **Gemini**, and any AI.
 
 ## The Grammar
 
@@ -149,7 +134,7 @@ The file is installed at `.claude/skills/nexus/SKILL.md` inside your project. Cl
 - [x] v4.1.1 — Quality: orchestrator validation, deep merge, API consistency
 - [x] v4.1.2 — Security: control characters, per-line bracket validation
 - [x] v4.2.0 — Assertion operator (`!!`) — explicit preconditions for `=>` actions
-- [x] v4.3.0 — Official Claude Code skill — `nexus install --skill claude-code`
+- [x] v4.3.0 — Unified `nexus init` — configures NEXUS for any AI in one command
 - [ ] v4.5.0 — Semantic engine, CLI Doctor (when there's real demand)
 - [ ] SDD — Software Design by Declaration (active research, RFC open)
 
