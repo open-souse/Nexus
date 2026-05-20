@@ -56,18 +56,19 @@ export function verifyContract(
         const codeMatch = item.declaration.match(/!error:(\d{3}|timeout|network|\*)/)
         if (codeMatch) {
           const code = codeMatch[1]
-          const pattern = /^\d{3}$/.test(code)
-            ? new RegExp(`\\b${code}\\b|HttpStatus\\.`, 'i')
-            : new RegExp(escape(code), 'i')
-          foundIn = search(codeFiles, pattern)
+          // Numeric codes: also accept HttpStatus constant style (e.g. HttpStatus.BAD_REQUEST)
+          foundIn = /^\d{3}$/.test(code)
+            ? search(codeFiles, /HttpStatus\./i) ?? searchString(codeFiles, code)
+            : searchString(codeFiles, code)
           found = !!foundIn
         }
         break
       }
 
       case 'action': {
-        // => CartService.add() → strip parens, then plain-string search (no dynamic regex)
-        const call = item.declaration.replace(/\([^)]*\)$/, '')
+        // Strip trailing (args) from "CartService.add()" → "CartService.add"
+        const parenIdx = item.declaration.lastIndexOf('(')
+        const call = parenIdx !== -1 ? item.declaration.slice(0, parenIdx) : item.declaration
         foundIn = searchString(codeFiles, call)
         found = !!foundIn
         break
@@ -80,9 +81,9 @@ export function verifyContract(
 
       case 'endpoint': {
         const [, route] = item.declaration.split(' ')
-        // /carrito/:itemId → search for /carrito/
+        // /carrito/:itemId → strip param segment, plain-string search
         const base = route.split(':')[0].replace(/\/$/, '')
-        foundIn = search(codeFiles, new RegExp(escape(base), 'i'))
+        foundIn = searchString(codeFiles, base)
         found = !!foundIn
         break
       }
