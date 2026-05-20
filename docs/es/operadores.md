@@ -8,7 +8,7 @@
 
 # Diccionario de Operadores NEXUS
 
-Referencia completa de todos los operadores del protocolo NEXUS v4.1.0.
+Referencia completa de todos los operadores del protocolo NEXUS v4.3.1.
 
 ---
 
@@ -237,9 +237,9 @@ Button "Pagar" => PagoService.procesar()
 ```
 
 **Reglas:**
-- Solo válido sangrado bajo una línea con `=>`
+- Válido sangrado bajo una línea con `=>` (acción) o `<`/`from` (binding de datos)
 - Siempre requiere `-> /destino` después del código
-- Se pueden encadenar múltiples `!error` bajo el mismo `=>`
+- Se pueden encadenar múltiples `!error` bajo el mismo padre
 
 **Errores comunes:**
 - `!error:600` — código HTTP inválido (debe ser 400–599)
@@ -450,6 +450,31 @@ Endpoint POST /usuarios < Payload:UsuarioSchema => UsuarioService.crear()
 
 ---
 
+## `from` — Binding de Datos (alias legible)
+
+**Propósito:** Alias exacto de `<`. Misma semántica, sintaxis más natural para lectores no familiarizados con NEXUS.
+
+**Sintaxis:**
+```nexus
+Elemento from Fuente
+Elemento from Fuente [paginate:N]
+```
+
+**Ejemplos:**
+```nexus
+Table from Pedido [paginate:20]
+Chart from DatosVentas
+List from Producto [paginate:12, layout:grid]
+```
+
+**Notas:**
+- `Table from Pedido` y `Table < Pedido` son equivalentes
+- Acepta todos los mismos modificadores que `<`: `[paginate:]`, `[page:~var]`, etc.
+- `!error:` puede anidarse bajo `from` igual que bajo `<` y `=>`
+- No válido sin una fuente: `from` suelto genera error de validación
+
+---
+
 ## `{ }` — Inyección
 
 **Propósito:** Inyecta un archivo o contexto existente en el bloque NEXUS.
@@ -476,6 +501,7 @@ Endpoint POST /usuarios < Payload:UsuarioSchema => UsuarioService.crear()
 Elemento < Fuente [paginate:N]
 Elemento < Fuente [paginate:N, page:~variable]
 Elemento < Fuente [paginate:N, layout:grid|list]
+Elemento from Fuente [paginate:N]
 ```
 
 **Parámetros:**
@@ -494,12 +520,12 @@ List < Producto [paginate:12, layout:grid]
 ```
 
 **Reglas:**
-- Requiere binding de datos `<` en la misma línea
+- Requiere binding de datos `<` o `from` en la misma línea
 - No puede combinarse con `* N`
 - N debe ser entero entre 1 y 500
 
 **Errores comunes:**
-- `Table [paginate:20]` sin `<` — falta el binding de datos
+- `Table [paginate:20]` sin `<` ni `from` — falta el binding de datos
 - `Table < Datos [paginate:600]` — N fuera de rango
 - `Card * 3 [paginate:10]` — conflicto con multiplicador
 
@@ -564,6 +590,59 @@ Button "Ver" [hover: scale-105]
 **`[a11y:]`** — Atributos de accesibilidad ARIA.
 ```nexus
 Button "Cerrar" [a11y: aria-label="Cerrar modal"]
+```
+
+---
+
+## `nexus verify` — Verificación de Contratos
+
+**Propósito:** Verifica que el código generado implementa lo declarado en el blueprint.
+
+**Uso:**
+```bash
+nexus verify <blueprint.nexus> [directorio] [--json]
+```
+
+**Parámetros:**
+
+| Parámetro | Descripción | Por defecto |
+|---|---|---|
+| `<blueprint.nexus>` | Ruta al archivo blueprint (requerido) | — |
+| `[directorio]` | Directorio con el código generado | `./src` |
+| `--json` | Salida en formato JSON | desactivado |
+
+**Ejemplo de salida:**
+```
+⬡ nexus verify — checkout.nexus
+
+  ✓ [auth] @Auth[mode:jwt] → src/auth.guard.ts
+  ✓ [precondition] "El carrito no puede estar vacío" → src/cart.service.ts
+  ✗ [error handler] !error:400 -> /error/validacion
+  ✓ [action] OrderService.crear() → src/order.service.ts
+  ✓ [dependency] express → package.json
+
+  4 passed  1 failed
+```
+
+**Tipos de items verificados:**
+
+| Tipo | Declaración NEXUS | Qué busca |
+|---|---|---|
+| `auth` | `@Auth[mode:jwt]` | JWT guard, `UseGuards`, `Bearer`, `authorization` |
+| `assertion` | `!! "mensaje"` | La cadena del mensaje en algún archivo |
+| `error-handler` | `!error:400` | Código HTTP o `HttpStatus.` en algún archivo |
+| `action` | `=> Servicio.metodo()` | `Servicio.metodo` en algún archivo |
+| `install` | `@install paquete` | El paquete en `package.json` |
+| `endpoint` | `Endpoint POST /ruta` | La ruta base en algún archivo |
+| `pagination` | `[paginate:N]` | `page`, `limit`, `skip`, `take`, `offset` en algún archivo |
+
+**API programática:**
+```typescript
+import { extractContract, verifyContract } from 'nxlang'
+import type { ContractItem, VerifyResult } from 'nxlang'
+
+const items: ContractItem[] = extractContract(contenidoBlueprint)
+const resultados: VerifyResult[] = verifyContract(items, archivosCode, packageJson)
 ```
 
 ---

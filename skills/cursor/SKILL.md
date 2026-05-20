@@ -17,6 +17,7 @@ Cuando el developer escriba un blueprint NEXUS, el asistente debe:
 4. Generar el código exacto que describe el blueprint
 5. Si hay @install, incluir la instalación de esa dependencia en el output
 6. No improvisar — solo construir lo que el blueprint declara
+7. Reconocer `from` como alias de `<` para data binding (ej: `Table from User` ≡ `Table < User`)
 
 ## Reglas
 
@@ -39,5 +40,11 @@ NUNCA:
 El blueprint NEXUS es el contrato entre el developer y el asistente.
 Lo que está en el blueprint se construye. Lo que no está, no se toca.
 
+## Operadores clave
+
+- `<` y `from` son equivalentes para data binding: `Table from User [paginate:20]` ≡ `Table < User [paginate:20]`
+- `!error:` es válido bajo `=>` (acción) y también bajo `<`/`from` (binding de datos)
+- `nexus verify <blueprint.nexus> [./src]` — verifica que el código generado implementa el blueprint
+
 ---
-*NEXUS Protocol v4.3.0 — nexuslang.dev*
+*NEXUS Protocol v4.3.1 — nexuslang.dev*

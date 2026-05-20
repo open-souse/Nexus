@@ -89,6 +89,7 @@ Summary of the most common:
 | `~var: value` | Local reactive state |
 | `!modifier` | Priority or visual weight flag (`!bold`, `!pk`) |
 | `< Source` | Data binding |
+| `from Source` | Data binding (readable alias for `<`) |
 | `=> Action()` | Side effect or API call |
 | `-> Destination` | Navigation or route |
 | `( cond ) -> A : B` | Conditional rendering |
@@ -105,7 +106,7 @@ Summary of the most common:
 
 - Each level uses exactly **2 spaces**
 - Children are always indented from their parent
-- `!error:` operators must be indented under the `=>` line that contains them
+- `!error:` operators must be indented under the `=>` or `<`/`from` line that contains them
 - Lines at the same level are siblings
 
 ```nexus
@@ -114,6 +115,8 @@ Page Example          ← level 0
     Button "X"        ← level 2 (child of Section)
       => Service()    ← same line or indented
       !error:* -> /   ← level 3 (child of =>)
+    Table from Data   ← level 2 (binding with readable alias)
+      !error:500 -> / ← level 3 (child of from)
 ```
 
 ---
@@ -136,3 +139,5 @@ Inside `Test` blocks:
 ## Examples
 
 → [See full examples](./examples.md)
+
+→ [NEXUS Mini Course — from zero to production](./course.md)

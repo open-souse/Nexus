@@ -89,6 +89,7 @@ Resumen de los más comunes:
 | `~var: valor` | Estado local reactivo |
 | `!modificador` | Flag de prioridad o peso visual (`!bold`, `!pk`) |
 | `< Fuente` | Binding de datos |
+| `from Fuente` | Binding de datos (alias legible de `<`) |
 | `=> Acción()` | Efecto secundario o llamada a API |
 | `-> Destino` | Navegación o ruta |
 | `( cond ) -> A : B` | Renderizado condicional |
@@ -105,7 +106,7 @@ Resumen de los más comunes:
 
 - Cada nivel usa exactamente **2 espacios**
 - Los hijos siempre están sangrados respecto a su padre
-- Los operadores `!error:` deben estar sangrados bajo la línea `=>` que los contiene
+- Los operadores `!error:` deben estar sangrados bajo la línea `=>` o `<`/`from` que los contiene
 - Las líneas al mismo nivel son hermanos
 
 ```nexus
@@ -114,6 +115,8 @@ Page Ejemplo          ← nivel 0
     Button "X"        ← nivel 2 (hijo de Section)
       => Servicio()   ← en la misma línea o sangrado
       !error:* -> /   ← nivel 3 (hijo de =>)
+    Table from Datos  ← nivel 2 (binding con alias legible)
+      !error:500 -> / ← nivel 3 (hijo de from)
 ```
 
 ---
@@ -136,3 +139,5 @@ Dentro de bloques `Test`:
 ## Ejemplos
 
 → [Ver ejemplos completos](./ejemplos.md)
+
+→ [Mini Curso NEXUS — de cero a producción](./curso.md)

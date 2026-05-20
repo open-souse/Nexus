@@ -79,11 +79,11 @@ export function validateNexus(content: string): ValidationError[] {
 
     const trimmed = line.trim()
 
-    // Track lines that have a complete => action or < data binding (used to validate !error parent)
+    // Track lines that have a complete => action or data binding (< or from) — used to validate !error parent
     if (/=>\s*\S+/.test(trimmed)) {
       lastActionIndent = leadingSpaces
     }
-    if (/<\s+\S/.test(trimmed)) {
+    if (/<\s+\S/.test(trimmed) || /\bfrom\s+\S/.test(trimmed)) {
       lastBindingIndent = leadingSpaces
     }
 
@@ -252,7 +252,15 @@ export function validateNexus(content: string): ValidationError[] {
     if (/\s<$/.test(trimmed) || trimmed === '<') {
       errors.push({
         line: lineNumber,
-        message: '"<" without a defined type. Expected format: < TypeName'
+        message: '"<" without a defined type. Expected format: Element < TypeName'
+      })
+    }
+
+    // from (alias for <): cannot appear without a source
+    if (/\bfrom\s*$/.test(trimmed)) {
+      errors.push({
+        line: lineNumber,
+        message: '"from" without a source. Expected format: Element from TypeName'
       })
     }
 
@@ -277,9 +285,9 @@ export function validateNexus(content: string): ValidationError[] {
     // ── [paginate:N] — native pagination ────────────────────────────────────
     const paginateMatch = trimmed.match(/\[paginate:\s*([^\],\s]+)/)
     if (paginateMatch) {
-      // Requires data binding < on the same line
-      if (!/</.test(trimmed)) {
-        errors.push({ line: lineNumber, message: "[paginate] requires a data binding operator '<'" })
+      // Requires data binding < or from on the same line
+      if (!/</.test(trimmed) && !/\bfrom\b/.test(trimmed)) {
+        errors.push({ line: lineNumber, message: "[paginate] requires a data binding operator '<' or 'from'" })
       }
       // N must be a positive integer between 1 and 500
       const paginateStr = paginateMatch[1]

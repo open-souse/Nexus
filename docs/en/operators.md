@@ -8,7 +8,7 @@
 
 # NEXUS Operator Dictionary
 
-Complete reference for all NEXUS protocol operators v4.1.0.
+Complete reference for all NEXUS protocol operators v4.3.1.
 
 ---
 
@@ -222,9 +222,9 @@ Button "Pay" => PaymentService.process()
 ```
 
 **Rules:**
-- Only valid indented under a line with `=>`
+- Valid indented under a line with `=>` (action) or `<`/`from` (data binding)
 - Always requires `-> /destination` after the code
-- Multiple `!error` can be chained under the same `=>`
+- Multiple `!error` can be chained under the same parent
 
 **Common errors:**
 - `!error:600` — invalid HTTP code (must be 400–599)
@@ -435,6 +435,31 @@ Endpoint POST /users < Payload:UserSchema => UserService.create()
 
 ---
 
+## `from` — Data Binding (readable alias)
+
+**Purpose:** Exact alias for `<`. Same semantics, more natural syntax for readers unfamiliar with NEXUS.
+
+**Syntax:**
+```nexus
+Element from Source
+Element from Source [paginate:N]
+```
+
+**Examples:**
+```nexus
+Table from Order [paginate:20]
+Chart from SalesData
+List from Product [paginate:12, layout:grid]
+```
+
+**Notes:**
+- `Table from Order` and `Table < Order` are equivalent
+- Accepts all the same modifiers as `<`: `[paginate:]`, `[page:~var]`, etc.
+- `!error:` can be nested under `from` just like under `<` and `=>`
+- Not valid without a source: bare `from` generates a validation error
+
+---
+
 ## `{ }` — Inject
 
 **Purpose:** Injects an existing file or context into the NEXUS block.
@@ -461,6 +486,7 @@ Endpoint POST /users < Payload:UserSchema => UserService.create()
 Element < Source [paginate:N]
 Element < Source [paginate:N, page:~variable]
 Element < Source [paginate:N, layout:grid|list]
+Element from Source [paginate:N]
 ```
 
 **Parameters:**
@@ -479,12 +505,12 @@ List < Product [paginate:12, layout:grid]
 ```
 
 **Rules:**
-- Requires data binding `<` on the same line
+- Requires data binding `<` or `from` on the same line
 - Cannot be combined with `* N`
 - N must be an integer between 1 and 500
 
 **Common errors:**
-- `Table [paginate:20]` without `<` — missing data binding
+- `Table [paginate:20]` without `<` or `from` — missing data binding
 - `Table < Data [paginate:600]` — N out of range
 - `Card * 3 [paginate:10]` — conflict with multiplier
 
@@ -549,6 +575,59 @@ Button "View" [hover: scale-105]
 **`[a11y:]`** — ARIA accessibility attributes.
 ```nexus
 Button "Close" [a11y: aria-label="Close modal"]
+```
+
+---
+
+## `nexus verify` — Contract Verification
+
+**Purpose:** Verifies that generated code implements what was declared in the blueprint.
+
+**Usage:**
+```bash
+nexus verify <blueprint.nexus> [directory] [--json]
+```
+
+**Parameters:**
+
+| Parameter | Description | Default |
+|---|---|---|
+| `<blueprint.nexus>` | Path to the blueprint file (required) | — |
+| `[directory]` | Directory with generated code | `./src` |
+| `--json` | JSON output | off |
+
+**Example output:**
+```
+⬡ nexus verify — checkout.nexus
+
+  ✓ [auth] @Auth[mode:jwt] → src/auth.guard.ts
+  ✓ [precondition] "Cart cannot be empty" → src/cart.service.ts
+  ✗ [error handler] !error:400 -> /error/validation
+  ✓ [action] OrderService.create() → src/order.service.ts
+  ✓ [dependency] express → package.json
+
+  4 passed  1 failed
+```
+
+**Verified item types:**
+
+| Type | NEXUS declaration | What it searches for |
+|---|---|---|
+| `auth` | `@Auth[mode:jwt]` | JWT guard, `UseGuards`, `Bearer`, `authorization` |
+| `assertion` | `!! "message"` | The message string in any file |
+| `error-handler` | `!error:400` | HTTP code or `HttpStatus.` in any file |
+| `action` | `=> Service.method()` | `Service.method` in any file |
+| `install` | `@install package` | The package in `package.json` |
+| `endpoint` | `Endpoint POST /route` | The base route in any file |
+| `pagination` | `[paginate:N]` | `page`, `limit`, `skip`, `take`, `offset` in any file |
+
+**Programmatic API:**
+```typescript
+import { extractContract, verifyContract } from 'nxlang'
+import type { ContractItem, VerifyResult } from 'nxlang'
+
+const items: ContractItem[] = extractContract(blueprintContent)
+const results: VerifyResult[] = verifyContract(items, codeFiles, packageJson)
 ```
 
 ---

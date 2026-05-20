@@ -12,7 +12,7 @@
 
 [![npm version](https://img.shields.io/npm/v/nxlang.svg?style=flat-square)](https://www.npmjs.com/package/nxlang)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](./LICENSE)
-[![Tests](https://img.shields.io/badge/tests-182%20passing-brightgreen?style=flat-square)]()
+[![Tests](https://img.shields.io/badge/tests-241%20passing-brightgreen?style=flat-square)]()
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue?style=flat-square)]()
 
 ## The Problem
@@ -75,14 +75,20 @@ npm install nxlang
 
 ```bash
 npm install -g nxlang
-nexus init
-```
 
-One command configures NEXUS for your project and your AI tool.
+# Configures NEXUS for your project and your AI tool
+nexus init
+
+# Verify that generated code implements the blueprint
+nexus verify ./my-component.nexus ./src
+nexus verify ./my-component.nexus ./src --json
+```
 
 `nexus init` generates two files automatically:
 - `NEXUS.md` — complete protocol grammar reference
 - The AI-specific complement file (skill, .cursorrules, custom instructions, etc.)
+
+`nexus verify` scans the generated code directory and reports which blueprint contract items are implemented and which are missing.
 
 Compatible with **Claude Code**, **Cursor**, **ChatGPT**, **Gemini**, and any AI.
 
@@ -94,17 +100,90 @@ Compatible with **Claude Code**, **Cursor**, **ChatGPT**, **Gemini**, and any AI
 
 ## Library API
 
+### Validation
+
 ```typescript
-import { validateNexus, buildSystemPrompt, createDefaultConfig } from 'nxlang'
+import { validateNexus } from 'nxlang'
+import type { ValidationError } from 'nxlang'
 
-// Validate syntax
-const errors = validateNexus(content)
+const errors: ValidationError[] = validateNexus(fileContent)
+if (errors.length === 0) {
+  console.log('Valid NEXUS syntax')
+} else {
+  errors.forEach(e => console.error(`Line ${e.line}: ${e.message}`))
+}
+```
 
-// Generate system prompt for AI
-const prompt = buildSystemPrompt(config)
+### Prompt generation
 
-// Create default config
-const config = createDefaultConfig({ project: 'my-app', modules: ['frontend'] })
+```typescript
+import { buildPrompt, buildSystemPrompt, buildDefaultGrammarReference } from 'nxlang'
+import type { NexusProvider } from 'nxlang'
+
+// Full prompt for NEXUS.md (grammar + examples + instructions)
+const nexusMd = buildPrompt({ modules: ['frontend', 'backend', 'testing'] })
+
+// System prompt ready to pass to your AI model API
+// provider: 'llm' | 'gpt' | 'gemini'
+const systemPrompt = buildSystemPrompt(config, 'llm')
+
+// Just the syntax reference — embed in SKILL.md or .cursorrules
+const grammarRef = buildDefaultGrammarReference()
+```
+
+### Contract verification
+
+```typescript
+import { extractContract, verifyContract } from 'nxlang'
+import type { ContractItem, VerifyResult } from 'nxlang'
+import fs from 'fs'
+
+// Extract verifiable items from blueprint
+const items: ContractItem[] = extractContract(blueprintContent)
+// items: [{ type: 'auth', declaration: '@Auth[mode:jwt]', line: 3 }, ...]
+
+// Verify that generated code implements them
+const codeFiles = new Map([
+  ['src/auth.guard.ts', fs.readFileSync('src/auth.guard.ts', 'utf-8')],
+])
+const results: VerifyResult[] = verifyContract(items, codeFiles, packageJson)
+results.forEach(r => {
+  console.log(`${r.found ? '✓' : '✗'} [${r.item.type}] ${r.item.declaration}`)
+})
+```
+
+### Configuration
+
+```typescript
+import { createDefaultConfig } from 'nxlang'
+import type { NexusConfig } from 'nxlang'
+
+const config: NexusConfig = createDefaultConfig({
+  lang: 'en',
+  modules: ['frontend', 'backend'],
+  framework: 'next-ts',
+  styling: 'tailwind',
+  backend: { framework: 'nestjs', database: 'postgresql', orm: 'prisma' }
+})
+```
+
+### Grammar data
+
+```typescript
+import { NEXUS_VERSION, NEXUS_OPERATORS, NEXUS_MODULES } from 'nxlang'
+import type { NexusOperator, NexusModule } from 'nxlang'
+
+console.log(NEXUS_VERSION) // '4.3.0'
+
+// For syntax highlighting or autocomplete in your editor
+NEXUS_OPERATORS.forEach((op: NexusOperator) => {
+  console.log(`${op.symbol} — ${op.description}`)
+})
+
+// Filter active modules based on project stack
+const modules: NexusModule[] = NEXUS_MODULES.filter(m =>
+  ['frontend', 'backend'].includes(m.id)
+)
 ```
 
 ## Ecosystem
@@ -137,6 +216,7 @@ Run `nexus init` to configure NEXUS for your AI tool. It generates two files aut
 - [x] v4.1.2 — Security: control characters, per-line bracket validation
 - [x] v4.2.0 — Assertion operator (`!!`) — explicit preconditions for `=>` actions
 - [x] v4.3.0 — Unified `nexus init` — configures NEXUS for any AI in one command
+- [x] v4.3.1 — `from` operator (alias for `<`), `nexus verify`, contract verification API
 - [ ] v4.5.0 — Semantic engine, CLI Doctor (when there's real demand)
 - [ ] SDD — Software Design by Declaration (active research, RFC open)
 

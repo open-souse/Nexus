@@ -12,7 +12,7 @@
 
 [![npm version](https://img.shields.io/npm/v/nxlang.svg?style=flat-square)](https://www.npmjs.com/package/nxlang)
 [![Licencia: MIT](https://img.shields.io/badge/Licencia-MIT-blue.svg?style=flat-square)](./LICENSE)
-[![Tests](https://img.shields.io/badge/tests-154%20pasando-brightgreen?style=flat-square)]()
+[![Tests](https://img.shields.io/badge/tests-241%20pasando-brightgreen?style=flat-square)]()
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue?style=flat-square)]()
 
 ## El Problema
@@ -74,23 +74,12 @@ npm install nxlang
 ## Comandos CLI
 
 ```bash
-# Inicializa NEXUS en tu proyecto
+# Inicializa NEXUS en tu proyecto — configura gramática + skill para tu IA
 nexus init
 
-# Valida tus archivos .nexus — sin efectos secundarios
-nexus validate ./mi-componente.nexus
-
-# Valida + instala dependencias si la validación pasa (opt-in)
-nexus validate ./mi-componente.nexus --install
-
-# Ver qué se instalaría sin instalar nada
-nexus install --dry-run
-
-# Instalar dependencias de un archivo .nexus
-nexus install archivo.nexus
-
-# Instalar todas las dependencias detectadas en el directorio
-nexus install
+# Verifica que el código generado implementa el blueprint
+nexus verify ./mi-componente.nexus ./src
+nexus verify ./mi-componente.nexus ./src --json
 ```
 
 ### Declaración explícita en el archivo
@@ -110,7 +99,8 @@ nexus install
 ## API de Librería
 
 ```typescript
-import { validateNexus, buildSystemPrompt, createDefaultConfig } from 'nxlang'
+import { validateNexus, buildSystemPrompt, createDefaultConfig,
+         extractContract, verifyContract, buildDefaultGrammarReference } from 'nxlang'
 
 // Validar sintaxis
 const errores = validateNexus(contenido)
@@ -118,8 +108,20 @@ const errores = validateNexus(contenido)
 // Generar system prompt para la IA
 const prompt = buildSystemPrompt(config)
 
+// Solo la referencia de sintaxis — para SKILL.md o .cursorrules
+const gramatica = buildDefaultGrammarReference()
+
 // Crear configuración por defecto
-const config = createDefaultConfig({ project: 'mi-app', modules: ['frontend'] })
+const config = createDefaultConfig({
+  lang: 'es',
+  modules: ['frontend'],
+  framework: 'next-ts',
+  styling: 'tailwind'
+})
+
+// Extraer items verificables del blueprint y verificar contra código generado
+const items = extractContract(contenidoBlueprint)
+const resultados = verifyContract(items, archivosCode, packageJson)
 ```
 
 ## Ecosistema
@@ -137,6 +139,8 @@ const config = createDefaultConfig({ project: 'mi-app', modules: ['frontend'] })
 - [x] v4.1.1 — Calidad: validación de orquestadores, deep merge, API consistency
 - [x] v4.1.2 — Seguridad: caracteres de control, validación de brackets por línea
 - [x] v4.2.0 — Operador de aserción (`!!`) — precondiciones explícitas para acciones `=>`
+- [x] v4.3.0 — `nexus init` unificado — configura NEXUS para cualquier IA en un comando
+- [x] v4.3.1 — Operador `from` (alias de `<`), `nexus verify`, API de verificación de contratos
 - [ ] v4.5.0 — Motor semántico, CLI Doctor (cuando haya demanda real)
 - [ ] SDD — Software Design by Declaration (investigación activa, RFC abierto)
 
