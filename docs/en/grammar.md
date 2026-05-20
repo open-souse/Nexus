@@ -139,3 +139,5 @@ Inside `Test` blocks:
 ## Examples
 
 → [See full examples](./examples.md)
+
+→ [NEXUS Mini Course — from zero to production](./course.md)
