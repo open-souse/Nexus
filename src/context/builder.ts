@@ -94,7 +94,7 @@ function buildModuleExamples(activeModules: string[]): string {
   return examples
 }
 
-function buildGrammarReference(orchList: string, activeModules: string[]): string {
+export function buildGrammarReference(orchList: string, activeModules: string[]): string {
   const testingExtension = activeModules.includes('testing') ? `
 - Test Name [type:unit|e2e, framework:vitest|jest|cypress] : Define a test case. Use keywords Frontend or Backend to scope context.
 - Suite "Name" { } : Group related tests.
@@ -123,9 +123,9 @@ NEXUS SYNTAX REFERENCE (v${NEXUS_VERSION}):
 - [inherit:siblings] : Inherit style from siblings.
 - [position:move-to:N] : Move element to position N.
 - [cascade:children] : Apply parent styles to children.
-- [animate: type, duration: Xms] : Entry/exit animation.
-- [hover: ...] : Hover/focus styles.
-- [a11y: ...] : ARIA accessibility attributes.
+- [animate:] : Entry/exit animation (e.g. [animate: fade-in, duration: 200ms]).
+- [hover:] : Hover/focus styles (e.g. [hover: scale-105]).
+- [a11y:] : ARIA accessibility attributes (e.g. [a11y: aria-label="Close"]).
 - !pk : Database primary key constraint.
 - @Auth[mode:jwt] : Requires authentication for an endpoint or resource.
 - @RateLimit[X/min] : Limits request frequency.
@@ -134,11 +134,12 @@ NEXUS SYNTAX REFERENCE (v${NEXUS_VERSION}):
 - -> : Navigation / routing / relations.
 - => : Side-effects / API calls / handlers.
 - < : Data binding / types.
-- { path } : Inject existing code or file.
+- { } : Inject existing code or file (e.g. { ./UserCard.tsx }).
 - !error:code -> dest : Nested under =>; catches HTTP errors, timeout, network, or * (wildcard).
 - !! "precondition" : Assertion — explicit precondition before a => action. String or logical expression. Multiple !! evaluated top-to-bottom.
-- [paginate:N] : On a < bound element; generates paginated fetch + UI controls (N items/page, max 500).
+- [paginate:] : On a < bound element; generates paginated fetch + UI controls (e.g. [paginate:20], max 500 items/page).
 - -> Model.Name [mod] : Inside Entity; defines typed DB relation. Modifiers: [many] [optional] [cascade].
+- @install : Just-in-time package installer (e.g. @install lodash, @install-dev vitest).
 - ${orchList} : Structure orchestrators.
 - Store Name { ~state Action Selector } : Global state (Zustand/Redux/Pinia).
 - Create Name [type:component|page|hook|feature, path:route] : Create files on disk.${testingExtension}`.trim()
@@ -242,6 +243,12 @@ Example:
 PROJECT DNA:
 ${JSON.stringify(config, null, 2)}
   `.trim()
+}
+
+export function buildDefaultGrammarReference(): string {
+  const allModules = ['frontend', 'backend', 'testing']
+  const orchList = buildOrchestratorList(allModules)
+  return buildGrammarReference(orchList, allModules)
 }
 
 export function buildSystemPrompt(config: Partial<NexusConfig>, provider: NexusProvider = 'llm'): string {

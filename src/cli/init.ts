@@ -3,7 +3,7 @@ import inquirer from 'inquirer'
 import fs from 'fs'
 import path from 'path'
 import chalk from 'chalk'
-import { buildPrompt } from '../context/builder.js'
+import { buildPrompt, buildDefaultGrammarReference } from '../context/builder.js'
 
 export function buildAIComplement(lang: 'es' | 'en' = 'es'): string {
   if (lang === 'en') {
@@ -49,6 +49,12 @@ The NEXUS blueprint is the contract between the developer and the assistant.
 What is in the blueprint gets built. What is not in it, does not get touched.
 
 ---
+
+## Syntax Reference
+
+${buildDefaultGrammarReference()}
+
+---
 *NEXUS Protocol v4.3.0 — nexuslang.dev*`
   }
 
@@ -92,6 +98,12 @@ NUNCA:
 
 El blueprint NEXUS es el contrato entre el developer y el asistente.
 Lo que está en el blueprint se construye. Lo que no está, no se toca.
+
+---
+
+## Referencia de sintaxis
+
+${buildDefaultGrammarReference()}
 
 ---
 *NEXUS Protocol v4.3.0 — nexuslang.dev*`
