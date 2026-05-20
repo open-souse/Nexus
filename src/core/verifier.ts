@@ -63,7 +63,7 @@ export function verifyContract(
 
       case 'action': {
         // => CartService.add() → search for the call (case-insensitive)
-        const call = item.declaration.replace(/\(.*\)$/, '')
+        const call = item.declaration.replace(/\([^)]*\)$/, '')
         foundIn = search(codeFiles, new RegExp(escape(call), 'i'))
         found = !!foundIn
         break
@@ -84,7 +84,7 @@ export function verifyContract(
       }
 
       case 'pagination':
-        foundIn = search(codeFiles, /paginate|pagination|page.*limit|skip.*take|offset\b/i)
+        foundIn = search(codeFiles, /\bpaginat|\bpage\b|\blimit\b|\bskip\b|\btake\b|\boffset\b/i)
         found = !!foundIn
         break
     }
