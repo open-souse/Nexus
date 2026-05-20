@@ -94,17 +94,69 @@ Compatible with **Claude Code**, **Cursor**, **ChatGPT**, **Gemini**, and any AI
 
 ## Library API
 
+### Validation
+
 ```typescript
-import { validateNexus, buildSystemPrompt, createDefaultConfig } from 'nxlang'
+import { validateNexus } from 'nxlang'
+import type { ValidationError } from 'nxlang'
 
-// Validate syntax
-const errors = validateNexus(content)
+const errors: ValidationError[] = validateNexus(fileContent)
+if (errors.length === 0) {
+  console.log('Valid NEXUS syntax')
+} else {
+  errors.forEach(e => console.error(`Line ${e.line}: ${e.message}`))
+}
+```
 
-// Generate system prompt for AI
-const prompt = buildSystemPrompt(config)
+### Prompt generation
 
-// Create default config
-const config = createDefaultConfig({ project: 'my-app', modules: ['frontend'] })
+```typescript
+import { buildPrompt, buildSystemPrompt, buildDefaultGrammarReference } from 'nxlang'
+import type { NexusProvider } from 'nxlang'
+
+// Full prompt for NEXUS.md (grammar + examples + instructions)
+const nexusMd = buildPrompt({ modules: ['frontend', 'backend', 'testing'] })
+
+// System prompt ready to pass to your AI model API
+// provider: 'llm' | 'gpt' | 'gemini'
+const systemPrompt = buildSystemPrompt(config, 'llm')
+
+// Just the syntax reference — embed in SKILL.md or .cursorrules
+const grammarRef = buildDefaultGrammarReference()
+```
+
+### Configuration
+
+```typescript
+import { createDefaultConfig } from 'nxlang'
+import type { NexusConfig } from 'nxlang'
+
+const config: NexusConfig = createDefaultConfig({
+  lang: 'en',
+  modules: ['frontend', 'backend'],
+  framework: 'next-ts',
+  styling: 'tailwind',
+  backend: { framework: 'nestjs', database: 'postgresql', orm: 'prisma' }
+})
+```
+
+### Grammar data
+
+```typescript
+import { NEXUS_VERSION, NEXUS_OPERATORS, NEXUS_MODULES } from 'nxlang'
+import type { NexusOperator, NexusModule } from 'nxlang'
+
+console.log(NEXUS_VERSION) // '4.3.0'
+
+// For syntax highlighting or autocomplete in your editor
+NEXUS_OPERATORS.forEach((op: NexusOperator) => {
+  console.log(`${op.symbol} — ${op.description}`)
+})
+
+// Filter active modules based on project stack
+const modules: NexusModule[] = NEXUS_MODULES.filter(m =>
+  ['frontend', 'backend'].includes(m.id)
+)
 ```
 
 ## Ecosystem

@@ -189,24 +189,69 @@ Controller PedidoController
 
 ## Usando la API de Librería
 
-```typescript
-import { validateNexus, buildSystemPrompt, createDefaultConfig } from 'nxlang'
+### Validación
 
-// Validar un archivo .nexus programáticamente
-const errores = validateNexus(contenido)
+```typescript
+import { validateNexus } from 'nxlang'
+import type { ValidationError } from 'nxlang'
+
+const errores: ValidationError[] = validateNexus(contenidoDelArchivo)
 if (errores.length === 0) {
   console.log('Sintaxis NEXUS válida')
 } else {
-  errores.forEach(e => console.log(`Línea ${e.line}: ${e.message}`))
+  errores.forEach(e => console.error(`Línea ${e.line}: ${e.message}`))
 }
+```
 
-// Generar el system prompt para la IA desde tu configuración de proyecto
-const config = await cargarConfig()
-const systemPrompt = buildSystemPrompt(config)
-// → Pasa esto a tu modelo de IA como mensaje de sistema
+### Generación de prompts
 
-// Crear una configuración por defecto programáticamente
-const config = createDefaultConfig({ project: 'mi-editor', modules: ['frontend'] })
+```typescript
+import { buildPrompt, buildSystemPrompt, buildDefaultGrammarReference } from 'nxlang'
+import type { NexusProvider } from 'nxlang'
+
+// Prompt completo para NEXUS.md (gramática + ejemplos + instrucciones)
+const nexusMd = buildPrompt({ modules: ['frontend', 'backend', 'testing'] })
+
+// System prompt listo para pasar a la API de tu modelo de IA
+// provider: 'llm' | 'gpt' | 'gemini'
+const systemPrompt = buildSystemPrompt(config, 'llm')
+
+// Solo la referencia de sintaxis — para embeber en SKILL.md o .cursorrules
+const gramatica = buildDefaultGrammarReference()
+```
+
+### Configuración
+
+```typescript
+import { createDefaultConfig } from 'nxlang'
+import type { NexusConfig } from 'nxlang'
+
+const config: NexusConfig = createDefaultConfig({
+  lang: 'es',
+  modules: ['frontend', 'backend'],
+  framework: 'next-ts',
+  styling: 'tailwind',
+  backend: { framework: 'nestjs', database: 'postgresql', orm: 'prisma' }
+})
+```
+
+### Datos de gramática
+
+```typescript
+import { NEXUS_VERSION, NEXUS_OPERATORS, NEXUS_MODULES } from 'nxlang'
+import type { NexusOperator, NexusModule } from 'nxlang'
+
+console.log(NEXUS_VERSION) // '4.3.0'
+
+// Para syntax highlighting o autocompletado en tu editor
+NEXUS_OPERATORS.forEach((op: NexusOperator) => {
+  console.log(`${op.symbol} — ${op.description}`)
+})
+
+// Para filtrar módulos activos según el stack del proyecto
+const modulos: NexusModule[] = NEXUS_MODULES.filter(m =>
+  ['frontend', 'backend'].includes(m.id)
+)
 ```
 
 ---
