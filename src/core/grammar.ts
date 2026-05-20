@@ -57,6 +57,7 @@ export const NEXUS_OPERATORS: NexusOperator[] = [
   { symbol: '->', name: 'Navigation', description: 'Route or navigation flow', example: 'Button -> /dashboard' },
   { symbol: '=>', name: 'Side Effect', description: 'API call, handler, or async action', example: 'Button => login()' },
   { symbol: '<', name: 'Data Binding', description: 'Bind to data type or source', example: 'Table < User' },
+  { symbol: 'from', name: 'Data Binding (readable)', description: 'Readable alias for <  — same semantics, more natural English syntax', example: 'Table from User [paginate:20]' },
   { symbol: '{ }', name: 'Inject', description: 'Inject existing code or file', example: '{ ./UserCard.tsx }' },
   { symbol: '??', name: 'Query', description: 'Ask a question without leaving NEXUS mode', example: '?? "Should I use Zustand?"' },
   { symbol: '( cond ) -> A : B', name: 'Conditional', description: 'Conditional rendering', example: '( ?auth ) -> Home : Login' },

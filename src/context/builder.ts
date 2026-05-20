@@ -134,6 +134,7 @@ NEXUS SYNTAX REFERENCE (v${NEXUS_VERSION}):
 - -> : Navigation / routing / relations.
 - => : Side-effects / API calls / handlers.
 - < : Data binding / types.
+- from : Readable alias for < (e.g. Table from User [paginate:20]).
 - { } : Inject existing code or file (e.g. { ./UserCard.tsx }).
 - !error:code -> dest : Nested under =>; catches HTTP errors, timeout, network, or * (wildcard).
 - !! "precondition" : Assertion — explicit precondition before a => action. String or logical expression. Multiple !! evaluated top-to-bottom.
