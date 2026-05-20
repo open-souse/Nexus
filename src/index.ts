@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { Command } from 'commander'
 import { initCommand } from './cli/init.js'
+import { verifyCommand } from './cli/verify.js'
 import fs from 'fs'
 
 const pkgPath = new URL('../package.json', import.meta.url)
@@ -15,5 +16,6 @@ program
   .version(version)
 
 program.addCommand(initCommand)
+program.addCommand(verifyCommand)
 
 program.parse()
