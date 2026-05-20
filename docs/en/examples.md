@@ -358,4 +358,95 @@ async checkout(@Body() dto: CheckoutDto, @Request() req) {
 
 ---
 
+## 8. `from` Operator — Readable Binding
+
+The `from` operator is an exact alias for `<`. Use it when you want the blueprint to be more readable for those unfamiliar with NEXUS.
+
+```nexus
+@React @Tailwind
+
+// With < (compact)
+Page Dashboard
+  Table < Order [paginate:20]
+    !error:500 -> /error/server
+
+// With from (more natural)
+Page Dashboard
+  Table from Order [paginate:20]
+    !error:500 -> /error/server
+```
+
+Both forms are equivalent. The generated code is identical.
+
+```nexus
+@NestJS @Prisma
+
+// from in backend
+Controller UserController
+  Router ApiV1
+    Endpoint GET /users
+      Table from User [paginate:25, page:~currentPage]
+        !error:403 -> /no-access
+        !error:500 -> /error/server
+      => UserService.list()
+```
+
+---
+
+## 9. `nexus verify` — Verifying Generated Code
+
+After AI generates code from a blueprint, `nexus verify` checks that it actually implemented everything declared.
+
+**Blueprint (checkout.nexus):**
+```nexus
+@NestJS @Prisma
+@install express
+
+Controller PaymentController [route:/api/payments]
+  Guard AuthGuard [mode:jwt]
+
+  Endpoint POST /checkout
+    !! "Cart cannot be empty"
+    !! stock.available > 0
+    => OrderService.create()
+      !error:400 -> /error/validation
+      !error:500 -> /error/server
+```
+
+**Verification:**
+```bash
+nexus verify checkout.nexus ./src
+```
+
+**Output:**
+```
+⬡ nexus verify — checkout.nexus
+
+  ✓ [auth] @Auth[mode:jwt] → src/auth.guard.ts
+  ✓ [precondition] "Cart cannot be empty" → src/order.service.ts
+  ✗ [precondition] stock.available > 0
+  ✓ [action] OrderService.create() → src/order.service.ts
+  ✓ [error handler] !error:400 → src/order.service.ts
+  ✗ [error handler] !error:500
+  ✓ [dependency] express → package.json
+
+  5 passed  2 failed
+```
+
+Items marked with `✗` tell you exactly what's missing from the implementation.
+
+**JSON output (for CI/CD):**
+```bash
+nexus verify checkout.nexus ./src --json
+```
+
+```json
+[
+  { "item": { "type": "auth", "declaration": "@Auth[mode:jwt]", "line": 4 }, "found": true, "foundIn": "src/auth.guard.ts" },
+  { "item": { "type": "assertion", "declaration": "\"Cart cannot be empty\"", "line": 9 }, "found": true, "foundIn": "src/order.service.ts" }
+]
+```
+
+---
+
 *[← Back to grammar](./grammar.md) · [See operators](./operators.md)*

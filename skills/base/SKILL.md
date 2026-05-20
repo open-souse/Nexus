@@ -80,6 +80,7 @@ Backend, components, hooks, types
 | `->` | Navegación | Ruta o flujo de navegación / relación | `Button -> /dashboard` |
 | `=>` | Acción | API call, handler, o acción async | `Button => login()` |
 | `<` | Data binding | Vincula a tipo de dato o fuente | `Table < User` |
+| `from` | Data binding (legible) | Alias de `<` — misma semántica | `Table from User [paginate:20]` |
 | `{ }` | Inject | Inyecta código o archivo existente | `{ ./UserCard.tsx }` |
 | `??` | Query | Pregunta sin salir del modo NEXUS | `?? "¿Uso Zustand?"` |
 | `( cond ) -> A : B` | Condicional | Renderizado condicional | `( ?auth ) -> Home : Login` |
@@ -96,7 +97,7 @@ Backend, components, hooks, types
 | `@RateLimit` | Rate Limiting | Limita frecuencia de peticiones | `@RateLimit[100/min]` |
 | `!error:código` | Error Handler | Captura errores HTTP y redirige | `!error:400 -> /error` |
 | `!!` | Aserción | Precondición explícita antes de `=>` | `!! "Carrito no vacío"` |
-| `[paginate:N]` | Paginación | Paginación nativa sobre elemento `<` | `Table < User [paginate:20]` |
+| `[paginate:N]` | Paginación | Paginación nativa sobre elemento `<` o `from` | `Table from User [paginate:20]` |
 | `-> Model.Nombre` | Relación | Relación tipada entre modelos DB | `Entity items -> Model.Product [many]` |
 | `@install` | JIT Install | Instalación on-demand de paquete | `@install lodash` |
 
@@ -155,4 +156,4 @@ Store CartStore {
 
 ---
 
-*NEXUS Protocol v4.3.0 — nexuslang.dev*
+*NEXUS Protocol v4.3.1 — nexuslang.dev*

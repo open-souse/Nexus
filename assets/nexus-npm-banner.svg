@@ -55,7 +55,7 @@
   <!-- Mini stats -->
   <rect x="408" y="120" width="110" height="26" rx="5" fill="#26215C"/>
   <text x="463" y="137" text-anchor="middle"
-    font-family="ui-monospace, monospace" font-size="11" fill="#AFA9EC">✓ 182 tests</text>
+    font-family="ui-monospace, monospace" font-size="11" fill="#AFA9EC">✓ 241 tests</text>
 
   <rect x="530" y="120" width="130" height="26" rx="5" fill="#04342C"/>
   <text x="595" y="137" text-anchor="middle"

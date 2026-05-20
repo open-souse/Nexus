@@ -358,4 +358,95 @@ async checkout(@Body() dto: CheckoutDto, @Request() req) {
 
 ---
 
+## 8. Operador `from` — Binding Legible
+
+El operador `from` es un alias exacto de `<`. Úsalo cuando quieras que el blueprint sea más legible para lectores no familiarizados con NEXUS.
+
+```nexus
+@React @Tailwind
+
+// Con < (compacto)
+Page Dashboard
+  Table < Pedido [paginate:20]
+    !error:500 -> /error/servidor
+
+// Con from (más natural)
+Page Dashboard
+  Table from Pedido [paginate:20]
+    !error:500 -> /error/servidor
+```
+
+Ambas formas son equivalentes. El código generado es idéntico.
+
+```nexus
+@NestJS @Prisma
+
+// from en backend
+Controller UsuarioController
+  Router ApiV1
+    Endpoint GET /usuarios
+      Table from Usuario [paginate:25, page:~currentPage]
+        !error:403 -> /sin-acceso
+        !error:500 -> /error/servidor
+      => UsuarioService.listar()
+```
+
+---
+
+## 9. `nexus verify` — Verificando el Código Generado
+
+Después de que la IA genera el código a partir de un blueprint, `nexus verify` comprueba que realmente implementó todo lo declarado.
+
+**Blueprint (checkout.nexus):**
+```nexus
+@NestJS @Prisma
+@install express
+
+Controller PagoController [route:/api/pagos]
+  Guard AuthGuard [mode:jwt]
+
+  Endpoint POST /checkout
+    !! "El carrito no puede estar vacío"
+    !! stock.disponible > 0
+    => OrderService.crear()
+      !error:400 -> /error/validacion
+      !error:500 -> /error/servidor
+```
+
+**Verificación:**
+```bash
+nexus verify checkout.nexus ./src
+```
+
+**Salida:**
+```
+⬡ nexus verify — checkout.nexus
+
+  ✓ [auth] @Auth[mode:jwt] → src/auth.guard.ts
+  ✓ [precondition] "El carrito no puede estar vacío" → src/order.service.ts
+  ✗ [precondition] stock.disponible > 0
+  ✓ [action] OrderService.crear() → src/order.service.ts
+  ✓ [error handler] !error:400 → src/order.service.ts
+  ✗ [error handler] !error:500 → 
+  ✓ [dependency] express → package.json
+
+  5 passed  2 failed
+```
+
+Los items marcados con `✗` te dicen exactamente qué falta implementar.
+
+**Salida JSON (para CI/CD):**
+```bash
+nexus verify checkout.nexus ./src --json
+```
+
+```json
+[
+  { "item": { "type": "auth", "declaration": "@Auth[mode:jwt]", "line": 4 }, "found": true, "foundIn": "src/auth.guard.ts" },
+  { "item": { "type": "assertion", "declaration": "\"El carrito no puede estar vacío\"", "line": 9 }, "found": true, "foundIn": "src/order.service.ts" }
+]
+```
+
+---
+
 *[← Volver a la gramática](./gramatica.md) · [Ver operadores](./operadores.md)*

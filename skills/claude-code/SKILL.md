@@ -180,6 +180,15 @@ Text < product.nombre
 Image < user.avatar
 ```
 
+### from — Data binding (alias legible)
+Alias exacto de `<`. Misma semántica, sintaxis más natural.
+```nexus
+Table from Usuario [paginate:20]
+Chart from DatosVentas
+// Equivalente a:
+Table < Usuario [paginate:20]
+```
+
 ### { } — Inject
 Inyecta código o archivo existente sin regenerarlo.
 ```nexus
@@ -205,6 +214,7 @@ Pregunta sin salir del modo NEXUS. El asistente responde brevemente y continúa.
 ```nexus
 Table < Producto [paginate:20]
 Grid < Articulo [paginate:12, layout:grid, cols:3]
+Table from Producto [paginate:20]
 ```
 
 ### [type:X] — Tipo de dato
@@ -411,8 +421,11 @@ npm install -g nxlang
 
 # Configurar NEXUS en tu proyecto (un solo comando)
 nexus init
+
+# Verificar que el código generado implementa el blueprint
+nexus verify <blueprint.nexus> [./src] [--json]
 ```
 
 ---
 
-*NEXUS Protocol v4.3.0 — nexuslang.dev*
+*NEXUS Protocol v4.3.1 — nexuslang.dev*

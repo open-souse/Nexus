@@ -13,6 +13,32 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ---
 
+## [4.3.1] — 2026-05-20
+
+### Añadido
+- **Operador `from`** — alias legible de `<` para binding de datos. `Table from User [paginate:20]` es semánticamente idéntico a `Table < User [paginate:20]`. Aceptado en todos los contextos donde `<` es válido, incluyendo `[paginate:]` y comprobación de padre de `!error:`.
+- **Comando `nexus verify`** — nuevo comando CLI que escanea el código generado y reporta qué items del contrato del blueprint están implementados. Uso: `nexus verify <blueprint.nexus> [directorio] [--json]`. Soporta `--json` para salida legible por máquinas.
+- **`extractContract(blueprint)`** — función pura exportada que extrae `ContractItem[]` verificables de un blueprint. Sin acceso a sistema de archivos, totalmente testeable.
+- **`verifyContract(items, codeFiles, packageJson)`** — función pura exportada que compara items del contrato contra un `Map<filename, content>`. Detecta: guards de autenticación, mensajes de aserción, códigos HTTP de error, llamadas a servicios, paquetes npm, rutas de endpoints, paginación.
+- **Tipos `ContractItem` / `VerifyResult`** — exportados desde la API pública de `nxlang`.
+- **`tests/commands/verify.test.ts`** — 17 tests para `extractContract` y `verifyContract`.
+- **`tests/from-alias.test.ts`** — 8 tests para el operador alias `from`.
+- **`tests/builder-sync.test.ts`** — guardia CI: un test por símbolo de `NEXUS_OPERATORS`, verifica que cada uno aparece en la salida de `buildDefaultGrammarReference()`.
+- **`buildDefaultGrammarReference()`** — función exportada que devuelve la cadena de referencia de gramática usada en `NEXUS.md` y archivos de skills.
+
+### Cambiado
+- **`validator.ts`**: La comprobación de padre de `!error:` ahora acepta bindings de datos `<`/`from` además de acciones `=>`. Añadida validación de `from` suelto (error si `from` aparece sin fuente). `[paginate:]` ahora acepta `from` como keyword de binding válido.
+- **`grammar.ts`**: Añadida entrada `from` al array `NEXUS_OPERATORS`.
+- **`builder.ts`**: Añadidos `from`, `[animate:]`, `[hover:]`, `[a11y:]`, `[paginate:]`, `@install` a la referencia de gramática (faltaban en la salida de `buildDefaultGrammarReference()`).
+- **`src/index.ts`**: Añadido `verifyCommand` al programa CLI.
+- **`src/lib.ts`**: Exportados `extractContract`, `verifyContract`, `ContractItem`, `ContractItemType`, `VerifyResult`, `buildDefaultGrammarReference`.
+- **Seguridad**: Eliminadas todas las vulnerabilidades ReDoS en `verifier.ts` — `new RegExp(userInput)` reemplazado por `toLowerCase()+includes()` (`searchString()`) para todo input controlado por el usuario; helper `escape()` eliminado completamente; solo quedan regexes estáticos hardcodeados.
+
+### Tests
+- 59 nuevos tests (total: 241 tests, desde 182)
+
+---
+
 ## [4.3.0] — 2026-05-19
 
 ### Añadido

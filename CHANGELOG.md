@@ -13,6 +13,32 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [4.3.1] — 2026-05-20
+
+### Added
+- **`from` operator** — readable alias for `<` data binding. `Table from User [paginate:20]` is semantically identical to `Table < User [paginate:20]`. Accepted everywhere `<` is accepted, including `[paginate:]` and `!error:` parent check.
+- **`nexus verify` command** — new CLI command that scans generated code and reports which blueprint contract items are implemented. Usage: `nexus verify <blueprint.nexus> [codedir] [--json]`. Supports `--json` for machine-readable output.
+- **`extractContract(blueprint)`** — exported pure function that extracts verifiable `ContractItem[]` from a blueprint string. No filesystem access, fully testable.
+- **`verifyContract(items, codeFiles, packageJson)`** — exported pure function that matches contract items against a `Map<filename, content>`. Detects: auth guards, assertion messages, HTTP error codes, service action calls, npm packages, endpoint routes, pagination.
+- **`ContractItem` / `VerifyResult` types** — exported from `nxlang` public API.
+- **`tests/commands/verify.test.ts`** — 17 tests for `extractContract` and `verifyContract`.
+- **`tests/from-alias.test.ts`** — 8 tests for the `from` alias operator.
+- **`tests/builder-sync.test.ts`** — CI guard: one test per `NEXUS_OPERATORS` symbol, verifies each appears in `buildDefaultGrammarReference()` output.
+- **`buildDefaultGrammarReference()`** — exported function returning the grammar reference string used in `NEXUS.md` and skill files.
+
+### Changed
+- **`validator.ts`**: `!error:` parent check now accepts `<`/`from` data bindings in addition to `=>` actions. Added bare `from` validation (error if `from` appears without a source). `[paginate:]` now accepts `from` as a valid binding keyword.
+- **`grammar.ts`**: Added `from` entry to `NEXUS_OPERATORS` array.
+- **`builder.ts`**: Added `from`, `[animate:]`, `[hover:]`, `[a11y:]`, `[paginate:]`, `@install` to grammar reference (were missing from `buildDefaultGrammarReference()` output).
+- **`src/index.ts`**: Added `verifyCommand` to CLI program.
+- **`src/lib.ts`**: Exported `extractContract`, `verifyContract`, `ContractItem`, `ContractItemType`, `VerifyResult`, `buildDefaultGrammarReference`.
+- **Security**: Eliminated all ReDoS vulnerabilities in `verifier.ts` — replaced `new RegExp(userInput)` with `toLowerCase()+includes()` (`searchString()`) for all user-controlled input; `escape()` helper removed entirely; only static hardcoded regexes remain.
+
+### Tests
+- 59 new tests (total: 241 tests, up from 182)
+
+---
+
 ## [4.3.0] — 2026-05-19
 
 ### Added

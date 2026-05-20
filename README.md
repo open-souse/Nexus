@@ -16,7 +16,7 @@
 
 [![npm version](https://img.shields.io/npm/v/nxlang.svg?style=flat-square)](https://www.npmjs.com/package/nxlang)
 [![Licencia: MIT](https://img.shields.io/badge/Licencia-MIT-blue.svg?style=flat-square)](./LICENSE)
-[![Tests](https://img.shields.io/badge/tests-182%20pasando-brightgreen?style=flat-square)]()
+[![Tests](https://img.shields.io/badge/tests-241%20pasando-brightgreen?style=flat-square)]()
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue?style=flat-square)]()
 
 **NEXUS** es un protocolo de lenguaje minimalista Humano-IA que comprime arquitecturas de software complejas en fragmentos precisos y sin ambigüedad. Construido como núcleo library-first — diseñado para potenciar editores de código, herramientas de IA y flujos de trabajo de desarrollo.
@@ -76,12 +76,15 @@ nxlang/
 ├── core/
 │   ├── grammar.ts      ← Fuente única de verdad: keywords, orquestadores, operadores
 │   ├── parser.ts       ← Tokenización con conciencia de strings
-│   └── validator.ts    ← validateNexus() puro — sin CLI, sin sistema de archivos
+│   ├── validator.ts    ← validateNexus() puro — sin CLI, sin sistema de archivos
+│   ├── extractor.ts    ← extractContract() — extrae items verificables de blueprints
+│   └── verifier.ts     ← verifyContract() — compara items contra código generado
 ├── context/
-│   ├── builder.ts      ← buildSystemPrompt() + buildPrompt()
+│   ├── builder.ts      ← buildSystemPrompt() + buildPrompt() + buildDefaultGrammarReference()
 │   └── config.ts       ← createDefaultConfig()
 ├── cli/
-│   └── init.ts         ← comando nexus init
+│   ├── init.ts         ← comando nexus init
+│   └── verify.ts       ← comando nexus verify
 └── lib.ts              ← API pública para consumidores externos
 ```
 
@@ -110,14 +113,20 @@ npm install nxlang
 
 ```bash
 npm install -g nxlang
-nexus init
-```
 
-Un solo comando configura NEXUS para tu proyecto y tu IA.
+# Configura NEXUS para tu proyecto y tu IA
+nexus init
+
+# Verifica que el código generado implementa el blueprint
+nexus verify ./mi-componente.nexus ./src
+nexus verify ./mi-componente.nexus ./src --json
+```
 
 `nexus init` genera dos archivos automáticamente:
 - `NEXUS.md` — gramática completa del protocolo
 - El archivo complementario para tu IA (skill, .cursorrules, custom instructions, etc.)
+
+`nexus verify` escanea el directorio de código generado y reporta qué items del contrato del blueprint están implementados y cuáles faltan.
 
 Compatible con **Claude Code**, **Cursor**, **ChatGPT**, **Gemini** y cualquier IA.
 
@@ -165,6 +174,7 @@ Controller PedidoController
 | Operador | Significado |
 |---|---|
 | `< Fuente` | Binding de datos / recibe de |
+| `from Fuente` | Alias legible de `<` — misma semántica, sintaxis más natural |
 | `=> Servicio.metodo()` | Despacho de acción |
 | `( cond ) -> A : B` | Renderizado condicional |
 | `!modificador` | Flag booleano (`!bold`, `!pk`, `!xl`) |
@@ -218,6 +228,28 @@ const systemPrompt = buildSystemPrompt(config, 'llm')
 
 // Solo la referencia de sintaxis — para embeber en SKILL.md o .cursorrules
 const gramatica = buildDefaultGrammarReference()
+```
+
+### Verificación de código generado
+
+```typescript
+import { extractContract, verifyContract } from 'nxlang'
+import type { ContractItem, VerifyResult } from 'nxlang'
+import fs from 'fs'
+
+// Extraer items verificables del blueprint
+const items: ContractItem[] = extractContract(blueprintContent)
+// items: [{ type: 'auth', declaration: '@Auth[mode:jwt]', line: 3 }, ...]
+
+// Verificar que el código generado los implementa
+const codeFiles = new Map([
+  ['src/auth.guard.ts', fs.readFileSync('src/auth.guard.ts', 'utf-8')],
+  // ... resto de archivos
+])
+const results: VerifyResult[] = verifyContract(items, codeFiles, packageJson)
+results.forEach(r => {
+  console.log(`${r.found ? '✓' : '✗'} [${r.item.type}] ${r.item.declaration}`)
+})
 ```
 
 ### Configuración
@@ -303,6 +335,7 @@ El editor no necesita entender NEXUS — solo necesita llamar a `validateNexus()
 - [x] v4.1.2 — Seguridad: caracteres de control, validación de brackets por línea
 - [x] v4.2.0 — Operador de aserción (`!!`) — precondiciones explícitas para acciones `=>`
 - [x] v4.3.0 — `nexus init` unificado — configura NEXUS para cualquier IA en un comando
+- [x] v4.3.1 — Operador `from` (alias de `<`), `nexus verify`, API de verificación de contratos
 - [ ] v4.5.0 — Motor semántico, CLI Doctor (cuando haya demanda real)
 - [ ] SDD — Software Design by Declaration (investigación activa, RFC abierto)
 
@@ -318,7 +351,7 @@ Lee [CONTRIBUTING.md](./CONTRIBUTING.md) para aprender cómo participar.
 git clone https://github.com/open-souse/Nexus.git
 cd Nexus
 npm install
-npm run test     # 182 tests, ~1 segundo
+npm run test     # 241 tests, ~1 segundo
 npm run build
 ```
 

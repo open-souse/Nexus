@@ -37,6 +37,7 @@ NEXUS se basa en la indentación (2 espacios). Cada línea representa un **Orque
 | `-> Model.` | **Relación de Modelo** | Relación tipada entre entidades de BD. | `Entity items -> Model.Producto [many]` |
 | `=>` | **Lógica** | Efectos secundarios, APIs o manejadores. | `Click => guardar()` |
 | `<` | **Binding** | Fuentes de datos o tipos de datos. | `Table < UserData` |
+| `from` | **Binding (legible)** | Alias legible de `<` — misma semántica, sintaxis más natural. | `Table from User` |
 | `{ ruta }` | **Inyección** | Inyecta archivos o contexto existente. | `{ ./utils.ts }` |
 | `( cond ) -> A : B` | **Condicional** | Renderizado condicional. | `( ?auth ) -> Home : Login` |
 | `[paginate:N]` | **Paginación** | Paginación nativa en elementos con `<`. | `Table < User [paginate:20]` |
@@ -118,11 +119,17 @@ Controller CuentaController
 
 ### 5.1 Manejo de Errores — `!error:`
 
-Captura errores de acciones `=>` y redirige al destino especificado. Siempre va indentado bajo una línea con `=>`.
+Captura errores de acciones `=>` o de binding de datos (`<`/`from`) y redirige al destino especificado. Va indentado bajo la línea que origina el error.
 
 **Sintaxis:**
 ```nexus
 Elemento => Servicio.metodo()
+  !error:código -> /destino
+
+Elemento < Fuente [paginate:N]
+  !error:código -> /destino
+
+Elemento from Fuente [paginate:N]
   !error:código -> /destino
 ```
 
@@ -136,9 +143,9 @@ Elemento => Servicio.metodo()
 | `*` | Comodín — captura cualquier error no manejado |
 
 **Reglas:**
-- Solo válido anidado bajo una línea con `=>`
+- Válido anidado bajo una línea con `=>` (acción) o `<`/`from` (binding de datos)
 - Siempre requiere `-> /destino` después del código
-- Se pueden encadenar múltiples `!error` bajo el mismo `=>`
+- Se pueden encadenar múltiples `!error` bajo el mismo padre
 
 **Ejemplo:**
 ```nexus
@@ -147,6 +154,10 @@ Button "Pagar" => PagoService.procesar()
   !error:500 -> /error/servidor
   !error:timeout -> /reintentar
   !error:* -> /error/general
+
+Table from Pedido [paginate:20]
+  !error:500 -> /error/servidor
+  !error:network -> /sin-conexion
 ```
 
 ---
@@ -160,6 +171,7 @@ Genera paginación automática en elementos con binding de datos `<`. La IA gene
 Elemento < Fuente [paginate:N]
 Elemento < Fuente [paginate:N, page:~variable]
 Elemento < Fuente [paginate:N, layout:grid|list]
+Elemento from Fuente [paginate:N]
 ```
 
 **Parámetros:**
@@ -171,7 +183,7 @@ Elemento < Fuente [paginate:N, layout:grid|list]
 | `layout:X` | Disposición visual de los ítems | `grid` \| `list` |
 
 **Reglas:**
-- Requiere binding de datos `<` en la misma línea
+- Requiere binding de datos `<` o `from` en la misma línea
 - No puede combinarse con el multiplicador `* N`
 - N debe ser un entero positivo entre 1 y 500
 
@@ -180,6 +192,7 @@ Elemento < Fuente [paginate:N, layout:grid|list]
 Table < Pedido [paginate:20]
 Table < Usuario [paginate:10, page:~currentPage]
 List < Producto [paginate:12, layout:grid]
+Table from Pedido [paginate:20]
 ```
 
 ---
@@ -247,6 +260,70 @@ Endpoint POST /checkout
   => OrderService.crear()
     !error:400 -> /error/validacion
     !error:* -> /error/general
+```
+
+---
+
+## 6. Operador `from` — Binding Legible
+
+`from` es un alias exacto del operador `<`. Ambas formas son equivalentes — usa la que resulte más natural en tu blueprint.
+
+```nexus
+// Equivalentes:
+Table < Pedido [paginate:20]
+Table from Pedido [paginate:20]
+
+// Equivalentes:
+Chart < DatosVentas
+Chart from DatosVentas
+```
+
+**Cuándo usar cada uno:**
+- `<` — compacto, idiomático, consistente con el resto de operadores NEXUS
+- `from` — más natural para lectores no familiarizados con NEXUS o en contextos de documentación
+
+---
+
+## 7. Verificación de Contratos — `nexus verify`
+
+`nexus verify` compara los items declarados en un blueprint contra el código generado. Reporta qué partes del contrato están implementadas.
+
+**Uso:**
+```bash
+nexus verify <blueprint.nexus> [directorio-de-código] [--json]
+```
+
+**Ejemplo de salida:**
+```
+⬡ nexus verify — checkout.nexus
+
+  ✓ [auth] @Auth[mode:jwt] → src/auth.guard.ts
+  ✓ [precondition] "El carrito no puede estar vacío" → src/cart.service.ts
+  ✓ [action] OrderService.crear() → src/order.service.ts
+  ✗ [error handler] !error:400 -> /error/validacion
+  ✓ [dependency] express → package.json
+
+  4 passed  1 failed
+```
+
+**Items verificables en un blueprint:**
+
+| Tipo | Declaración | Qué busca en el código |
+|:---|:---|:---|
+| `auth` | `@Auth[mode:jwt]` | JWT guard, `UseGuards`, `Bearer`, `authorization` |
+| `assertion` | `!! "mensaje"` | La cadena del mensaje en algún archivo |
+| `error-handler` | `!error:400` | Código HTTP o `HttpStatus.` en algún archivo |
+| `action` | `=> Servicio.metodo()` | `Servicio.metodo` en algún archivo |
+| `install` | `@install paquete` | El paquete en `package.json` |
+| `endpoint` | `Endpoint POST /ruta` | La ruta base en algún archivo |
+| `pagination` | `[paginate:N]` | `page`, `limit`, `skip`, `take`, `offset` en algún archivo |
+
+**API programática:**
+```typescript
+import { extractContract, verifyContract } from 'nxlang'
+
+const items = extractContract(blueprintContent)
+const results = verifyContract(items, codeFilesMap, packageJson)
 ```
 
 ---

@@ -28,7 +28,7 @@ Released: May 2026
 
 - Library-First architecture (`core/`, `context/`, `cli/`)
 - Defensive security: 500KB limit, 2000 lines, null bytes, string-aware tokenizer
-- 159 tests, suite in ~1 second
+- 90 tests, suite in ~1 second
 - Public API: `validateNexus()`, `buildSystemPrompt()`, `createDefaultConfig()`
 - Multi-provider support: GPT, Gemini, and major LLMs
 - CLI: `nexus init`
@@ -77,6 +77,18 @@ Released: May 2026
 - Skills architecture: `skills/base/` (neutral grammar) + `skills/{ai}/` (AI-specific complement)
 - Compatible with Claude Code, Cursor, ChatGPT, Gemini, and any AI
 - Removed commands: `nexus validate`, `nexus install`, `nexus context`
+
+### v4.3.1 — `from` Operator and Contract Verification ✅
+
+Released: May 2026
+
+- `from` operator — readable alias for `<` (`Table from User [paginate:20]` ≡ `Table < User [paginate:20]`)
+- `!error:` now valid under `<`/`from` in addition to `=>` — fixes dashboard.nexus and similar cases
+- `nexus verify` command — verifies that generated code implements the blueprint
+- Public API: `extractContract()`, `verifyContract()`, `ContractItem`, `VerifyResult`
+- `buildDefaultGrammarReference()` exported — single source of truth for skills and NEXUS.md
+- 59 new tests — total: 241 tests
+- Security: eliminated all ReDoS vulnerabilities in `verifier.ts`
 
 ---
 
