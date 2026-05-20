@@ -16,8 +16,12 @@ function search(files: Map<string, string>, pattern: RegExp): string | undefined
   return undefined
 }
 
-function escape(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+function searchString(files: Map<string, string>, needle: string): string | undefined {
+  const lower = needle.toLowerCase()
+  for (const [name, content] of files) {
+    if (content.toLowerCase().includes(lower)) return name
+  }
+  return undefined
 }
 
 export function verifyContract(
@@ -41,9 +45,9 @@ export function verifyContract(
         break
 
       case 'assertion': {
-        // Strip surrounding quotes then search for the message string
+        // Strip surrounding quotes then plain-string search (no dynamic regex)
         const msg = item.declaration.replace(/^["']|["']$/g, '')
-        foundIn = search(codeFiles, new RegExp(escape(msg), 'i'))
+        foundIn = searchString(codeFiles, msg)
         found = !!foundIn
         break
       }
@@ -62,9 +66,9 @@ export function verifyContract(
       }
 
       case 'action': {
-        // => CartService.add() → search for the call (case-insensitive)
+        // => CartService.add() → strip parens, then plain-string search (no dynamic regex)
         const call = item.declaration.replace(/\([^)]*\)$/, '')
-        foundIn = search(codeFiles, new RegExp(escape(call), 'i'))
+        foundIn = searchString(codeFiles, call)
         found = !!foundIn
         break
       }
